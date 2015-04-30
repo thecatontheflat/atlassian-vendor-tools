@@ -31,7 +31,7 @@ class License
     /**
      * @var string
      *
-     * @ORM\Column(name="organisation_name", type="string", length=255)
+     * @ORM\Column(name="organisation_name", type="string", length=255, nullable=true)
      */
     private $organisationName;
 
@@ -52,119 +52,119 @@ class License
     /**
      * @var string
      *
-     * @ORM\Column(name="tech_contact_name", type="string", length=255)
+     * @ORM\Column(name="tech_contact_name", type="string", length=255, nullable=true)
      */
     private $techContactName;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="tech_contact_email", type="string", length=255)
+     * @ORM\Column(name="tech_contact_email", type="string", length=255, nullable=true)
      */
     private $techContactEmail;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="tech_contact_phone", type="string", length=255)
+     * @ORM\Column(name="tech_contact_phone", type="string", length=255, nullable=true)
      */
     private $techContactPhone;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="tech_contact_address_1", type="string", length=255)
+     * @ORM\Column(name="tech_contact_address_1", type="string", length=255, nullable=true)
      */
     private $techContactAddress1;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="tech_contact_address_2", type="string", length=255)
+     * @ORM\Column(name="tech_contact_address_2", type="string", length=255, nullable=true)
      */
     private $techContactAddress2;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="tech_contact_city", type="string", length=255)
+     * @ORM\Column(name="tech_contact_city", type="string", length=255, nullable=true)
      */
     private $techContactCity;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="tech_contact_state", type="string", length=255)
+     * @ORM\Column(name="tech_contact_state", type="string", length=255, nullable=true)
      */
     private $techContactState;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="tech_contact_postcode", type="string", length=255)
+     * @ORM\Column(name="tech_contact_postcode", type="string", length=255, nullable=true)
      */
     private $techContactPostcode;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="tech_contact_country", type="string", length=255)
+     * @ORM\Column(name="tech_contact_country", type="string", length=255, nullable=true)
      */
     private $techContactCountry;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="billing_contact_name", type="string", length=255)
+     * @ORM\Column(name="billing_contact_name", type="string", length=255, nullable=true)
      */
     private $billingContactName;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="billing_contact_email", type="string", length=255)
+     * @ORM\Column(name="billing_contact_email", type="string", length=255, nullable=true)
      */
     private $billingContactEmail;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="billing_contact_phone", type="string", length=255)
+     * @ORM\Column(name="billing_contact_phone", type="string", length=255, nullable=true)
      */
     private $billingContactPhone;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="edition", type="string", length=255)
+     * @ORM\Column(name="edition", type="string", length=255, nullable=true)
      */
     private $edition;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="license_type", type="string", length=255)
+     * @ORM\Column(name="license_type", type="string", length=255, nullable=true)
      */
     private $licenseType;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="start_date", type="date")
+     * @ORM\Column(name="start_date", type="date", nullable=true)
      */
     private $startDate;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="end_date", type="date")
+     * @ORM\Column(name="end_date", type="date", nullable=true)
      */
     private $endDate;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="renewal_action", type="string", length=255)
+     * @ORM\Column(name="renewal_action", type="string", length=255, nullable=true)
      */
     private $renewalAction;
 

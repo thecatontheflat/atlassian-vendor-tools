@@ -12,4 +12,23 @@ use Doctrine\ORM\EntityRepository;
  */
 class LicenseRepository extends EntityRepository
 {
+    /**
+     * @param $licenseId
+     * @param $addonKey
+     *
+     * @return License
+     */
+    public function findOrCreate($licenseId, $addonKey)
+    {
+        $license = $this->findOneBy([
+            'licenseId' => $licenseId,
+            'addonKey' => $addonKey
+        ]);
+
+        if (!$license) {
+            $license = new License();
+        }
+
+        return $license;
+    }
 }
