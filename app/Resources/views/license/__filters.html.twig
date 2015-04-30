@@ -1,0 +1,53 @@
+<div class="aui-group ng-scope">
+    <div class="aui-item">
+        <form class="aui ng-pristine ng-valid">
+            <fieldset class="group">
+                <legend><span>Filter by addon</span></legend>
+                <!-- ngRepeat: option in licensesDropdowns.addons --><div ng-repeat="option in licensesDropdowns.addons" class="checkbox inline ng-scope">
+                    <input type="checkbox" name="addons-name" id="JQL Pro (Mongo Search)" ng-click="toggleSelection(&quot;addons&quot;, option)" class="checkbox">
+                    <label for="JQL Pro (Mongo Search)" class="ng-binding">JQL Pro (Mongo Search)</label>
+                </div><!-- end ngRepeat: option in licensesDropdowns.addons --><div ng-repeat="option in licensesDropdowns.addons" class="checkbox inline ng-scope">
+                    <input type="checkbox" name="addons-name" id="Planning Poker 3.0" ng-click="toggleSelection(&quot;addons&quot;, option)" class="checkbox">
+                    <label for="Planning Poker 3.0" class="ng-binding">Planning Poker 3.0</label>
+                </div><!-- end ngRepeat: option in licensesDropdowns.addons --><div ng-repeat="option in licensesDropdowns.addons" class="checkbox inline ng-scope">
+                    <input type="checkbox" name="addons-name" id="Simple Edit" ng-click="toggleSelection(&quot;addons&quot;, option)" class="checkbox">
+                    <label for="Simple Edit" class="ng-binding">Simple Edit</label>
+                </div><!-- end ngRepeat: option in licensesDropdowns.addons -->
+            </fieldset>
+            <fieldset class="group">
+                <legend><span>Filter by license</span></legend>
+                <!-- ngRepeat: option in licensesDropdowns.licenseTypes --><div ng-repeat="option in licensesDropdowns.licenseTypes" class="checkbox inline ng-scope">
+                    <input type="checkbox" name="addons-name" id="COMMERCIAL" ng-click="toggleSelection(&quot;licenses&quot;, option)" class="checkbox">
+                    <label for="COMMERCIAL" class="ng-binding">COMMERCIAL</label>
+                </div><!-- end ngRepeat: option in licensesDropdowns.licenseTypes --><div ng-repeat="option in licensesDropdowns.licenseTypes" class="checkbox inline ng-scope">
+                    <input type="checkbox" name="addons-name" id="EVALUATION" ng-click="toggleSelection(&quot;licenses&quot;, option)" class="checkbox">
+                    <label for="EVALUATION" class="ng-binding">EVALUATION</label>
+                </div><!-- end ngRepeat: option in licensesDropdowns.licenseTypes -->
+            </fieldset>
+            <div class="field-group">
+                <label for="sort-field">Sorting field</label>
+                <select id="sort-field" name="sort-field" ng-model="filters.sortField" class="select ng-pristine ng-untouched ng-valid"><option value="? string: ?"></option>
+                    <!-- ngRepeat: option in sortValues --><option ng-repeat="option in sortValues" class="ng-binding ng-scope" value="organisationName">organisationName</option><!-- end ngRepeat: option in sortValues --><option ng-repeat="option in sortValues" class="ng-binding ng-scope" value="addOnName">addOnName</option><!-- end ngRepeat: option in sortValues --><option ng-repeat="option in sortValues" class="ng-binding ng-scope" value="licenseType">licenseType</option><!-- end ngRepeat: option in sortValues --><option ng-repeat="option in sortValues" class="ng-binding ng-scope" value="startDate">startDate</option><!-- end ngRepeat: option in sortValues --><option ng-repeat="option in sortValues" class="ng-binding ng-scope" value="endDate">endDate</option><!-- end ngRepeat: option in sortValues -->
+                </select>
+                <select id="sort-order" name="sort-order" ng-model="filters.sortOrder" class="select ng-pristine ng-untouched ng-valid"><option value="? string: ?"></option>
+                    <option value="ASC">ASC</option>
+                    <option value="DESC">DESC</option>
+                </select>
+                <button ng-click="resetSorting()" class="aui-button">Reset Sorting</button>
+            </div>
+            <div class="field-group">
+                <label for="limit">Limit per page</label>
+                <select id="limit" name="limit" ng-model="filters.limit" class="select ng-pristine ng-untouched ng-valid">
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+            </div>
+            <div class="buttons-container">
+                <div class="buttons">
+                    <button ng-click="applyFilters()" class="aui-button aui-button-primary">Apply</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
