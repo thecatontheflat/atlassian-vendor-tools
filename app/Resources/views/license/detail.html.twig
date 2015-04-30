@@ -1,0 +1,72 @@
+{% extends '::base.html.twig' %}
+
+{% block content %}
+    <h2>License Details</h2>
+    <div class="aui-group">
+        <div class="aui-item"><a class="aui-button aui-button-link" href="{{ url('licenses') }}">Back</a></div>
+    </div>
+    <div class="aui-group">
+        <div class="aui-item">
+            <table class="aui">
+                <tbody>
+                    <tr>
+                        <td><h6>LICENSE ID</h6></td>
+                        <td>{{ license.licenseId }}</td>
+                    </tr>
+
+                    <tr>
+                        <td><h6>ORGANISATION NAME</h6></td>
+                        <td>{{ license.organisationName }}</td>
+                    </tr>
+
+                    <tr>
+                        <td><h6>ADDON</h6></td>
+                        <td>{{ license.addonName }} ({{ license.addonKey }})</td>
+                    </tr>
+
+                    <tr>
+                        <td><h6>TECHNICAL CONTACT</h6></td>
+                        <td>
+                            {{ license.techContactName }} <br/>
+                            {{ license.techContactEmail }}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><h6>BILLING CONTACT</h6></td>
+                        <td>
+                            {{ license.billingContactName }} <br/>
+                            {{ license.billingContactEmail }}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><h6>EDITION</h6></td>
+                        <td>{{ license.edition }}</td>
+                    </tr>
+
+                    <tr>
+                        <td><h6>LICENSE TYPE</h6></td>
+                        <td>{{ license.licenseType }}</td>
+                    </tr>
+
+                    <tr>
+                        <td><h6>START DATE</h6></td>
+                        <td>{{ license.startDate|date('Y-m-d') }}</td>
+                    </tr>
+
+                    <tr>
+                        <td><h6>END DATE</h6></td>
+                        <td>{{ license.endDate|date('Y-m-d') }}</td>
+                    </tr>
+
+                    <tr>
+                        <td><h6>RENEWAL ACTION</h6></td>
+                        <td>{{ license.renewalAction }}</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
