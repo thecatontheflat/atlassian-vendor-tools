@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * License
  *
- * @ORM\Table(name="license")
+ * @ORM\Table(name="license", uniqueConstraints={@ORM\UniqueConstraint(name="license", columns={"license_id", "addon_key"})})
  * @ORM\Entity(repositoryClass="AppBundle\Entity\LicenseRepository")
  */
 class License
