@@ -5,13 +5,13 @@ namespace AppBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-class DefaultController extends Controller
+class DashboardController extends Controller
 {
     /**
-     * @Route("/", name="homepage")
+     * @Route("/", name="dashboard")
      */
     public function indexAction()
     {
-        return $this->render('default/index.html.twig');
+        return $this->render(':dashboard:dashboard.html.twig');
     }
 }
