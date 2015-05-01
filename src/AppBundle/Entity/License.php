@@ -661,4 +661,29 @@ class License
     {
         return $this->renewalAction;
     }
+
+    public function setFromCSV($data)
+    {
+        $this->setLicenseId($data[0])
+            ->setOrganisationName($data[1])
+            ->setAddonName($data[2])
+            ->setAddonKey($data[3])
+            ->setTechContactName($data[4])
+            ->setTechContactEmail($data[5])
+            ->setTechContactPhone($data[6])
+            ->setTechContactAddress1($data[7])
+            ->setTechContactAddress2($data[8])
+            ->setTechContactCity($data[9])
+            ->setTechContactState($data[10])
+            ->setTechContactPostcode($data[11])
+            ->setTechContactCountry($data[12])
+            ->setBillingContactName($data[13])
+            ->setBillingContactEmail($data[14])
+            ->setBillingContactPhone($data[15])
+            ->setEdition($data[16])
+            ->setLicenseType($data[17])
+            ->setStartDate(new \DateTime($data[18]))
+            ->setEndDate(new \DateTime($data[19]))
+            ->setRenewalAction($data[20]);
+    }
 }

@@ -20,7 +20,7 @@ class ImportLicenseCommand extends ContainerAwareCommand
     {
         $em = $this->getContainer()->get('doctrine')->getManager();
         $repository = $this->getContainer()->get('doctrine')->getRepository('AppBundle:License');
-        $csv = file('/Users/vitaliizurian/Downloads/licenseReport.csv');
+        $csv = file('https://marketplace.atlassian.com/rest/1.0/vendors/1211528/license/report');
         unset($csv[0]);
 
         foreach ($csv as $row) {
@@ -29,28 +29,7 @@ class ImportLicenseCommand extends ContainerAwareCommand
 
             $data = str_getcsv($row, ',');
             $license = $repository->findOrCreate($data[0], $data[3]);
-            $license
-                ->setLicenseId($data[0])
-                ->setOrganisationName($data[1])
-                ->setAddonName($data[2])
-                ->setAddonKey($data[3])
-                ->setTechContactName($data[4])
-                ->setTechContactEmail($data[5])
-                ->setTechContactPhone($data[6])
-                ->setTechContactAddress1($data[7])
-                ->setTechContactAddress2($data[8])
-                ->setTechContactCity($data[9])
-                ->setTechContactState($data[10])
-                ->setTechContactPostcode($data[11])
-                ->setTechContactCountry($data[12])
-                ->setBillingContactName($data[13])
-                ->setBillingContactEmail($data[14])
-                ->setBillingContactPhone($data[15])
-                ->setEdition($data[16])
-                ->setLicenseType($data[17])
-                ->setStartDate(new \DateTime($data[18]))
-                ->setEndDate(new \DateTime($data[19]))
-                ->setRenewalAction($data[20]);
+            $license->setFromCSV($data);
 
             $em->persist($license);
         }
