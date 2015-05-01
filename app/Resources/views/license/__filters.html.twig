@@ -5,12 +5,12 @@
         {{ form_start(filterForm, {'attr': {'class': 'aui'}}) }}
             <fieldset class="group">
                 <legend><span>Filter by addon</span></legend>
-                {{ form_widget(filterForm.addon) }}
+                {{ form_widget(filterForm.addonKey) }}
             </fieldset>
 
             <fieldset class="group">
                 <legend><span>Filter by license</span></legend>
-                {{ form_widget(filterForm.license) }}
+                {{ form_widget(filterForm.licenseType) }}
             </fieldset>
             <div class="field-group">
                 <label>Sorting field</label>

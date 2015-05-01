@@ -17,13 +17,13 @@ class LicenseFilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('addon', 'choice', [
+            ->add('addonKey', 'choice', [
                 'multiple' => true,
                 'expanded' => true,
                 'choices' => $this->addonChoices
             ])
 
-            ->add('license', 'choice', [
+            ->add('licenseType', 'choice', [
                 'multiple' => true,
                 'expanded' => true,
                 'choices' => [
@@ -33,8 +33,6 @@ class LicenseFilterType extends AbstractType
             ])
 
             ->add('sort_field', 'choice', [
-                'empty_data'  => null,
-                'empty_value' => '',
                 'choices' => [
                     'organisationName' => 'organisationName',
                     'addOnName' => 'addOnName',
@@ -45,8 +43,6 @@ class LicenseFilterType extends AbstractType
             ])
 
             ->add('sort_direction', 'choice', [
-                'empty_data'  => null,
-                'empty_value' => '',
                 'choices' => [
                     'ASC' => 'ASC',
                     'DESC' => 'DESC'
