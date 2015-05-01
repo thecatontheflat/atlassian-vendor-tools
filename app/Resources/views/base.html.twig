@@ -5,24 +5,22 @@
     <meta http-equiv="X-UA-Compatible" content="IE=EDGE">
     <title>Atlassian Marketplace CRM</title>
     <link rel="stylesheet" href="{{ asset('assets/aui/css/aui.min.css') }}" media="all">
-    <link rel="stylesheet" href="{{ asset('assets/aui/css/aui-experimental.min.css') }}" media="all">
+    {#<link rel="stylesheet" href="{{ asset('assets/aui/css/aui-experimental.min.css') }}" media="all">#}
     <link rel="stylesheet" href="{{ asset('assets/css/mpcrm.css') }}" media="all">
 </head>
 <body class="aui-page-fixed">
 <div id="page">
     <header id="header" role="banner">
-        <nav class="aui-header aui-dropdown2-trigger-group" role="navigation">
+        <nav class="aui-header" role="navigation">
             <div class="aui-header-inner">
-                <div class="aui-header-primary">
-                    <ul class="aui-nav">
-                        <li><a href="{{ url('dashboard') }}">Dashboard</a></li>
-                        <li><a href="{{ url('licenses') }}">Evaluations</a></li>
-                        <li><a href="#">Sales</a></li>
-                        <li><a href="#">Events</a></li>
-                        <li><a href="#">Mandrill</a></li>
-                        <li><a href="#">Configuration</a></li>
-                    </ul>
-                </div>
+                <ul class="aui-nav">
+                    <li><a href="{{ url('dashboard') }}">Dashboard</a></li>
+                    <li><a href="{{ url('licenses') }}">Evaluations</a></li>
+                    {#<li><a href="#">Sales</a></li>#}
+                    <li><a href="{{ url('event') }}">Events</a></li>
+                    {#<li><a href="#">Mandrill</a></li>#}
+                    {#<li><a href="#">Configuration</a></li>#}
+                </ul>
             </div>
         </nav>
     </header>
@@ -48,7 +46,8 @@
         </section>
     </footer>
 </div>
+<script src="{{ asset('assets/jquery/dist/jquery.min.js') }}"></script>
 <script src="{{ asset('assets/aui/js/aui.min.js') }}"></script>
-<script src="{{ asset('assets/aui/js/aui-experimental.min.js') }}"></script>
+{#<script src="{{ asset('assets/aui/js/aui-experimental.min.js') }}"></script>#}
 </body>
 </html>
