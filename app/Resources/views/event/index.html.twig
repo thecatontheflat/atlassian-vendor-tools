@@ -1,0 +1,32 @@
+{% extends '::base.html.twig' %}
+
+{% block content %}
+    <h2>Events</h2>
+
+    <div class="aui-group">
+        <div class="aui-item">
+            <table class="aui">
+                <thead>
+                <tr>
+                    <th><h6>Name</h6></th>
+                    <th><h6>Template</h6></th>
+                    <th><h6>License</h6></th>
+                    <th><h6>Field</h6></th>
+                    <th><h6>Shift</h6></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for event in events %}
+                    <tr>
+                        <td>{{ event.name }}</td>
+                        <td>{{ event.template }}</td>
+                        <td>{{ event.license_type }}</td>
+                        <td>{{ event.license_field }}</td>
+                        <td>{{ event.shift_days }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
