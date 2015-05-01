@@ -12,69 +12,21 @@
                 <legend><span>Filter by license</span></legend>
                 {{ form_widget(filterForm.license) }}
             </fieldset>
+            <div class="field-group">
+                <label>Sorting field</label>
+                {{ form_widget(filterForm.sort_field, {'attr': {'class': 'select'}}) }}
+                {{ form_widget(filterForm.sort_direction, {'attr': {'class': 'select'}}) }}
+            </div>
+            <div class="field-group">
+                <label>Limit per page</label>
+                {{ form_widget(filterForm.limit, {'attr': {'class': 'select'}}) }}
+            </div>
             <div class="buttons-container">
                 <div class="buttons">
                     <button class="aui-button aui-button-primary">Apply</button>
+                    <button class="aui-button">Reset</button>
                 </div>
             </div>
         {{ form_end(filterForm) }}
-        <form class="aui">
-            <fieldset class="group">
-                <legend><span>Filter by addon</span></legend>
-                <div class="checkbox inline">
-                    <input type="checkbox" name="addons-name" id="JQL Pro (Mongo Search)" class="checkbox">
-                    <label for="JQL Pro (Mongo Search)">JQL Pro (Mongo Search)</label>
-                </div>
-                <div class="checkbox inline">
-                    <input type="checkbox" name="addons-name" id="Planning Poker 3.0" class="checkbox">
-                    <label for="Planning Poker 3.0">Planning Poker 3.0</label>
-                </div>
-                <div class="checkbox inline">
-                    <input type="checkbox" name="addons-name" id="Simple Edit" class="checkbox">
-                    <label for="Simple Edit">Simple Edit</label>
-                </div>
-            </fieldset>
-            <fieldset class="group">
-                <legend><span>Filter by license</span></legend>
-                <div class="checkbox inline">
-                    <input type="checkbox" name="addons-name" id="COMMERCIAL" class="checkbox">
-                    <label for="COMMERCIAL">COMMERCIAL</label>
-                </div>
-                <div class="checkbox inline">
-                    <input type="checkbox" name="addons-name" id="EVALUATION" class="checkbox">
-                    <label for="EVALUATION">EVALUATION</label>
-                </div>
-            </fieldset>
-            <div class="field-group">
-                <label for="sort-field">Sorting field</label>
-                <select id="sort-field" name="sort-field" class="select">
-                    <option></option>
-                    <option value="organisationName">organisationName</option>
-                    <option value="addOnName">addOnName</option>
-                    <option value="licenseType">licenseType</option>
-                    <option value="startDate">startDate</option>
-                    <option value="endDate">endDate</option>
-                </select>
-                <select id="sort-order" name="sort-order" class="select">
-                    <option value=""></option>
-                    <option value="ASC">ASC</option>
-                    <option value="DESC">DESC</option>
-                </select>
-                <button class="aui-button">Reset Sorting</button>
-            </div>
-            <div class="field-group">
-                <label for="limit">Limit per page</label>
-                <select id="limit" name="limit" class="select">
-                    <option value="20">20</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                </select>
-            </div>
-            <div class="buttons-container">
-                <div class="buttons">
-                    <button class="aui-button aui-button-primary">Apply</button>
-                </div>
-            </div>
-        </form>
     </div>
 </div>
