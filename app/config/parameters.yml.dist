@@ -18,3 +18,7 @@ parameters:
     vendor_email: vendor@gmail.com
     vendor_password: ~
     vendor_id: 123456789
+
+    events:
+        - {name: EVAL_STARTED, template: EVAL_STARTED, license_type: EVALUATION, license_field: startDate, shift_days: 1}
+        - {name: EVAL_MIDDLE, template: EVAL_MIDDLE, license_type: EVALUATION, license_field: startDate, shift_days: 7}
