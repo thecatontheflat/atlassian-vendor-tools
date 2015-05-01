@@ -14,3 +14,7 @@ parameters:
     locale: en
 
     secret: ThisTokenIsNotSoSecretChangeIt
+
+    vendor_email: vendor@gmail.com
+    vendor_password: ~
+    vendor_id: 123456789

@@ -3,6 +3,7 @@
 namespace AppBundle\Command;
 
 use AppBundle\Entity\License;
+use GuzzleHttp\Client;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -18,9 +19,28 @@ class ImportLicenseCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $em = $this->getContainer()->get('doctrine')->getManager();
-        $repository = $this->getContainer()->get('doctrine')->getRepository('AppBundle:License');
-        $csv = file('https://marketplace.atlassian.com/rest/1.0/vendors/1211528/license/report');
+        $urlTemplate = 'https://marketplace.atlassian.com/rest/1.0/vendors/%s/license/report';
+        $container = $this->getContainer();
+
+        $vendorId = $container->getParameter('vendor_id');
+        $login = $container->getParameter('vendor_email');
+        $password = $container->getParameter('vendor_password');
+        $em = $container->get('doctrine')->getManager();
+        $repository = $container->get('doctrine')->getRepository('AppBundle:License');
+
+        $url = sprintf($urlTemplate, $vendorId);
+
+        try {
+            $client = new Client();
+            $response = $client->get($url, ['auth' =>  [$login, $password]]);
+            $contents = $response->getBody()->getContents();
+            $csv = str_getcsv($contents, "\n");
+
+        } catch (\Exception $e) {
+            $output->writeln($e->getMessage());
+
+            return;
+        }
         unset($csv[0]);
 
         foreach ($csv as $row) {
