@@ -14,6 +14,8 @@ class EventController extends Controller
     {
         $events = $this->container->getParameter('events');
 
-        return $this->render(':event:index.html.twig', ['events' => $events]);
+        return $this->render(':event:index.html.twig', [
+            'events' => $events
+        ]);
     }
 }

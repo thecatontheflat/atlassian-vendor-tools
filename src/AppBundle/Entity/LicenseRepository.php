@@ -65,4 +65,28 @@ class LicenseRepository extends EntityRepository
 
         return $choices;
     }
+
+    /**
+     * @param $event
+     *
+     * @return License[]
+     */
+    public function findByEvent($event)
+    {
+        if ('startDate' == $event['license_field']) {
+            $where = 'DATE_DIFF(CURRENT_DATE(), l.startDate) = ?1';
+        } else {
+            $where = 'DATE_DIFF(l.endDate, CURRENT_DATE()) = ?1';
+        }
+
+        $result = $this->createQueryBuilder('l')
+            ->where($where)
+            ->andWhere('l.licenseType = ?2')
+            ->setParameter('1', $event['shift_days'])
+            ->setParameter('2', $event['license_type'])
+            ->getQuery()
+            ->getResult();
+
+        return $result;
+    }
 }
