@@ -38,8 +38,10 @@ class LicenseController extends Controller
     /**
      * @Route("/license/{licenseId}", name="license_detail")
      */
-    public function detailAction(License $license)
+    public function detailAction(Request $request, $licenseId)
     {
-        return $this->render(':license:detail.html.twig', ['license' => $license]);
+        $licenses = $this->getDoctrine()->getRepository('AppBundle:License')
+            ->findBy(['licenseId' => $licenseId]);
+        return $this->render(':license:detail.html.twig', ['licenses' => $licenses]);
     }
 }

@@ -5,8 +5,10 @@
     <div class="aui-group">
         <div class="aui-item"><a class="aui-button aui-button-link" href="{{ url('licenses') }}">Back</a></div>
     </div>
+    {% for license in licenses %}
     <div class="aui-group">
         <div class="aui-item">
+            <h2>{{ license.addonName }}</h2>
             <table class="aui">
                 <tbody>
                     <tr>
@@ -69,4 +71,5 @@
             </table>
         </div>
     </div>
+    {% endfor %}
 {% endblock %}
