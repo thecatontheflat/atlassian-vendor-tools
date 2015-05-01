@@ -26,8 +26,7 @@ class LicenseFilterType extends AbstractType
                     'COMMERCIAL' => 'COMMERCIAL',
                     'EVALUATION' => 'EVALUATION'
                 ]
-            ])
-            ->add('save', 'submit');
+            ]);
     }
 
     public function getName()
