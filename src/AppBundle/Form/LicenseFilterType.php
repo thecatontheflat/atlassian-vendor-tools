@@ -7,17 +7,20 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class LicenseFilterType extends AbstractType
 {
+    private $addonChoices;
+
+    public function __construct($addonChoices)
+    {
+        $this->addonChoices = $addonChoices;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('addon', 'choice', [
                 'multiple' => true,
                 'expanded' => true,
-                'choices' => [
-                    'agile.estimation' => 'Planning Poker',
-                    'jql.pro' => 'JQL Pro (Mongo Search)',
-                    'simple.edit' => 'Simple Edit'
-                ]
+                'choices' => $this->addonChoices
             ])
 
             ->add('license', 'choice', [
