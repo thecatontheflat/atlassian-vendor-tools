@@ -1,5 +1,18 @@
+{% form_theme filterForm ':other:aui_form_theme.html.twig' %}
+
 <div class="aui-group">
     <div class="aui-item">
+        {{ form_start(filterForm, {'attr': {'class': 'aui'}}) }}
+            <fieldset class="group">
+                <legend><span>Filter by addon</span></legend>
+                {{ form_widget(filterForm.addon) }}
+            </fieldset>
+
+            <fieldset class="group">
+                <legend><span>Filter by license</span></legend>
+                {{ form_widget(filterForm.license) }}
+            </fieldset>
+        {{ form_end(filterForm) }}
         <form class="aui">
             <fieldset class="group">
                 <legend><span>Filter by addon</span></legend>

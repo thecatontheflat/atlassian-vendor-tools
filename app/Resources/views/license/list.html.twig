@@ -2,7 +2,7 @@
 
 {% block content %}
     <h2>License Report</h2>
-    {% include ':license:__filters.html.twig' %}
+    {% include ':license:__filters.html.twig' with {'filterForm': filterForm} %}
     <div class="aui-group">
         <div class="aui-item">
             <table class="aui">

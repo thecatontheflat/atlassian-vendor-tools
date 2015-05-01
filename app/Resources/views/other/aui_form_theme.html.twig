@@ -1,0 +1,25 @@
+{#{%- block form_start -%}#}
+    {#{% set method = method|upper %}#}
+    {#{%- if method in ["GET", "POST"] -%}#}
+    {#{% set form_method = method %}#}
+{#{%- else -%}#}
+    {#{% set form_method = "POST" %}#}
+{#{%- endif -%}#}
+    {#<form name="{{ name }}" method="{{ form_method|lower }}" action="{{ action }}" class="aui" {% if multipart %} enctype="multipart/form-data"{% endif %}>#}
+    {#{%- if form_method != method -%}#}
+    {#<input type="hidden" name="_method" value="{{ method }}" />#}
+{#{%- endif -%}#}
+{#{%- endblock form_start -%}#}
+
+{%- block choice_widget_expanded -%}
+    {%- for child in form %}
+        <div class="checkbox inline">
+            {{- form_widget(child) -}}
+            {{- form_label(child) -}}
+        </div>
+    {% endfor -%}
+{%- endblock choice_widget_expanded -%}
+
+{%- block checkbox_widget -%}
+    <input type="checkbox" class="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+{%- endblock checkbox_widget -%}

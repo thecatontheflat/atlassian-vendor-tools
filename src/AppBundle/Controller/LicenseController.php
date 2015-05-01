@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\License;
+use AppBundle\Form\LicenseFilterType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -13,9 +14,13 @@ class LicenseController extends Controller
      */
     public function indexAction()
     {
+        $filter = $this->createForm(new LicenseFilterType());
         $repository = $this->getDoctrine()->getRepository('AppBundle:License');
         $licenses = $repository->findAll();
-        return $this->render(':license:list.html.twig', ['licenses' => $licenses]);
+        return $this->render(':license:list.html.twig', [
+            'licenses' => $licenses,
+            'filterForm' => $filter->createView()
+        ]);
     }
 
     /**
