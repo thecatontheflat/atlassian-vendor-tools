@@ -30,6 +30,8 @@ class LicenseFilterType extends AbstractType
             ])
 
             ->add('sort_field', 'choice', [
+                'empty_data'  => null,
+                'empty_value' => '',
                 'choices' => [
                     'organisationName' => 'organisationName',
                     'addOnName' => 'addOnName',
@@ -40,6 +42,8 @@ class LicenseFilterType extends AbstractType
             ])
 
             ->add('sort_direction', 'choice', [
+                'empty_data'  => null,
+                'empty_value' => '',
                 'choices' => [
                     'ASC' => 'ASC',
                     'DESC' => 'DESC'
