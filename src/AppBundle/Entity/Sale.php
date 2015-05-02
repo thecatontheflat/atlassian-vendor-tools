@@ -59,7 +59,7 @@ class Sale
     /**
      * @var string
      *
-     * @ORM\Column(name="vendor_amount", type="decimal")
+     * @ORM\Column(name="vendor_amount", type="decimal", precision=6, scale=2)
      */
     private $vendorAmount;
 
@@ -122,7 +122,7 @@ class Sale
     /**
      * @var string
      *
-     * @ORM\Column(name="purchase_price", type="decimal")
+     * @ORM\Column(name="purchase_price", type="decimal", precision=6, scale=2)
      */
     private $purchasePrice;
 
@@ -480,5 +480,26 @@ class Sale
     public function getPurchasePrice()
     {
         return $this->purchasePrice;
+    }
+
+    public function setFromJSON($json)
+    {
+        $this->setLicenseType($json['licenseType'])
+            ->setSaleType($json['saleType'])
+            ->setLicenseId($json['licenseId'])
+            ->setLicenseSize($json['licenseSize'])
+            ->setCountry($json['country'])
+            ->setVendorAmount($json['vendorAmount'])
+            ->setPluginKey($json['pluginKey'])
+            ->setInvoice($json['invoice'])
+            ->setDate(new \DateTime($json['date']))
+            ->setPluginName($json['pluginName'])
+            ->setMaintenanceEndDate(new \DateTime($json['maintenanceEndDate']))
+            ->setMaintenanceStartDate(new \DateTime($json['maintenanceStartDate']))
+            ->setOrganisationName($json['organisationName'])
+            ->setDiscounted($json['discounted'])
+            ->setPurchasePrice($json['purchasePrice']);
+
+        return $this;
     }
 }
