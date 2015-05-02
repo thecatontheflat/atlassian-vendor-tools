@@ -9,7 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 class EventController extends Controller
 {
     /**
-     * @Route("/event", name="event")
+     * @Route("/events", name="events")
      */
     public function indexAction()
     {
@@ -33,6 +33,6 @@ class EventController extends Controller
 
         $em->flush();
 
-        return $this->redirectToRoute('event');
+        return $this->redirectToRoute('events');
     }
 }
