@@ -32,7 +32,9 @@
                                 <td>{{ event.name }}</td>
                                 <td>{{ event.status }}</td>
                                 <td class="buttons">
-                                    <a class="aui-button">Cancel</a>
+                                    {% if 'new' == event.status %}
+                                        <a href="{{ url('cancel_event', {'id': event.id}) }}" class="aui-button">Cancel</a>
+                                    {% endif %}
                                 </td>
                             </tr>
                         {% endfor %}

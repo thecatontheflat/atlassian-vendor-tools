@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\ScheduledEvent;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -19,5 +20,19 @@ class EventController extends Controller
             'events' => $events,
             'scheduled' => $scheduled
         ]);
+    }
+
+    /**
+     * @Route("/event/cancel/{id}", name="cancel_event")
+     */
+    public function cancelEvent(ScheduledEvent $event)
+    {
+        $event->setStatus('cancelled');
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($event);
+
+        $em->flush();
+
+        return $this->redirectToRoute('event');
     }
 }
