@@ -19,6 +19,7 @@ class ImportLicenseCommand extends ContainerAwareCommand
     {
         $urlTemplate = 'https://marketplace.atlassian.com/rest/1.0/vendors/%s/license/report';
         $container = $this->getContainer();
+        $scheduler = $container->get('app.scheduler')->setOutput($output);;
 
         $vendorId = $container->getParameter('vendor_id');
         $login = $container->getParameter('vendor_email');
@@ -48,12 +49,13 @@ class ImportLicenseCommand extends ContainerAwareCommand
             $data = str_getcsv($row, ',');
             $license = $repository->findOrCreate($data[0], $data[3]);
             $license->setFromCSV($data);
-
             $em->persist($license);
         }
 
         $em->flush();
 
-        $output->writeln('Done');
+        $output->writeln(sprintf('Imported %s licenses', count($csv)));
+
+        $scheduler->schedule();
     }
 }
