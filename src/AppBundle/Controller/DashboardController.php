@@ -12,6 +12,11 @@ class DashboardController extends Controller
      */
     public function indexAction()
     {
-        return $this->render(':pages:dashboard.html.twig');
+        $expiringSoon = $this->getDoctrine()->getRepository('AppBundle:License')
+            ->findExpiringSoon();
+
+        return $this->render(':dashboard:index.html.twig', [
+            'expiringSoon' => $expiringSoon
+        ]);
     }
 }

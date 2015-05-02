@@ -1,0 +1,10 @@
+{% extends '::base.html.twig' %}
+
+{% block content %}
+    <div class="aui-group">
+        <div class="aui-item">
+            <h2>Expiring soon</h2>
+            {% include ':other:license_table.html.twig' with {'licenses': expiringSoon} %}
+        </div>
+    </div>
+{% endblock %}

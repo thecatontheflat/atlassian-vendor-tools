@@ -1,0 +1,24 @@
+<table class="aui">
+    <thead>
+    <tr>
+        <th><h6>id</h6></th>
+        <th><h6>organization</h6></th>
+        <th><h6>addon</h6></th>
+        <th><h6>type</h6></th>
+        <th><h6>start date</h6></th>
+        <th><h6>end date</h6></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for license in licenses %}
+        <tr>
+            <td><a href="{{ url('license_detail', {'licenseId': license.licenseId}) }}">{{ license.licenseId }}</a></td>
+            <td>{{ license.organisationName }}</td>
+            <td>{{ license.addonName }}</td>
+            <td>{{ license.licenseType }}</td>
+            <td>{{ license.startDate|date('Y-m-d') }}</td>
+            <td>{{ license.endDate|date('Y-m-d') }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
