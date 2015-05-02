@@ -69,4 +69,29 @@
         </div>
     </div>
     {% endfor %}
+    {% if sales is not empty %}
+    <div class="aui-group">
+        <div class="aui-item">
+            <h2>Relevant Sales</h2>
+            <table class="aui">
+                {% set totalSales = 0 %}
+                {% for sale in sales %}
+                    {% set totalSales = totalSales + sale.vendorAmount %}
+                    <tr>
+                        <td>{{ sale.date|date('Y-m-d') }}</td>
+                        <td>${{ sale.vendorAmount }}</td>
+                        <td>{{ sale.pluginName }}</td>
+                        <td>{{ sale.licenseSize}}</td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td><strong>Total:</strong></td>
+                    <td><strong>${{ totalSales }}</strong></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    {% endif %}
 {% endblock %}
