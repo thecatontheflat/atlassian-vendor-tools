@@ -24,11 +24,11 @@ class EventController extends Controller
     }
 
     /**
-     * @Route("/event/cancel/{id}", name="cancel_event")
+     * @Route("/event/change-status/{id}/{status}", name="scheduled_event_change_status")
      */
-    public function cancelEvent(ScheduledEvent $event)
+    public function cancelEvent(ScheduledEvent $event, $status)
     {
-        $event->setStatus('cancelled');
+        $event->setStatus($status);
         $em = $this->getDoctrine()->getManager();
         $em->persist($event);
 

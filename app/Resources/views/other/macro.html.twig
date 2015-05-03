@@ -1,0 +1,18 @@
+{% macro scheduledEventStatusAction(event) %}
+    {% set display = false %}
+    {% if 'new' == event.status %}
+        {% set action = 'Cancel' %}
+        {% set status = 'cancelled' %}
+        {% set display = true %}
+    {% endif %}
+
+    {% if 'error' == event.status %}
+        {% set action = 'Reschedule' %}
+        {% set status = 'rescheduled' %}
+        {% set display = true %}
+    {% endif %}
+
+    {% if display %}
+        <a href="{{ url('scheduled_event_change_status', {'id': event.id, 'status': status}) }}" class="aui-button">{{ action }}</a>
+    {% endif %}
+{% endmacro %}

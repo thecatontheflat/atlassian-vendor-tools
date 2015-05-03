@@ -1,5 +1,7 @@
 {% extends '::base.html.twig' %}
 
+{% import ':other:macro.html.twig' as macro %}
+
 {% block content %}
     <div class="aui-tabs horizontal-tabs" role="application">
         <ul class="tabs-menu" role="tablist">
@@ -32,9 +34,7 @@
                                 <td>{{ event.name }}</td>
                                 <td>{{ event.status }}</td>
                                 <td class="buttons">
-                                    {% if 'new' == event.status %}
-                                        <a href="{{ url('cancel_event', {'id': event.id}) }}" class="aui-button">Cancel</a>
-                                    {% endif %}
+                                    {{ macro.scheduledEventStatusAction(event) }}
                                 </td>
                             </tr>
                         {% endfor %}

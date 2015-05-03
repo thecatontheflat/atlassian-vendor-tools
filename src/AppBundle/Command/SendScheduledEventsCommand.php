@@ -17,12 +17,12 @@ class SendScheduledEventsCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $mandrill = new Mandrill($this->getContainer()->getParameter('mandrill_api_key'));
+        $mandrill = new Mandrill($this->getContainer()->getParameter('mandrill_api_key').'asdasd');
         $scheduledEventRepo = $this->getContainer()->get('doctrine')->getRepository('AppBundle:ScheduledEvent');
         $licenseRepo = $this->getContainer()->get('doctrine')->getRepository('AppBundle:License');
         $em = $this->getContainer()->get('doctrine')->getManager();
 
-        $events = $scheduledEventRepo->findBy(['status' => 'new']);
+        $events = $scheduledEventRepo->findBy(['status' => ['new', 'rescheduled']]);
 
         foreach ($events as $event) {
             $license = $licenseRepo->findOneBy(['licenseId' => $event->getLicenseId(), 'addonKey' => $event->getAddonKey()]);
@@ -46,13 +46,19 @@ class SendScheduledEventsCommand extends ContainerAwareCommand
                 'global_merge_vars' => $content
             ];
 
-            $mandrill->messages->sendTemplate($event->getName(), [], $message, true);
+            try {
+                $mandrill->messages->sendTemplate($event->getName(), [], $message, true);
 
-            $event->setStatus('sent');
+                $event->setStatus('sent');
+                $output->writeln(sprintf('%s: %s - sent', $event->getLicenseId(), $event->getName()));
+            } catch (\Exception $e) {
+                $event->setStatus('error');
+
+                $output->writeln($e->getMessage());
+            }
+
             $em->persist($event);
             $em->flush();
-
-            $output->writeln(sprintf('%s: %s - sent', $event->getLicenseId(), $event->getName()));
         }
 
         $output->writeln('Done');
