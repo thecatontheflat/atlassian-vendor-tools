@@ -14,7 +14,8 @@ class EventController extends Controller
     public function indexAction()
     {
         $events = $this->container->getParameter('events');
-        $scheduled = $this->getDoctrine()->getRepository('AppBundle:ScheduledEvent')->findAll();
+        $scheduled = $this->getDoctrine()->getRepository('AppBundle:ScheduledEvent')
+            ->findBy([], ['id' => 'DESC'], 20);
 
         return $this->render(':event:index.html.twig', [
             'events' => $events,
