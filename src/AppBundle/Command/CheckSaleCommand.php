@@ -8,9 +8,11 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Doctrine\Common\Persistence\ObjectManager;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class CheckSaleCommand extends ContainerAwareCommand
 {
+    /** @var ContainerInterface */
     private $container;
     private $vendorId;
     private $login;
@@ -40,7 +42,7 @@ class CheckSaleCommand extends ContainerAwareCommand
             } else {
                 if ($this->isNewSale($lastSale, $lastMarketplaceSale)) {
                     $lastSale->setFromJSON($json);
-                    // Send email
+                    $this->sendEmail($lastSale);
                     $output->writeln('New sale! DING DING!!');
                 }
             }
@@ -57,6 +59,27 @@ class CheckSaleCommand extends ContainerAwareCommand
         $this->em->flush();
 
         $output->writeln('Done');
+    }
+
+    private function sendEmail(LastSale $sale)
+    {
+        $mandrill = $this->container->get('app.mandrill');
+        $message = [
+            'html' => $this->getHTML($sale),
+            'subject' => 'MPCRM - New Sale!',
+            'from_email' => $this->login,
+            'to' => [['email' => $this->login]]
+        ];
+
+        $mandrill->messages->send($message, true);
+    }
+
+    private function getHTML(LastSale $sale)
+    {
+        $html = '<h1>Congrats!</h1>';
+        $html .= '<p>Yet another license has been sold for <strong>$%s</strong></p>';
+
+        return sprintf($html, $sale->getVendorAmount());
     }
 
     private function isNewSale(LastSale $localSale, LastSale $apiSale)
