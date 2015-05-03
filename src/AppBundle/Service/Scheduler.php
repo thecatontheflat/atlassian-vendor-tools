@@ -64,7 +64,7 @@ class Scheduler
                     ->setAddonKey($license->getAddonKey())
                     ->setLicenseId($license->getLicenseId())
                     ->setName($event['name'])
-                    ->setStatus('new');
+                    ->setStatus('scheduled');
 
                 $this->em->persist($scheduledEvent);
                 $message = sprintf('%s: %s scheduled', $license->getLicenseId(), $event['name']);

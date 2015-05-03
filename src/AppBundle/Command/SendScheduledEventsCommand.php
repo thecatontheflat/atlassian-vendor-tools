@@ -22,7 +22,7 @@ class SendScheduledEventsCommand extends ContainerAwareCommand
         $licenseRepo = $this->getContainer()->get('doctrine')->getRepository('AppBundle:License');
         $em = $this->getContainer()->get('doctrine')->getManager();
 
-        $events = $scheduledEventRepo->findBy(['status' => ['new', 'rescheduled']]);
+        $events = $scheduledEventRepo->findBy(['status' => 'scheduled']);
 
         foreach ($events as $event) {
             $license = $licenseRepo->findOneBy(['licenseId' => $event->getLicenseId(), 'addonKey' => $event->getAddonKey()]);
