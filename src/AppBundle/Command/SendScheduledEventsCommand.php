@@ -17,7 +17,7 @@ class SendScheduledEventsCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $mandrill = new Mandrill($this->getContainer()->getParameter('mandrill_api_key').'asdasd');
+        $mandrill = new Mandrill($this->getContainer()->getParameter('mandrill_api_key'));
         $scheduledEventRepo = $this->getContainer()->get('doctrine')->getRepository('AppBundle:ScheduledEvent');
         $licenseRepo = $this->getContainer()->get('doctrine')->getRepository('AppBundle:License');
         $em = $this->getContainer()->get('doctrine')->getManager();
