@@ -26,6 +26,7 @@ class DashboardController extends Controller
         }
 
         $groupedSales = array_reverse($groupedSales, true);
+        $groupedSales = array_slice($groupedSales, -6, 6, true);
 
         return $this->render(':dashboard:index.html.twig', [
             'expiringSoon' => $expiringSoon,

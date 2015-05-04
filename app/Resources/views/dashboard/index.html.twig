@@ -1,16 +1,28 @@
 {% extends '::base.html.twig' %}
 
 {% block content %}
+    <h2>Expiring soon</h2>
     <div class="aui-group">
         <div class="aui-item">
-            <h2>Expiring soon</h2>
             {% include ':other:license_table.html.twig' with {'licenses': expiringSoon} %}
         </div>
     </div>
 
+    <h2>Recent Sales</h2>
     <div class="aui-group">
+        <div class="aui-item">
+            <table class="aui">
+                {% for month, amount in sales %}
+                    <tr>
+                        <td>{{ month }}</td>
+                        <td><strong>${{ amount }}</strong></td>
+                    </tr>
+                {% endfor %}
+                <tr></tr>
+            </table>
+        </div>
         <div class="aui-item centered-content">
-            <canvas id="sales-chart" width="800" height="400"></canvas>
+            <canvas id="sales-chart" width="400" height="180"></canvas>
         </div>
     </div>
 {% endblock %}
@@ -29,9 +41,9 @@
             datasets: [
                 {
                     label: "Sales",
-                    fillColor: "rgba(220,220,220,0.5)",
+                    fillColor: "#3572b0",
                     strokeColor: "rgba(220,220,220,0.8)",
-                    highlightFill: "rgba(220,220,220,0.75)",
+                    highlightFill: "#205081",
                     highlightStroke: "rgba(220,220,220,1)",
                     data: amounts
                 }
