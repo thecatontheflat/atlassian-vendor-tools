@@ -84,6 +84,9 @@ class LicenseRepository extends EntityRepository
         return $result;
     }
 
+    /**
+     * @return License[]
+     */
     public function findExpiringSoon()
     {
         $result = $this->createQueryBuilder('l')
@@ -92,6 +95,20 @@ class LicenseRepository extends EntityRepository
             ->orderBy('l.endDate', 'DESC')
             ->setParameter('1', 2)
             ->setParameter('2', 0)
+            ->getQuery()
+            ->getResult();
+
+        return $result;
+    }
+
+    /**
+     * @return License[]
+     */
+    public function findStartedToday()
+    {
+        $result = $this->createQueryBuilder('l')
+            ->where('DATE_DIFF(l.startDate, CURRENT_DATE()) = ?1')
+            ->setParameter('1', 0)
             ->getQuery()
             ->getResult();
 

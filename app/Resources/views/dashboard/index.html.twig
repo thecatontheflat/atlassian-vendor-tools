@@ -1,7 +1,14 @@
 {% extends '::base.html.twig' %}
 
 {% block content %}
-    <h2>Expiring soon</h2>
+    <h2>Started Today</h2>
+    <div class="aui-group">
+        <div class="aui-item">
+            {% include ':other:license_table.html.twig' with {'licenses': starters} %}
+        </div>
+    </div>
+
+    <h2>Expiring Soon</h2>
     <div class="aui-group">
         <div class="aui-item">
             {% include ':other:license_table.html.twig' with {'licenses': expiringSoon} %}
@@ -17,92 +24,5 @@
 {% endblock %}
 
 {% block js %}
-    <script>
-        var months = [];
-        var newSales = [];
-        var renewals = [];
-        var others = [];
-
-        {% for month, sale in sales %}
-        months.push("{{ month }}");
-            {% for type, amount in sale %}
-                {% if 'new' == type %}
-                    newSales.push({{ amount }});
-                {% elseif 'renewal' == type %}
-                    renewals.push({{ amount }});
-                {% else %}
-                    others.push({{ amount }});
-                {% endif %}
-            {% endfor %}
-        {% endfor %}
-
-        $('#sale-chart').highcharts({
-            chart: {
-                type: 'area'
-            },
-            credits: {
-                enabled: false
-            },
-            title: {
-                text: '',
-                floating: true
-            },
-            xAxis: {
-                categories: months,
-                min: 0.5,
-                max: 4.5,
-                tickmarkPlacement: 'on',
-                title: {
-                    enabled: false
-                }
-            },
-            yAxis: {
-                title: {
-                    enabled: false
-                }
-            },
-            tooltip: {
-                formatter: function() {
-                    var s = '',
-                            sum = 0;
-
-                    $.each(this.points, function (i, point) {
-                        s += point.series.name + ': $' + point.y + '<br/>';
-                        sum += point.y;
-                    });
-
-                    s += '<br/><strong>Total: $' + sum + '</strong>';
-
-                    return s;
-                },
-                shared: true,
-                valuePrefix: '$ '
-            },
-            plotOptions: {
-                area: {
-                    stacking: 'normal',
-                    lineColor: '#666666',
-                    lineWidth: 1,
-                    marker: {
-                        enabled: false,
-                        symbol: 'circle',
-                        radius: 2
-                    }
-                }
-            },
-            series: [{
-                name: 'New',
-                data: newSales,
-                color: '#4a6785',
-            }, {
-                name: 'Renewal',
-                data: renewals,
-                color: '#59afe1'
-            }, {
-                name: 'Other',
-                data: others,
-                color: '#84bbc6'
-            }]
-        });
-    </script>
+    {% include ':dashboard:chart.html.twig' with {'sales': sales} %}
 {% endblock %}

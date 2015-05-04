@@ -16,6 +16,9 @@ class DashboardController extends Controller
         $expiringSoon = $this->getDoctrine()->getRepository('AppBundle:License')
             ->findExpiringSoon();
 
+        $starters = $this->getDoctrine()->getRepository('AppBundle:License')
+            ->findStartedToday();
+
         $sales = $this->getDoctrine()->getRepository('AppBundle:Sale')->findAll();
         $groupedSales = [];
         foreach ($sales as $sale) {
@@ -27,7 +30,8 @@ class DashboardController extends Controller
 
         return $this->render(':dashboard:index.html.twig', [
             'expiringSoon' => $expiringSoon,
-            'sales' => $groupedSales
+            'sales' => $groupedSales,
+            'starters' => $starters
         ]);
     }
 
