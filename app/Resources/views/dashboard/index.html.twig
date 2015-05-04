@@ -49,6 +49,8 @@
             },
             xAxis: {
                 categories: months,
+                min: 0.5,
+                max: 4.5,
                 tickmarkPlacement: 'on',
                 title: {
                     enabled: false
@@ -91,7 +93,7 @@
             series: [{
                 name: 'New',
                 data: newSales,
-                color: '#4a6785'
+                color: '#4a6785',
             }, {
                 name: 'Renewal',
                 data: renewals,
