@@ -2,3 +2,7 @@
     float: left;
     margin-left: 5px !important;
 }
+
+.centered-content {
+    text-align: center;
+}

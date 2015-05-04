@@ -7,4 +7,40 @@
             {% include ':other:license_table.html.twig' with {'licenses': expiringSoon} %}
         </div>
     </div>
+
+    <div class="aui-group">
+        <div class="aui-item centered-content">
+            <canvas id="sales-chart" width="800" height="400"></canvas>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        var labels = [];
+        var amounts = [];
+
+        {% for month, amount in sales %}
+        labels.push("{{ month }}");
+        amounts.push("{{ amount }}");
+        {% endfor %}
+        var data = {
+            labels: labels,
+            datasets: [
+                {
+                    label: "Sales",
+                    fillColor: "rgba(220,220,220,0.5)",
+                    strokeColor: "rgba(220,220,220,0.8)",
+                    highlightFill: "rgba(220,220,220,0.75)",
+                    highlightStroke: "rgba(220,220,220,1)",
+                    data: amounts
+                }
+            ]
+        };
+        var ctx = document.getElementById("sales-chart").getContext("2d");
+        var myBarChart = new Chart(ctx).Bar(data, {
+            responsive: true,
+            tooltipTemplate: "$<%= value %>"
+        });
+    </script>
 {% endblock %}
