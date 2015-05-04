@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Sale;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -18,11 +19,7 @@ class DashboardController extends Controller
         $sales = $this->getDoctrine()->getRepository('AppBundle:Sale')->findAll();
         $groupedSales = [];
         foreach ($sales as $sale) {
-            if (empty($groupedSales[$sale->getDate()->format('Y-m')])) {
-                $groupedSales[$sale->getDate()->format('Y-m')] = $sale->getVendorAmount();
-            } else {
-                $groupedSales[$sale->getDate()->format('Y-m')] += $sale->getVendorAmount();
-            }
+            $this->addMonltySale($groupedSales, $sale);
         }
 
         $groupedSales = array_reverse($groupedSales, true);
@@ -32,5 +29,32 @@ class DashboardController extends Controller
             'expiringSoon' => $expiringSoon,
             'sales' => $groupedSales
         ]);
+    }
+
+    private function addMonltySale(&$groupedSales, Sale $sale)
+    {
+        if (!isset($groupedSales[$sale->getDate()->format('Y-m')])) {
+            $monthlySale = [
+                'new' => 0.00,
+                'renewal' => 0.00,
+                'other' => 0.00
+            ];
+        } else {
+            $monthlySale = $groupedSales[$sale->getDate()->format('Y-m')];
+        }
+
+        switch ($sale->getSaleType()) {
+            case 'Renewal':
+                $monthlySale['renewal'] += $sale->getVendorAmount();
+                break;
+            case 'New':
+                $monthlySale['new'] += $sale->getVendorAmount();
+                break;
+            default:
+                $monthlySale['other'] += $sale->getVendorAmount();
+                break;
+        }
+
+        $groupedSales[$sale->getDate()->format('Y-m')] = $monthlySale;
     }
 }

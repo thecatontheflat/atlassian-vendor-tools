@@ -12,47 +12,96 @@
     <div class="aui-group">
         <div class="aui-item">
             <table class="aui">
-                {% for month, amount in sales %}
+                {% for month, sale in sales %}
+                    {% set total = 0 %}
+                    {% for amount in sale %}
+                        {% set total = total + amount %}
+                    {% endfor %}
                     <tr>
                         <td>{{ month }}</td>
-                        <td><strong>${{ amount }}</strong></td>
+                        <td><strong>${{ total }}</strong></td>
                     </tr>
                 {% endfor %}
                 <tr></tr>
             </table>
         </div>
         <div class="aui-item centered-content">
-            <canvas id="sales-chart" width="400" height="180"></canvas>
+            <div id="sale-chart" style="width:100%; height:300px;"></div>
         </div>
     </div>
 {% endblock %}
 
 {% block js %}
     <script>
-        var labels = [];
-        var amounts = [];
+        var months = [];
+        var newSales = [];
+        var renewals = [];
+        var others = [];
 
-        {% for month, amount in sales %}
-        labels.push("{{ month }}");
-        amounts.push("{{ amount }}");
+        {% for month, sale in sales %}
+        months.push("{{ month }}");
+            {% for type, amount in sale %}
+                {% if 'new' == type %}
+                    newSales.push({{ amount }});
+                {% elseif 'renewal' == type %}
+                    renewals.push({{ amount }});
+                {% else %}
+                    others.push({{ amount }});
+                {% endif %}
+            {% endfor %}
         {% endfor %}
-        var data = {
-            labels: labels,
-            datasets: [
-                {
-                    label: "Sales",
-                    fillColor: "#3572b0",
-                    strokeColor: "rgba(220,220,220,0.8)",
-                    highlightFill: "#205081",
-                    highlightStroke: "rgba(220,220,220,1)",
-                    data: amounts
+
+        $('#sale-chart').highcharts({
+            chart: {
+                type: 'area'
+            },
+            credits: {
+                enabled: false
+            },
+            title: {
+                text: '',
+                floating: true
+            },
+            xAxis: {
+                categories: months,
+                tickmarkPlacement: 'on',
+                title: {
+                    enabled: false
                 }
-            ]
-        };
-        var ctx = document.getElementById("sales-chart").getContext("2d");
-        var myBarChart = new Chart(ctx).Bar(data, {
-            responsive: true,
-            tooltipTemplate: "$<%= value %>"
+            },
+            yAxis: {
+                title: {
+                    enabled: false
+                }
+            },
+            tooltip: {
+                shared: true,
+                valuePrefix: '$ '
+            },
+            plotOptions: {
+                area: {
+                    stacking: 'normal',
+                    lineColor: '#666666',
+                    lineWidth: 1,
+                    marker: {
+                        lineWidth: 1,
+                        lineColor: '#666666'
+                    }
+                }
+            },
+            series: [{
+                name: 'New',
+                data: newSales,
+                color: '#4a6785'
+            }, {
+                name: 'Renewal',
+                data: renewals,
+                color: '#59afe1'
+            }, {
+                name: 'Other',
+                data: others,
+                color: '#84bbc6'
+            }]
         });
     </script>
 {% endblock %}

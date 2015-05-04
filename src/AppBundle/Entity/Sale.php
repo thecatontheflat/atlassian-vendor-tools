@@ -255,7 +255,7 @@ class Sale
     /**
      * Set vendorAmount
      *
-     * @param string $vendorAmount
+     * @param float $vendorAmount
      * @return Sale
      */
     public function setVendorAmount($vendorAmount)
@@ -268,7 +268,7 @@ class Sale
     /**
      * Get vendorAmount
      *
-     * @return string 
+     * @return float
      */
     public function getVendorAmount()
     {
