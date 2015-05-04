@@ -1,3 +1,5 @@
+{% import ':other:macro.html.twig' as macro %}
+
 {% if licenses|default(false) %}
     <table class="aui">
         <thead>
@@ -13,7 +15,7 @@
         <tbody>
         {% for license in licenses %}
             <tr>
-                <td><a href="{{ url('license_detail', {'licenseId': license.licenseId}) }}">{{ license.licenseId }}</a></td>
+                <td>{{ macro.licenseUrl(license.licenseId) }}</td>
                 <td>{{ license.organisationName }}</td>
                 <td>{{ license.addonName }}</td>
                 <td>{{ license.licenseType }}</td>

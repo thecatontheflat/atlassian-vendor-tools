@@ -19,49 +19,17 @@ class DashboardController extends Controller
         $starters = $this->getDoctrine()->getRepository('AppBundle:License')
             ->findStartedToday();
 
-        $sales = $this->getDoctrine()->getRepository('AppBundle:Sale')->findAll();
-        $groupedSales = [];
-        foreach ($sales as $sale) {
-            $this->addMonltySale($groupedSales, $sale);
-        }
-        $groupedSales = array_reverse($groupedSales, true);
-        $groupedSales = array_slice($groupedSales, -6, 6, true);
+        $sales = $this->getDoctrine()->getRepository('AppBundle:Sale')
+            ->findSalesForChart();
 
         $topCustomers = $this->getDoctrine()->getRepository('AppBundle:Sale')
             ->findTopCustomers();
 
         return $this->render(':dashboard:index.html.twig', [
             'expiringSoon' => $expiringSoon,
-            'sales' => $groupedSales,
+            'sales' => $sales,
             'starters' => $starters,
             'topCustomers' => $topCustomers
         ]);
-    }
-
-    private function addMonltySale(&$groupedSales, Sale $sale)
-    {
-        if (!isset($groupedSales[$sale->getDate()->format('Y-m')])) {
-            $monthlySale = [
-                'new' => 0.00,
-                'renewal' => 0.00,
-                'other' => 0.00
-            ];
-        } else {
-            $monthlySale = $groupedSales[$sale->getDate()->format('Y-m')];
-        }
-
-        switch ($sale->getSaleType()) {
-            case 'Renewal':
-                $monthlySale['renewal'] += $sale->getVendorAmount();
-                break;
-            case 'New':
-                $monthlySale['new'] += $sale->getVendorAmount();
-                break;
-            default:
-                $monthlySale['other'] += $sale->getVendorAmount();
-                break;
-        }
-
-        $groupedSales[$sale->getDate()->format('Y-m')] = $monthlySale;
     }
 }
