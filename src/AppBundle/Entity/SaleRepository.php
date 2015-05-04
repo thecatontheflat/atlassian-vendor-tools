@@ -12,4 +12,17 @@ class SaleRepository extends EntityRepository
         $connection = $this->getEntityManager()->getConnection();
         $connection->exec('TRUNCATE TABLE sale');
     }
+
+    public function findTopCustomers()
+    {
+        $result = $this->createQueryBuilder('s')
+            ->select(['s.licenseId', 's.organisationName', 'SUM(s.vendorAmount) as total'])
+            ->groupBy('s.licenseId')
+            ->orderBy('total', 'DESC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+
+        return $result;
+    }
 }

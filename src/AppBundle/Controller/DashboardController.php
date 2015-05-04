@@ -24,14 +24,17 @@ class DashboardController extends Controller
         foreach ($sales as $sale) {
             $this->addMonltySale($groupedSales, $sale);
         }
-
         $groupedSales = array_reverse($groupedSales, true);
         $groupedSales = array_slice($groupedSales, -6, 6, true);
+
+        $topCustomers = $this->getDoctrine()->getRepository('AppBundle:Sale')
+            ->findTopCustomers();
 
         return $this->render(':dashboard:index.html.twig', [
             'expiringSoon' => $expiringSoon,
             'sales' => $groupedSales,
-            'starters' => $starters
+            'starters' => $starters,
+            'topCustomers' => $topCustomers
         ]);
     }
 

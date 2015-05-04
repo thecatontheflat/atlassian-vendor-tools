@@ -16,3 +16,7 @@
         <a href="{{ url('scheduled_event_change_status', {'id': event.id, 'status': status}) }}" class="aui-button">{{ action }}</a>
     {% endif %}
 {% endmacro %}
+
+{% macro licenseUrl(licenseId) %}
+    <a href="{{ url('license_detail', {'licenseId': licenseId}) }}">{{ licenseId }}</a>
+{% endmacro %}
