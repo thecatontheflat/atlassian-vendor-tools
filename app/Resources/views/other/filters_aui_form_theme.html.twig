@@ -1,0 +1,12 @@
+{%- block choice_widget_expanded -%}
+    {%- for child in form %}
+        <div class="checkbox inline">
+            {{- form_widget(child) -}}
+            {{- form_label(child) -}}
+        </div>
+    {% endfor -%}
+{%- endblock choice_widget_expanded -%}
+
+{%- block checkbox_widget -%}
+    <input type="checkbox" class="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+{%- endblock checkbox_widget -%}
