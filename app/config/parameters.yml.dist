@@ -24,3 +24,5 @@ parameters:
     events:
         - {name: EVAL_STARTED, template: EVAL_STARTED, license_type: EVALUATION, license_field: startDate, shift_days: 1}
         - {name: EVAL_MIDDLE, template: EVAL_MIDDLE, license_type: EVALUATION, license_field: startDate, shift_days: 7}
+        - {name: EVAL_EXPIRE_SOON, template: EVAL_EXPIRE_SOON, license_type: EVALUATION, license_field: endDate, shift_days: 1}
+        - {name: SUPPORT_STARTED, template: SUPPORT_STARTED, license_type: COMMERCIAL, license_field: startDate, shift_days: 0}
