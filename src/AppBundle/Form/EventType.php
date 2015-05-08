@@ -16,12 +16,26 @@ class EventType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('addonKey')
+
+            ->add('addonKey', null, ['required' => false])
+
             ->add('template')
-            ->add('licenseType')
-            ->add('licenseField')
-            ->add('shiftDays')
-        ;
+
+            ->add('licenseType', 'choice', [
+                'choices' => [
+                    'COMMERCIAL',
+                    'EVALUATION'
+                ]
+            ])
+
+            ->add('licenseField', 'choice', [
+                'choices' => [
+                    'startDate',
+                    'endDate'
+                ]
+            ])
+
+            ->add('shiftDays');
     }
     
     /**
