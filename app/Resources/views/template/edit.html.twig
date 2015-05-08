@@ -16,3 +16,11 @@
     {{ form_rest(edit_form) }}
 
 {% endblock %}
+
+{% block js %}
+    <script type="text/javascript" src="{{ asset('assets/ckeditor/ckeditor.js') }}"></script>
+
+    <script type="text/javascript">
+        CKEDITOR.replace('appbundle_template[body]');
+    </script>
+{% endblock %}
