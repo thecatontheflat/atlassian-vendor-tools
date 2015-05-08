@@ -31,7 +31,14 @@ class Event
     /**
      * @var string
      *
-     * @ORM\Column(name="template", type="string", length=255)
+     * @ORM\Column(name="addon_key", type="string", length=255)
+     */
+    private $addonKey;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="template", type="text", length=255)
      */
     private $template;
 
@@ -180,5 +187,21 @@ class Event
     public function getShiftDays()
     {
         return $this->shiftDays;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAddonKey()
+    {
+        return $this->addonKey;
+    }
+
+    /**
+     * @param string $addonKey
+     */
+    public function setAddonKey($addonKey)
+    {
+        $this->addonKey = $addonKey;
     }
 }

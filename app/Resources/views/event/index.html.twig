@@ -3,73 +3,30 @@
 {% import ':other:macro.html.twig' as macro %}
 
 {% block content %}
-    <div class="aui-tabs horizontal-tabs" role="application">
-        <ul class="tabs-menu" role="tablist">
-            <li class="menu-item active-tab" role="presentation">
-                <a href="#scheduled" role="tab" aria-selected="true"><strong>Scheduled</strong></a>
-            </li>
-            <li class="menu-item" role="presentation">
-                <a href="#configured" role="tab" aria-selected="false"><strong>Configured</strong></a>
-            </li>
-        </ul>
-
-        <div class="tabs-pane active-pane" id="scheduled" role="tabpanel" aria-hidden="false">
-            <div class="aui-group">
-                <div class="aui-item">
-                    <table class="aui">
-                        <thead>
-                        <tr>
-                            <th><h6>id</h6></th>
-                            <th><h6>addon</h6></th>
-                            <th><h6>name</h6></th>
-                            <th><h6>status</h6></th>
-                            <th><h6>actions</h6></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for event in scheduled %}
-                            <tr>
-                                <td><a href="{{ url('license_detail', {'licenseId': event.licenseId}) }}">{{ event.licenseId }}</a></td>
-                                <td>{{ event.addonKey }}</td>
-                                <td>{{ event.name }}</td>
-                                <td>{{ event.status }}</td>
-                                <td class="buttons">
-                                    {{ macro.scheduledEventStatusAction(event) }}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="tabs-pane" id="configured" role="tabpanel" aria-hidden="true">
-            <div class="aui-group">
-                <div class="aui-item">
-                    <table class="aui">
-                        <thead>
-                        <tr>
-                            <th><h6>Name</h6></th>
-                            <th><h6>Template</h6></th>
-                            <th><h6>License</h6></th>
-                            <th><h6>Field</h6></th>
-                            <th><h6>Shift</h6></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for event in events %}
-                            <tr>
-                                <td>{{ event.name }}</td>
-                                <td>{{ event.template }}</td>
-                                <td>{{ event.license_type }}</td>
-                                <td>{{ event.license_field }}</td>
-                                <td>{{ event.shift_days }}</td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+    <div class="aui-group">
+        <div class="aui-item">
+            <table class="aui">
+                <thead>
+                <tr>
+                    <th><h6>Name</h6></th>
+                    <th><h6>Addon</h6></th>
+                    <th><h6>License</h6></th>
+                    <th><h6>Field</h6></th>
+                    <th><h6>Shift</h6></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for event in events %}
+                    <tr>
+                        <td>{{ event.name }}</td>
+                        <td>{{ event.addonKey }}</td>
+                        <td>{{ event.licenseType }}</td>
+                        <td>{{ event.licenseField }}</td>
+                        <td>{{ event.shiftDays }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 {% endblock %}
