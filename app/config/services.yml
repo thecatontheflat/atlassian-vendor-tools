@@ -3,7 +3,7 @@ parameters:
 services:
     app.scheduler:
         class: AppBundle\Service\Scheduler
-        arguments: [%events%, @doctrine.orm.entity_manager]
+        arguments: [@doctrine.orm.entity_manager]
 
     app.mandrill:
         class: Mandrill

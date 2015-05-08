@@ -85,7 +85,9 @@ class Event
     {
         foreach ($this->getScheduledEvents() as $scheduledEvent) {
             if ($scheduledEvent->getLicenseId() == $license->getLicenseId() &&
-                $scheduledEvent->getAddonKey() == $license->getAddonKey()) {
+                $scheduledEvent->getAddonKey() == $license->getAddonKey() &&
+                $scheduledEvent->getName() == $this->getName()
+            ) {
 
                 return true;
             }

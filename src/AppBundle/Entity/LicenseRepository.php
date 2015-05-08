@@ -73,15 +73,18 @@ class LicenseRepository extends EntityRepository
             $where = 'DATE_DIFF(l.endDate, CURRENT_DATE()) = ?1';
         }
 
-        $result = $this->createQueryBuilder('l')
+        $criteria = $this->createQueryBuilder('l')
             ->where($where)
             ->andWhere('l.licenseType = ?2')
             ->setParameter('1', $event->getShiftDays())
-            ->setParameter('2', $event->getLicenseType())
-            ->getQuery()
-            ->getResult();
+            ->setParameter('2', $event->getLicenseType());
 
-        return $result;
+        if (null != $event->getAddonKey()) {
+            $criteria->andWhere('l.addonKey = ?3')
+                ->setParameter('3', $event->getAddonKey());
+        }
+
+        return $criteria->getQuery()->getResult();
     }
 
     /**

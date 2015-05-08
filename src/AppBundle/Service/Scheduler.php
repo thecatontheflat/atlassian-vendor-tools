@@ -10,7 +10,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Scheduler
 {
-    private $events;
     /**
      * @var EntityManager
      */
@@ -21,9 +20,8 @@ class Scheduler
      */
     private $output;
 
-    public function __construct($events, EntityManager $em)
+    public function __construct(EntityManager $em)
     {
-        $this->events = $events;
         $this->em = $em;
         $this->output = new NullOutput();
     }
