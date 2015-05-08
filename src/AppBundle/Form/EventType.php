@@ -23,15 +23,15 @@ class EventType extends AbstractType
 
             ->add('licenseType', 'choice', [
                 'choices' => [
-                    'COMMERCIAL',
-                    'EVALUATION'
+                    'COMMERCIAL' => 'COMMERCIAL',
+                    'EVALUATION' => 'EVALUATION'
                 ]
             ])
 
             ->add('licenseField', 'choice', [
                 'choices' => [
-                    'startDate',
-                    'endDate'
+                    'startDate' => 'startDate',
+                    'endDate' => 'endDate'
                 ]
             ])
 

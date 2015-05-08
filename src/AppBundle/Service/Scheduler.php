@@ -56,6 +56,7 @@ class Scheduler
                 if ($existing) {
                     $message = sprintf('%s: %s skipped', $license->getLicenseId(), $event['name']);
                     $this->output->writeln($message);
+
                     continue;
                 }
 
