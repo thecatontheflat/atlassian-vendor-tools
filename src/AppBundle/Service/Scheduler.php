@@ -42,19 +42,13 @@ class Scheduler
     public function schedule()
     {
         $licenseRepo = $this->em->getRepository('AppBundle:License');
-        $scheduledEventRepo = $this->em->getRepository('AppBundle:ScheduledEvent');
+        $events = $this->em->getRepository('AppBundle:Event')->findAll();
 
         $scheduledCount = 0;
-        foreach ($this->events as $event) {
-            foreach ($licenseRepo->findByEvent($event) as $license) {
-                $existing = $scheduledEventRepo->findOneBy([
-                    'licenseId' => $license->getLicenseId(),
-                    'addonKey' => $license->getAddonKey(),
-                    'name' => $event['name']
-                ]);
-
-                if ($existing) {
-                    $message = sprintf('%s: %s skipped', $license->getLicenseId(), $event['name']);
+        foreach ($events as $event) {
+            foreach ($licenseRepo->findForEvent($event) as $license) {
+                if ($event->hasScheduledForLicense($license)) {
+                    $message = sprintf('%s: %s skipped', $license->getLicenseId(), $event->getName());
                     $this->output->writeln($message);
 
                     continue;
@@ -64,11 +58,14 @@ class Scheduler
                 $scheduledEvent
                     ->setAddonKey($license->getAddonKey())
                     ->setLicenseId($license->getLicenseId())
-                    ->setName($event['name'])
+                    ->setName($event->getName())
                     ->setStatus('scheduled');
 
+                $scheduledEvent->setEvent($event);
+
+                $this->em->persist($event);
                 $this->em->persist($scheduledEvent);
-                $message = sprintf('%s: %s scheduled', $license->getLicenseId(), $event['name']);
+                $message = sprintf('%s: %s scheduled', $license->getLicenseId(), $event->getName());
 
                 $this->output->writeln($message);
                 $scheduledCount++;

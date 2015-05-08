@@ -5,8 +5,6 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * ScheduledEvent
- *
  * @ORM\Table(name="scheduled_event", uniqueConstraints={@ORM\UniqueConstraint(name="per_license", columns={"license_id", "addon_key", "name"})})
  * @ORM\Entity(repositoryClass="AppBundle\Entity\ScheduledEventRepository")
  */
@@ -48,6 +46,28 @@ class ScheduledEvent
      * @ORM\Column(name="status", type="string", length=255)
      */
     private $status;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Event", inversedBy="scheduledEvents")
+     * @ORM\JoinColumn(name="event_id", referencedColumnName="id")
+     */
+    private $event;
+
+    /**
+     * @return mixed
+     */
+    public function getEvent()
+    {
+        return $this->event;
+    }
+
+    /**
+     * @param Event $event
+     */
+    public function setEvent(Event $event)
+    {
+        $this->event = $event;
+    }
 
 
     /**

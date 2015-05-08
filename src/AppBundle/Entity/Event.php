@@ -2,11 +2,10 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Event
- *
  * @ORM\Table(name="event")
  * @ORM\Entity(repositoryClass="AppBundle\Entity\EventRepository")
  */
@@ -20,6 +19,11 @@ class Event
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
+
+    /**
+     * @ORM\OneToMany(targetEntity="ScheduledEvent", mappedBy="event")
+     */
+    private $scheduledEvents;
 
     /**
      * @var string
@@ -63,6 +67,40 @@ class Event
      */
     private $shiftDays;
 
+
+    public function __construct()
+    {
+        $this->scheduledEvents = new ArrayCollection();
+    }
+
+    /**
+     * @return ScheduledEvent[]
+     */
+    public function getScheduledEvents()
+    {
+        return $this->scheduledEvents;
+    }
+
+    public function hasScheduledForLicense(License $license)
+    {
+        foreach ($this->getScheduledEvents() as $scheduledEvent) {
+            if ($scheduledEvent->getLicenseId() == $license->getLicenseId() &&
+                $scheduledEvent->getAddonKey() == $license->getAddonKey()) {
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param ScheduledEvent $scheduledEvent
+     */
+    public function addScheduledEvent(ScheduledEvent $scheduledEvent)
+    {
+        $this->scheduledEvents[] = $scheduledEvent;
+    }
 
     /**
      * Get id
