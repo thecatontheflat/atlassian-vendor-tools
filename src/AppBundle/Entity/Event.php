@@ -42,7 +42,14 @@ class Event
     /**
      * @var string
      *
-     * @ORM\Column(name="template", type="text", length=255)
+     * @ORM\Column(name="topic", type="string", length=255)
+     */
+    private $topic;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="template", type="text")
      */
     private $template;
 
@@ -243,5 +250,21 @@ class Event
     public function setAddonKey($addonKey)
     {
         $this->addonKey = $addonKey;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTopic()
+    {
+        return $this->topic;
+    }
+
+    /**
+     * @param string $topic
+     */
+    public function setTopic($topic)
+    {
+        $this->topic = $topic;
     }
 }
