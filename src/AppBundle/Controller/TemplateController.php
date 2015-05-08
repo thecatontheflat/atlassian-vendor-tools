@@ -53,10 +53,10 @@ class TemplateController extends Controller
             return $this->redirect($this->generateUrl('template_show', array('id' => $entity->getId())));
         }
 
-        return array(
+        return $this->render(':template:new.html.twig', [
             'entity' => $entity,
             'form'   => $form->createView(),
-        );
+        ]);
     }
 
     /**
@@ -73,8 +73,6 @@ class TemplateController extends Controller
             'method' => 'POST',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Create'));
-
         return $form;
     }
 
@@ -89,10 +87,10 @@ class TemplateController extends Controller
         $entity = new Template();
         $form   = $this->createCreateForm($entity);
 
-        return array(
+        return $this->render(':template:new.html.twig', [
             'entity' => $entity,
             'form'   => $form->createView(),
-        );
+        ]);
     }
 
     /**
@@ -113,10 +111,10 @@ class TemplateController extends Controller
 
         $deleteForm = $this->createDeleteForm($id);
 
-        return array(
+        return $this->render(':template:show.html.twig', [
             'entity'      => $entity,
             'delete_form' => $deleteForm->createView(),
-        );
+        ]);
     }
 
     /**
@@ -138,11 +136,11 @@ class TemplateController extends Controller
         $editForm = $this->createEditForm($entity);
         $deleteForm = $this->createDeleteForm($id);
 
-        return array(
-            'entity'      => $entity,
+        return $this->render(':template:edit.html.twig', [
+            'entity' => $entity,
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
-        );
+        ]);
     }
 
     /**
@@ -158,8 +156,6 @@ class TemplateController extends Controller
             'action' => $this->generateUrl('template_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));
-
-        $form->add('submit', 'submit', array('label' => 'Update'));
 
         return $form;
     }

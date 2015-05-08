@@ -10,17 +10,17 @@
 
 {%- block form_widget_simple -%}
     {%- set type = type|default('text') -%}
-    <input type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
+    <input class="text" type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
 {%- endblock form_widget_simple -%}
 
 {%- block form_widget_compound -%}
-    <div {{ block('widget_container_attributes') }}>
+    <fieldset class="top-label" {{ block('widget_container_attributes') }}>
         {%- if form.parent is empty -%}
             {{ form_errors(form) }}
         {%- endif -%}
         {{- block('form_rows') -}}
         {{- form_rest(form) -}}
-    </div>
+    </fieldset>
 {%- endblock form_widget_compound -%}
 
 {%- block collection_widget -%}
@@ -31,7 +31,7 @@
 {%- endblock collection_widget -%}
 
 {%- block textarea_widget -%}
-    <textarea {{ block('widget_attributes') }}>{{ value }}</textarea>
+    <textarea class="textarea" rows="6" cols="10" {{ block('widget_attributes') }}>{{ value }}</textarea>
 {%- endblock textarea_widget -%}
 
 {%- block choice_widget -%}
@@ -236,7 +236,7 @@
 {%- endblock repeated_row -%}
 
 {%- block form_row -%}
-    <div>
+    <div class="field-group top-label">
         {{- form_label(form) -}}
         {{- form_errors(form) -}}
         {{- form_widget(form) -}}

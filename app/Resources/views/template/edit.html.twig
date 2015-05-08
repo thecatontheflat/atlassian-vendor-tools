@@ -1,0 +1,18 @@
+{% extends '::base.html.twig' %}
+
+{% block content -%}
+    <h2>Template edit</h2>
+
+    {{ form_start(edit_form) }}
+    {{ form_widget(edit_form) }}
+
+    <div class="buttons-container">
+        <div class="buttons">
+            <button class="aui-button aui-button-primary" type="submit">Save</button>
+            <a class="aui-button aui-button-text" href="{{ path('templates') }}">Cancel</a>
+        </div>
+    </div>
+
+    {{ form_rest(edit_form) }}
+
+{% endblock %}

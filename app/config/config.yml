@@ -24,6 +24,8 @@ framework:
 twig:
     debug: "%kernel.debug%"
     strict_variables: "%kernel.debug%"
+    form_themes:
+        - ':other:aui_form_theme.html.twig'
 
 assetic:
     debug: "%kernel.debug%"
