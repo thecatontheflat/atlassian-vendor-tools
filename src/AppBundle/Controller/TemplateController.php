@@ -182,14 +182,14 @@ class TemplateController extends Controller
         if ($editForm->isValid()) {
             $em->flush();
 
-            return $this->redirect($this->generateUrl('template_edit', array('id' => $id)));
+            return $this->redirect($this->generateUrl('templates'));
         }
 
-        return array(
-            'entity'      => $entity,
+        return $this->render(':template:edit.html.twig', [
+            'entity' => $entity,
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
-        );
+        ]);
     }
     /**
      * Deletes a Template entity.
