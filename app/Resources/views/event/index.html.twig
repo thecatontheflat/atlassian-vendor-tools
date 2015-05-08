@@ -25,7 +25,7 @@
                         <td>{{ event.licenseField }}</td>
                         <td>{{ event.shiftDays }}</td>
                         <td>
-                            <a class="aui-button" href="{{ path('event_show', { 'id': event.id }) }}">edit</a>
+                            <a class="aui-button" href="{{ path('event_edit', { 'id': event.id }) }}">edit</a>
                         </td>
                     </tr>
                 {% endfor %}

@@ -4,10 +4,11 @@ namespace AppBundle\Controller;
 
 use AppBundle\Form\EventType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Entity\Event;
+use \Symfony\Component\HttpFoundation\Response;
+use \Symfony\Component\HttpFoundation\RedirectResponse;
 
 
 class EventController extends Controller
@@ -27,66 +28,45 @@ class EventController extends Controller
 
     /**
      * @Route("/event/new", name="event_new")
-     * @Method("GET")
      */
-    public function newAction()
+    public function newAction(Request $request)
     {
-        $entity = new Event();
-        $form = $this->createForm(new EventType(), $entity, [
-            'action' => $this->generateUrl('event_new_post'),
-            'method' => 'POST'
-        ]);
+        $event = new Event();
 
-        return $this->render(':event:new.html.twig', [
-            'entity' => $entity,
-            'form' => $form->createView(),
-        ]);
+        return $this->handleForm($request, $event);
     }
 
     /**
-     *
-     * @Route("/event/new", name="event_new_post")
-     * @Method("POST")
+     * @Route("/event/{id}/edit", name="event_edit")
      */
-    public function createAction(Request $request)
+    public function editAction(Request $request, Event $event)
     {
-        $entity = new Event();
-        $form = $this->createForm(new EventType(), $entity, [
-            'action' => $this->generateUrl('event_new'),
+        return $this->handleForm($request, $event);
+    }
+
+    /**
+     * @param Request $request
+     * @param Event $event
+     * @return RedirectResponse|Response
+     */
+    private function handleForm(Request $request, Event $event)
+    {
+        $form = $this->createForm(new EventType(), $event, [
             'method' => 'POST'
         ]);
 
         $form->handleRequest($request);
-
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $em->persist($entity);
+            $em->persist($event);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('event_show', ['id' => $entity->getId()]));
+            return $this->redirect($this->generateUrl('events'));
         }
 
-        return $this->render(':event:new.html.twig', [
-            'entity' => $entity,
+        return $this->render(':event:edit.html.twig', [
             'form' => $form->createView(),
         ]);
     }
 
-    /**
-     * @Route("/event/{id}", name="event_show")
-     * @Method("GET")
-     */
-    public function showAction($id)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $entity = $em->getRepository('AppBundle:Event')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Template entity.');
-        }
-
-        return $this->render(':event:show.html.twig', [
-            'entity' => $entity,
-        ]);
-    }
 }
