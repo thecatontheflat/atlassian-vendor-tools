@@ -68,5 +68,4 @@ class EventController extends Controller
             'form' => $form->createView(),
         ]);
     }
-
 }

@@ -15,3 +15,11 @@
 
     {{ form_rest(form) }}
 {% endblock %}
+
+{% block js %}
+    <script type="text/javascript" src="{{ asset('assets/ckeditor/ckeditor.js') }}"></script>
+
+    <script type="text/javascript">
+        CKEDITOR.replaceAll();
+    </script>
+{% endblock %}
