@@ -13,6 +13,7 @@
                     <th><h6>License</h6></th>
                     <th><h6>Field</h6></th>
                     <th><h6>Shift</h6></th>
+                    <th><h6>Actions</h6></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -23,10 +24,19 @@
                         <td>{{ event.licenseType }}</td>
                         <td>{{ event.licenseField }}</td>
                         <td>{{ event.shiftDays }}</td>
+                        <td>
+                            <a class="aui-button" href="{{ path('event_show', { 'id': event.id }) }}">edit</a>
+                        </td>
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
+        </div>
+    </div>
+
+    <div class="aui-group">
+        <div class="aui-item">
+            <a class="aui-button aui-button-primary" href="{{ path('event_new') }}">Create</a>
         </div>
     </div>
 {% endblock %}
