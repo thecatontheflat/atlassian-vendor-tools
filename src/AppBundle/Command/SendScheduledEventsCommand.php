@@ -23,24 +23,24 @@ class SendScheduledEventsCommand extends ContainerAwareCommand
         $licenseRepo = $this->getContainer()->get('doctrine')->getRepository('AppBundle:License');
         $em = $this->getContainer()->get('doctrine')->getManager();
 
-        $events = $scheduledEventRepo->findBy(['status' => 'scheduled']);
+        $scheduledEvents = $scheduledEventRepo->findBy(['status' => 'scheduled']);
 
-        foreach ($events as $event) {
-            $license = $licenseRepo->findOneBy(['licenseId' => $event->getLicenseId(), 'addonKey' => $event->getAddonKey()]);
-            $message = $this->prepareMessage($license);
+        foreach ($scheduledEvents as $scheduledEvent) {
+            $license = $licenseRepo->findOneBy(['licenseId' => $scheduledEvent->getLicenseId(), 'addonKey' => $scheduledEvent->getAddonKey()]);
+            $message = $this->prepareMessage($license, $scheduledEvent);
 
             try {
-                $mandrill->messages->sendTemplate($event->getName(), [], $message, true);
+                $mandrill->messages->send($message, true);
 
-                $event->setStatus('sent');
-                $output->writeln(sprintf('%s: %s - sent', $event->getLicenseId(), $event->getName()));
+                $scheduledEvent->setStatus('sent');
+                $output->writeln(sprintf('%s: %s - sent', $scheduledEvent->getLicenseId(), $scheduledEvent->getName()));
             } catch (\Exception $e) {
-                $event->setStatus('error');
+                $scheduledEvent->setStatus('error');
 
                 $output->writeln($e->getMessage());
             }
 
-            $em->persist($event);
+            $em->persist($scheduledEvent);
             $em->flush();
         }
 
@@ -56,10 +56,14 @@ class SendScheduledEventsCommand extends ContainerAwareCommand
     }
 
 
-    private function prepareMessage(License $license)
+    private function prepareMessage(License $license, ScheduledEvent $scheduledEvent)
     {
         $recipient = $this->getContainer()->getParameter('vendor_email');
         $bcc = $this->getContainer()->getParameter('vendor_email');
+        $fromEmail = $this->getContainer()->getParameter('vendor_email');
+
+        $event = $scheduledEvent->getEvent();
+        $html = $event->getTemplate();
 
         $content = [
             $this->contentHash('FNAME', $license->getTechContactName()),
@@ -71,12 +75,13 @@ class SendScheduledEventsCommand extends ContainerAwareCommand
         ];
 
         $message = [
-            'subject' => 'TESTING - '.$license->getAddonName(),
-            'from_email' => null,
+            'subject' => 'TESTING - '.$event->getTopic(),
+            'from_email' => $fromEmail,
             'from_name' => null,
             'to' => [['email' => $recipient]],
             'bcc_address' => $bcc,
-            'global_merge_vars' => $content
+//            'global_merge_vars' => $content,
+            'html' => $html
         ];
 
         return $message;

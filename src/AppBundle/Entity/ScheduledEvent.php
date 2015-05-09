@@ -54,7 +54,7 @@ class ScheduledEvent
     private $event;
 
     /**
-     * @return mixed
+     * @return Event
      */
     public function getEvent()
     {
