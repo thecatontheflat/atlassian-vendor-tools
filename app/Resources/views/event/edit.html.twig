@@ -3,6 +3,48 @@
 {% block content -%}
     <h2>Edit Event</h2>
 
+    <button id="dialog-show-button" class="aui-button">Show dialog</button>
+    <section role="dialog" id="demo-dialog" class="aui-layer aui-dialog2 aui-dialog2-medium" aria-hidden="true">
+        <header class="aui-dialog2-header">
+            <h2 class="aui-dialog2-header-main">Always use sentence case</h2>
+            <a class="aui-dialog2-header-close">
+                <span class="aui-icon aui-icon-small aui-iconfont-close-dialog">Close</span>
+            </a>
+        </header>
+        <div class="aui-dialog2-content">
+            <table class="aui">
+                <tr>
+                    <td>%_LICENSE_KEY_%</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>%_TECH_CONTACT_%</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>%_ADDON_NAME_%</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>%_ADDON_KEY_%</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>%_LICENSE_ID_%</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>%_LICENSE_START_DATE_%</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>%_LICENSE_ENDT_DATE_%</td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+    </section>
+
     {{ form_start(form) }}
     {{ form_widget(form) }}
 
@@ -21,5 +63,14 @@
 
     <script type="text/javascript">
         CKEDITOR.replaceAll();
+
+        AJS.$("#dialog-show-button").click(function () {
+            AJS.dialog2("#demo-dialog").show();
+        });
+
+        AJS.$("#dialog-close-button").click(function (e) {
+            e.preventDefault();
+            AJS.dialog2("#demo-dialog").hide();
+        });
     </script>
 {% endblock %}
