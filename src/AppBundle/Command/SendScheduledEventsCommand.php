@@ -78,7 +78,7 @@ class SendScheduledEventsCommand extends ContainerAwareCommand
             '%_TECH_CONTACT_%' => $license->getTechContactName(),
             '%_ADDON_NAME_%' => $license->getAddonName(),
             '%_ADDON_KEY_%' => $license->getAddonKey(),
-            '%_ADDON_URL_%' => '#',
+            '%_ADDON_URL_%' => $this->buildAddonURL($license->getAddonKey()),
             '%_LICENSE_ID_%' => $license->getLicenseId(),
             '%_LICENSE_START_DATE_%' => $license->getStartDate()->format('Y-m-d'),
             '%_LICENSE_END_DATE_%' => $license->getEndDate()->format('Y-m-d'),
@@ -87,5 +87,14 @@ class SendScheduledEventsCommand extends ContainerAwareCommand
         foreach ($mapping as $token => $replacement) {
             $html = str_replace($token, $replacement, $html);
         }
+    }
+
+    private function buildAddonURL($addonKey)
+    {
+        $base = 'https://marketplace.atlassian.com/plugins/';
+        $addonKey = str_replace('.ondemand', '', $addonKey);
+        $url = $base.$addonKey;
+
+        return $url;
     }
 }
