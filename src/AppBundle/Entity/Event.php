@@ -35,21 +35,21 @@ class Event
     /**
      * @var string
      *
-     * @ORM\Column(name="addon_key", type="string", length=255)
+     * @ORM\Column(name="addon_key", type="string", length=255, nullable=true)
      */
     private $addonKey;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="topic", type="string", length=255)
+     * @ORM\Column(name="topic", type="string", length=255, nullable=true)
      */
     private $topic;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="template", type="text")
+     * @ORM\Column(name="template", type="text", length=65536)
      */
     private $template;
 
