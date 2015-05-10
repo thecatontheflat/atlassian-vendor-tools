@@ -49,9 +49,16 @@ class Event
     /**
      * @var string
      *
-     * @ORM\Column(name="from", type="string", length=255)
+     * @ORM\Column(name="from_email", type="string", length=255, nullable=true)
      */
-    private $from;
+    private $fromEmail;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="from_name", type="string", length=255, nullable=true)
+     */
+    private $fromName;
 
     /**
      * @var string
@@ -278,16 +285,32 @@ class Event
     /**
      * @return string
      */
-    public function getFrom()
+    public function getFromEmail()
     {
-        return $this->from;
+        return $this->fromEmail;
     }
 
     /**
-     * @param string $from
+     * @param string $fromEmail
      */
-    public function setFrom($from)
+    public function setFromEmail($fromEmail)
     {
-        $this->from = $from;
+        $this->fromEmail = $fromEmail;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFromName()
+    {
+        return $this->fromName;
+    }
+
+    /**
+     * @param string $fromName
+     */
+    public function setFromName($fromName)
+    {
+        $this->fromName = $fromName;
     }
 }

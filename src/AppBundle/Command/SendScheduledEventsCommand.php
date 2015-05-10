@@ -30,7 +30,8 @@ class SendScheduledEventsCommand extends ContainerAwareCommand
             $message = $this->prepareMessage($license, $scheduledEvent);
 
             try {
-                $mandrill->messages->send($message, true);
+                $response = $mandrill->messages->send($message, true);
+                print_r($response);
 
                 $scheduledEvent->setStatus('sent');
                 $output->writeln(sprintf('%s: %s - sent', $scheduledEvent->getLicenseId(), $scheduledEvent->getName()));
@@ -47,43 +48,42 @@ class SendScheduledEventsCommand extends ContainerAwareCommand
         $output->writeln('Done');
     }
 
-    private function contentHash($key, $value)
-    {
-        return [
-            'name' => $key,
-            'content' => $value
-        ];
-    }
-
-
     private function prepareMessage(License $license, ScheduledEvent $scheduledEvent)
     {
         $recipient = $this->getContainer()->getParameter('vendor_email');
         $bcc = $this->getContainer()->getParameter('vendor_email');
-        $fromEmail = $this->getContainer()->getParameter('vendor_email');
 
         $event = $scheduledEvent->getEvent();
         $html = $event->getTemplate();
 
-        $content = [
-            $this->contentHash('FNAME', $license->getTechContactName()),
-            $this->contentHash('ADDON_NAME', $license->getAddonName()),
-            $this->contentHash('ADDON_KEY', $license->getAddonKey()),
-            $this->contentHash('LICENSE_ID', $license->getLicenseId()),
-            $this->contentHash('LICENSE_START_DATE', $license->getStartDate()->format('Y-m-d')),
-            $this->contentHash('LICENSE_END_DATE', $license->getEndDate()->format('Y-m-d'))
-        ];
+        $this->replaceTemplateVariables($html, $license);
 
         $message = [
-            'subject' => 'TESTING - '.$event->getTopic(),
-            'from_email' => $fromEmail,
-            'from_name' => null,
+            'subject' => $event->getTopic(),
+            'from_email' => $event->getFromEmail(),
+            'from_name' => $event->getFromName(),
             'to' => [['email' => $recipient]],
             'bcc_address' => $bcc,
-//            'global_merge_vars' => $content,
             'html' => $html
         ];
 
         return $message;
+    }
+
+    private function replaceTemplateVariables(&$html, License $license)
+    {
+        $mapping = [
+            '%_TECH_CONTACT_%' => $license->getTechContactName(),
+            '%_ADDON_NAME_%' => $license->getAddonName(),
+            '%_ADDON_KEY_%' => $license->getAddonKey(),
+            '%_ADDON_URL_%' => '#',
+            '%_LICENSE_ID_%' => $license->getLicenseId(),
+            '%_LICENSE_START_DATE_%' => $license->getStartDate()->format('Y-m-d'),
+            '%_LICENSE_END_DATE_%' => $license->getEndDate()->format('Y-m-d'),
+        ];
+
+        foreach ($mapping as $token => $replacement) {
+            str_replace($token, $replacement, $html);
+        }
     }
 }
