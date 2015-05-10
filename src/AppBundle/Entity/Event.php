@@ -42,21 +42,21 @@ class Event
     /**
      * @var string
      *
-     * @ORM\Column(name="topic", type="string", length=255, nullable=true)
+     * @ORM\Column(name="topic", type="string", length=255)
      */
     private $topic;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="from_email", type="string", length=255, nullable=true)
+     * @ORM\Column(name="from_email", type="string", length=255)
      */
     private $fromEmail;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="from_name", type="string", length=255, nullable=true)
+     * @ORM\Column(name="from_name", type="string", length=255)
      */
     private $fromName;
 

@@ -31,7 +31,7 @@ class SendScheduledEventsCommand extends ContainerAwareCommand
 
             try {
                 $response = $mandrill->messages->send($message, true);
-                print_r($response);
+//                print_r($response);
 
                 $scheduledEvent->setStatus('sent');
                 $output->writeln(sprintf('%s: %s - sent', $scheduledEvent->getLicenseId(), $scheduledEvent->getName()));
@@ -55,11 +55,13 @@ class SendScheduledEventsCommand extends ContainerAwareCommand
 
         $event = $scheduledEvent->getEvent();
         $html = $event->getTemplate();
+        $subject = $event->getTopic();
 
         $this->replaceTemplateVariables($html, $license);
+        $this->replaceTemplateVariables($subject, $license);
 
         $message = [
-            'subject' => $event->getTopic(),
+            'subject' => $subject,
             'from_email' => $event->getFromEmail(),
             'from_name' => $event->getFromName(),
             'to' => [['email' => $recipient]],
@@ -83,7 +85,7 @@ class SendScheduledEventsCommand extends ContainerAwareCommand
         ];
 
         foreach ($mapping as $token => $replacement) {
-            str_replace($token, $replacement, $html);
+            $html = str_replace($token, $replacement, $html);
         }
     }
 }

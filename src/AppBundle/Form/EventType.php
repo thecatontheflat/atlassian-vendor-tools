@@ -16,9 +16,12 @@ class EventType extends AbstractType
     {
         $builder
             ->add('name')
+            ->add('fromEmail')
+            ->add('fromName')
 
             ->add('addonKey', null, ['required' => false])
 
+            ->add('topic')
             ->add('template')
 
             ->add('licenseType', 'choice', [
