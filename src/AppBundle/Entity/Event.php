@@ -49,6 +49,13 @@ class Event
     /**
      * @var string
      *
+     * @ORM\Column(name="from", type="string", length=255)
+     */
+    private $from;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="template", type="text", length=65536)
      */
     private $template;
@@ -266,5 +273,21 @@ class Event
     public function setTopic($topic)
     {
         $this->topic = $topic;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFrom()
+    {
+        return $this->from;
+    }
+
+    /**
+     * @param string $from
+     */
+    public function setFrom($from)
+    {
+        $this->from = $from;
     }
 }
