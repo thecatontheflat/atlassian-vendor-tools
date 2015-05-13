@@ -67,4 +67,33 @@ class SaleRepository extends EntityRepository
 
         $groupedSales[$sale->getDate()->format('Y-m')] = $monthlySale;
     }
+
+    /**
+     * @param License[] $licenses
+     * @return array
+     */
+    public function findByLicenses($licenses)
+    {
+        $licenseIds = [];
+        foreach ($licenses as $license) {
+            $licenseIds[] = $license->getLicenseId();
+        }
+
+        $result = $this->createQueryBuilder('s')
+            ->select(['s.licenseId', 's.vendorAmount', 's.date'])
+            ->where('s.licenseId IN (?1)')
+            ->setParameter('1', array_values($licenseIds))
+            ->groupBy('s.licenseId')
+            ->orderBy('s.licenseId', 'DESC')
+            ->addOrderBy('s.date', 'DESC')
+            ->getQuery()
+            ->getResult();
+
+        $sales = [];
+        foreach ($result as $sale) {
+            $sales[$sale['licenseId']] = $sale;
+        }
+
+        return $sales;
+    }
 }

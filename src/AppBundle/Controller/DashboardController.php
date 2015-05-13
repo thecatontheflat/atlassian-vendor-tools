@@ -16,6 +16,9 @@ class DashboardController extends Controller
         $expiringSoon = $this->getDoctrine()->getRepository('AppBundle:License')
             ->findExpiringSoon();
 
+        $expiringSoonSales = $this->getDoctrine()->getRepository('AppBundle:Sale')
+            ->findByLicenses($expiringSoon);
+
         $starters = $this->getDoctrine()->getRepository('AppBundle:License')
             ->findStartedToday();
 
@@ -29,7 +32,8 @@ class DashboardController extends Controller
             'expiringSoon' => $expiringSoon,
             'sales' => $sales,
             'starters' => $starters,
-            'topCustomers' => $topCustomers
+            'topCustomers' => $topCustomers,
+            'expiringSoonSales' => $expiringSoonSales
         ]);
     }
 }

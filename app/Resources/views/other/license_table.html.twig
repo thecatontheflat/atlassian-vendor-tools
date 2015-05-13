@@ -18,7 +18,12 @@
                 <td>{{ macro.licenseUrl(license.licenseId) }}</td>
                 <td>{{ license.organisationName }}</td>
                 <td>{{ license.addonName }}</td>
-                <td>{{ license.licenseType }}</td>
+                <td>
+                    {{ license.licenseType }}
+                    {% if expiringSoonSales[license.licenseId]|default(false) %}
+                        <span class="aui-lozenge aui-lozenge-success aui-lozenge-subtle">${{ expiringSoonSales[license.licenseId].vendorAmount }}</span>
+                    {% endif %}
+                </td>
                 <td>{{ license.startDate|date('Y-m-d') }}</td>
                 <td>{{ license.endDate|date('Y-m-d') }}</td>
             </tr>
