@@ -99,7 +99,7 @@ class SaleRepository extends EntityRepository
 
     public function findEstimatedMonthlyIncome()
     {
-        $beginning = new \DateTime('first day of this month');
+        $beginning = new \DateTime();
         $end = new \DateTime('last day of this month');
 
         $licenses = $this->getEntityManager()->getRepository('AppBundle:License')
