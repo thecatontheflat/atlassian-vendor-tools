@@ -72,7 +72,7 @@ class SaleRepository extends EntityRepository
      * @param License[] $licenses
      * @return array
      */
-    public function findByLicenses($licenses)
+    public function findLastSalesByLicenses($licenses)
     {
         $licenseIds = [];
         foreach ($licenses as $license) {
@@ -95,5 +95,31 @@ class SaleRepository extends EntityRepository
         }
 
         return $sales;
+    }
+
+    public function findEstimatedMonthlyIncome()
+    {
+        $beginning = new \DateTime('first day of this month');
+        $end = new \DateTime('last day of this month');
+
+        $licenses = $this->getEntityManager()->getRepository('AppBundle:License')
+            ->createQueryBuilder('l')
+            ->where('l.licenseType = ?1')
+            ->andWhere('l.endDate >= :beginning')
+            ->andWhere('l.endDate <= :end')
+            ->setParameter('1', 'COMMERCIAL')
+            ->setParameter('beginning', $beginning)
+            ->setParameter('end', $end)
+            ->getQuery()
+            ->getResult();
+
+        $lastSales = $this->findLastSalesByLicenses($licenses);
+
+        $total = 0;
+        foreach ($lastSales as $sale) {
+            $total += $sale['vendorAmount'];
+        }
+
+        return $total;
     }
 }

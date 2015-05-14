@@ -17,7 +17,7 @@ class DashboardController extends Controller
             ->findExpiringSoon();
 
         $expiringSoonSales = $this->getDoctrine()->getRepository('AppBundle:Sale')
-            ->findByLicenses($expiringSoon);
+            ->findLastSalesByLicenses($expiringSoon);
 
         $starters = $this->getDoctrine()->getRepository('AppBundle:License')
             ->findStartedToday();
@@ -28,12 +28,16 @@ class DashboardController extends Controller
         $topCustomers = $this->getDoctrine()->getRepository('AppBundle:Sale')
             ->findTopCustomers();
 
+        $estimatedIncome = $this->getDoctrine()->getRepository('AppBundle:Sale')
+        ->findEstimatedMonthlyIncome();
+
         return $this->render(':dashboard:index.html.twig', [
             'expiringSoon' => $expiringSoon,
             'sales' => $sales,
             'starters' => $starters,
             'topCustomers' => $topCustomers,
-            'expiringSoonSales' => $expiringSoonSales
+            'expiringSoonSales' => $expiringSoonSales,
+            'estimatedIncome' => $estimatedIncome
         ]);
     }
 }
