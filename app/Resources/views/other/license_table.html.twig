@@ -16,7 +16,12 @@
         {% for license in licenses %}
             <tr>
                 <td>{{ macro.licenseUrl(license.licenseId) }}</td>
-                <td>{{ license.organisationName }}</td>
+                <td>
+                    {{ license.organisationName }}
+                    {% if license.renewalAction == 'AUTO_QUOTE' %}
+                        <span class="aui-lozenge aui-lozenge-current">quote</span>
+                    {% endif %}
+                </td>
                 <td>{{ license.addonName }}</td>
                 <td>
                     {{ license.licenseType }}
