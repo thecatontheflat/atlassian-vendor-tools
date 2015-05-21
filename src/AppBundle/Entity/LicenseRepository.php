@@ -96,7 +96,7 @@ class LicenseRepository extends EntityRepository
             ->where('DATE_DIFF(l.endDate, CURRENT_DATE()) <= ?1')
             ->andWhere('DATE_DIFF(l.endDate, CURRENT_DATE()) >= ?2')
             ->orderBy('l.endDate', 'DESC')
-            ->setParameter('1', 2)
+            ->setParameter('1', 5)
             ->setParameter('2', 0)
             ->getQuery()
             ->getResult();
