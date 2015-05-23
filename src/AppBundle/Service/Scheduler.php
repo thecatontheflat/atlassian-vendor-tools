@@ -62,12 +62,18 @@ class Scheduler
             $this->em->persist($drillRegisteredSchema);
 
             foreach ($drillSchemaEvents as $drillSchemaEvent) {
+                $sendDate = $this->calculateSendDate($drillSchemaEvent, $license);
+                $today = new \DateTime();
+                if ($sendDate < $today) {
+                    continue;
+                }
+
                 $drillRegisteredEvent = new DrillRegisteredEvent();
                 $drillRegisteredEvent->setDrillRegisteredSchema($drillRegisteredSchema);
                 $drillRegisteredEvent->setDrillSchemaEvent($drillSchemaEvent);
 
                 // Calculate
-                $drillRegisteredEvent->setSendDate($this->calculateSendDate($drillSchemaEvent, $license));
+                $drillRegisteredEvent->setSendDate($sendDate);
                 $drillRegisteredEvent->setStatus('new');
                 $this->em->persist($drillRegisteredEvent);
             }
