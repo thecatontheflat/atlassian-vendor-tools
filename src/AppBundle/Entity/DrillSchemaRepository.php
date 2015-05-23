@@ -12,4 +12,17 @@ use Doctrine\ORM\EntityRepository;
  */
 class DrillSchemaRepository extends EntityRepository
 {
+    /**
+     * @return DrillSchema[]
+     */
+    public function findAllFormatted()
+    {
+        $schemas = $this->findAll();
+        $formatted = [];
+        foreach ($schemas as $schema) {
+            $formatted[$schema->getAddonKey()] = $schema;
+        }
+
+        return $formatted;
+    }
 }

@@ -2,6 +2,9 @@
 
 namespace AppBundle\Service;
 
+use AppBundle\Entity\DrillRegisteredEvent;
+use AppBundle\Entity\DrillRegisteredSchema;
+use AppBundle\Entity\DrillSchemaEvent;
 use AppBundle\Entity\License;
 use AppBundle\Entity\ScheduledEvent;
 use Doctrine\ORM\EntityManager;
@@ -40,37 +43,61 @@ class Scheduler
     public function schedule()
     {
         $licenseRepo = $this->em->getRepository('AppBundle:License');
-        $events = $this->em->getRepository('AppBundle:Event')->findAll();
+        $drillSchemaRepo = $this->em->getRepository('AppBundle:DrillSchema');
+        $licensesWithoutSchema = $licenseRepo->findWithoutRegisteredSchema();
+        $drillSchemas = $drillSchemaRepo->findAllFormatted();
 
-        $scheduledCount = 0;
-        foreach ($events as $event) {
-            foreach ($licenseRepo->findForEvent($event) as $license) {
-                if ($event->hasScheduledForLicense($license)) {
-                    $message = sprintf('%s: %s skipped', $license->getLicenseId(), $event->getName());
-                    $this->output->writeln($message);
+        foreach ($licensesWithoutSchema as $license) {
+            if (empty($drillSchemas[$license->getAddonKey()])) {
+                continue;
+            }
 
-                    continue;
-                }
+            $drillSchema = $drillSchemas[$license->getAddonKey()];
+            $drillSchemaEvents = $drillSchema->getDrillSchemaEvents();
 
-                $scheduledEvent = new ScheduledEvent();
-                $scheduledEvent
-                    ->setAddonKey($license->getAddonKey())
-                    ->setLicenseId($license->getLicenseId())
-                    ->setName($event->getName())
-                    ->setStatus('scheduled');
+            $drillRegisteredSchema = new DrillRegisteredSchema();
+            $drillRegisteredSchema->setLicenseId($license->getLicenseId());
+            $drillRegisteredSchema->setAddonKey($license->getAddonKey());
+            $drillRegisteredSchema->setDrillSchema($drillSchema);
+            $this->em->persist($drillRegisteredSchema);
 
-                $scheduledEvent->setEvent($event);
+            foreach ($drillSchemaEvents as $drillSchemaEvent) {
+                $drillRegisteredEvent = new DrillRegisteredEvent();
+                $drillRegisteredEvent->setDrillRegisteredSchema($drillRegisteredSchema);
+                $drillRegisteredEvent->setDrillSchemaEvent($drillSchemaEvent);
 
-                $this->em->persist($event);
-                $this->em->persist($scheduledEvent);
-                $message = sprintf('%s: %s scheduled', $license->getLicenseId(), $event->getName());
-
-                $this->output->writeln($message);
-                $scheduledCount++;
+                // Calculate
+                $drillRegisteredEvent->setSendDate($this->calculateSendDate($drillSchemaEvent, $license));
+                $drillRegisteredEvent->setStatus('new');
+                $this->em->persist($drillRegisteredEvent);
             }
         }
 
         $this->em->flush();
-        $this->output->writeln(sprintf('Scheduled %s events', $scheduledCount));
+    }
+
+    /**
+     * @param DrillSchemaEvent $drillSchemaEvent
+     * @param License $license
+     *
+     * @return \DateTime
+     */
+    private function calculateSendDate(DrillSchemaEvent $drillSchemaEvent, License $license)
+    {
+        $shift = $drillSchemaEvent->getDateShift();
+        if ('startDate' == $drillSchemaEvent->getDateField()) {
+            $direction = '+';
+            $licenseDate = $license->getStartDate();
+
+        } else { // endDate, negative shift
+            $direction = '-';
+            $licenseDate = $license->getEndDate();
+        }
+
+        $sendDate = new \DateTime();
+        $sendDate->setTimestamp($licenseDate->getTimestamp());
+        $sendDate->modify($direction.$shift.' days');
+
+        return $sendDate;
     }
 }

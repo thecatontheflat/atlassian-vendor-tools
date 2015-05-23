@@ -32,9 +32,9 @@ class DrillSchemaEvent
     /**
      * @var string
      *
-     * @ORM\Column(name="date_condition", type="string", length=255)
+     * @ORM\Column(name="date_shift", type="string", length=255)
      */
-    private $dateCondition;
+    private $dateShift;
 
     /**
      * @var string
@@ -122,26 +122,24 @@ class DrillSchemaEvent
     }
 
     /**
-     * Set dateCondition
      *
-     * @param string $dateCondition
+     * @param string $dateShift
      * @return DrillSchemaEvent
      */
-    public function setDateCondition($dateCondition)
+    public function setDateShift($dateShift)
     {
-        $this->dateCondition = $dateCondition;
+        $this->dateShift = $dateShift;
 
         return $this;
     }
 
     /**
-     * Get dateCondition
      *
      * @return string 
      */
-    public function getDateCondition()
+    public function getDateShift()
     {
-        return $this->dateCondition;
+        return $this->dateShift;
     }
 
     /**
