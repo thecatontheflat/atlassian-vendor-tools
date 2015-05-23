@@ -23,10 +23,18 @@
 
 {% macro drillProgress(drill) %}
     {% if drill.drillRegisteredEvents|length > 0 %}
+        {# Calculating current step #}
+        {% set step = 1 %}
+        {% for event in drill.drillRegisteredEvents|sort_events_by_date %}
+            {% if event.status == 'sent' and not loop.first %}
+                {% set step = step + 1 %}
+            {% endif %}
+        {% endfor %}
+
         {% set width = 100 / drill.drillRegisteredEvents|length %}
         <ol class="aui-progress-tracker">
             {% for event in drill.drillRegisteredEvents|sort_events_by_date %}
-                {% if event.status == 'sent' or loop.first %}
+                {% if loop.index == step %}
                     {% set class = 'aui-progress-tracker-step-current' %}
                 {% endif %}
                 <li class="aui-progress-tracker-step {{ class|default('') }}" style="width:{{ width }}%"><span>{{ event.drillSchemaEvent.name }}</span></li>
