@@ -1,11 +1,13 @@
 {% extends '::base.html.twig' %}
 
+{% from ':other:macro.html.twig' import drillProgress %}
+
 {% block content %}
     <h2>License Details</h2>
     {% for license in licenses %}
     <div class="aui-group">
         <div class="aui-item">
-            <h5>{{ license.addonName }}</h5>
+            <h3>{{ license.addonName }}</h3>
             <table class="aui">
                 <tbody>
                     <tr>
@@ -66,6 +68,14 @@
 
                 </tbody>
             </table>
+        </div>
+    </div>
+    <div class="aui-group">
+        <div class="aui-item">
+            <h3>Drill Progress for {{ license.addonName }}</h3>
+            {% for drill in registeredDrills %}
+                {{ license.addonKey == drill.addonKey ? drillProgress(drill) }}
+            {% endfor %}
         </div>
     </div>
     {% endfor %}

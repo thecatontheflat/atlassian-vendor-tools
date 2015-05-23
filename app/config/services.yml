@@ -1,6 +1,12 @@
 parameters:
 
 services:
+    app.twig_extension:
+        class: AppBundle\Twig\AppExtension
+        public: false
+        tags:
+            - { name: twig.extension }
+
     app.scheduler:
         class: AppBundle\Service\Scheduler
         arguments: [@doctrine.orm.entity_manager]

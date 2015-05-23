@@ -20,3 +20,13 @@
 {% macro licenseUrl(licenseId) %}
     <a href="{{ url('license_detail', {'licenseId': licenseId}) }}">{{ licenseId }}</a>
 {% endmacro %}
+
+{% macro drillProgress(drill) %}
+    {% set width = 100 / drill.drillRegisteredEvents|length %}
+    <ol class="aui-progress-tracker">
+        {% for event in drill.drillRegisteredEvents|sort_events_by_date %}
+            {% set class = event.status == 'sent' ? 'aui-progress-tracker-step-current' : '' %}
+            <li class="aui-progress-tracker-step {{ class }}" style="width:{{ width }}%"><span>{{ event.drillSchemaEvent.name }}</span></li>
+        {% endfor %}
+    </ol>
+{% endmacro %}

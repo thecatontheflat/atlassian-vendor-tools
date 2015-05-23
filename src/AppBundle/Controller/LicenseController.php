@@ -43,12 +43,16 @@ class LicenseController extends Controller
         $licenses = $this->getDoctrine()->getRepository('AppBundle:License')
             ->findBy(['licenseId' => $licenseId]);
 
+        $registeredDrills = $this->getDoctrine()->getRepository('AppBundle:DrillRegisteredSchema')
+            ->findBy(['licenseId' => $licenseId]);
+
         $sales = $this->getDoctrine()->getRepository('AppBundle:Sale')
             ->findBy(['licenseId' => $licenseId]);
 
         return $this->render(':license:detail.html.twig', [
             'licenses' => $licenses,
-            'sales' => $sales
+            'sales' => $sales,
+            'registeredDrills' => $registeredDrills
         ]);
     }
 }

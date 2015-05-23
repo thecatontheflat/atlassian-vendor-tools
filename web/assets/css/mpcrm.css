@@ -6,3 +6,7 @@
 .centered-content {
     text-align: center;
 }
+
+.aui-progress-tracker {
+    width: 100%;
+}
