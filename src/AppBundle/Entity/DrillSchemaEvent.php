@@ -39,6 +39,13 @@ class DrillSchemaEvent
     /**
      * @var string
      *
+     * @ORM\Column(name="date_field", type="string", length=255)
+     */
+    private $dateField;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="license_type_condition", type="string", length=255)
      */
     private $licenseTypeCondition;
@@ -283,5 +290,28 @@ class DrillSchemaEvent
     public function getDrillRegisteredEvents()
     {
         return $this->drillRegisteredEvents;
+    }
+
+    /**
+     * Set dateField
+     *
+     * @param string $dateField
+     * @return DrillSchemaEvent
+     */
+    public function setDateField($dateField)
+    {
+        $this->dateField = $dateField;
+
+        return $this;
+    }
+
+    /**
+     * Get dateField
+     *
+     * @return string 
+     */
+    public function getDateField()
+    {
+        return $this->dateField;
     }
 }
