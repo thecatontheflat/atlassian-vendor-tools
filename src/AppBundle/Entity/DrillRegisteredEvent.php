@@ -28,6 +28,12 @@ class DrillRegisteredEvent
     protected $drillSchemaEvent;
 
     /**
+     * @ORM\ManyToOne(targetEntity="DrillRegisteredSchema", inversedBy="drillRegisteredEvents")
+     * @ORM\JoinColumn(name="drill_registered_schema_id", referencedColumnName="id")
+     */
+    protected $drillRegisteredSchema;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="send_date", type="datetime")
@@ -119,5 +125,28 @@ class DrillRegisteredEvent
     public function getDrillSchemaEvent()
     {
         return $this->drillSchemaEvent;
+    }
+
+    /**
+     * Set drillRegisteredSchema
+     *
+     * @param \AppBundle\Entity\DrillRegisteredSchema $drillRegisteredSchema
+     * @return DrillRegisteredEvent
+     */
+    public function setDrillRegisteredSchema(\AppBundle\Entity\DrillRegisteredSchema $drillRegisteredSchema = null)
+    {
+        $this->drillRegisteredSchema = $drillRegisteredSchema;
+
+        return $this;
+    }
+
+    /**
+     * Get drillRegisteredSchema
+     *
+     * @return \AppBundle\Entity\DrillRegisteredSchema 
+     */
+    public function getDrillRegisteredSchema()
+    {
+        return $this->drillRegisteredSchema;
     }
 }
