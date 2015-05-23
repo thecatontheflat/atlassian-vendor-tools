@@ -63,6 +63,12 @@ class DrillSchemaEvent
      */
     private $emailFrom;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="DrillSchema", inversedBy="drillSchemaEvents")
+     * @ORM\JoinColumn(name="drill_schema_id", referencedColumnName="id")
+     */
+    protected $drillSchema;
+
 
     /**
      * Get id
@@ -210,5 +216,28 @@ class DrillSchemaEvent
     public function getEmailFrom()
     {
         return $this->emailFrom;
+    }
+
+    /**
+     * Set drillSchema
+     *
+     * @param \AppBundle\Entity\DrillSchema $drillSchema
+     * @return DrillSchemaEvent
+     */
+    public function setDrillSchema(\AppBundle\Entity\DrillSchema $drillSchema = null)
+    {
+        $this->drillSchema = $drillSchema;
+
+        return $this;
+    }
+
+    /**
+     * Get drillSchema
+     *
+     * @return \AppBundle\Entity\DrillSchema 
+     */
+    public function getDrillSchema()
+    {
+        return $this->drillSchema;
     }
 }
