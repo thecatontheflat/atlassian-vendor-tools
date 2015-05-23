@@ -41,9 +41,15 @@ class DrillSchema
      */
     protected $drillSchemaEvents;
 
+    /**
+     * @ORM\OneToMany(targetEntity="DrillRegisteredSchema", mappedBy="drillSchema")
+     */
+    protected $drillRegisteredSchemas;
+
     public function __construct()
     {
         $this->drillSchemaEvents = new ArrayCollection();
+        $this->drillRegisteredSchemas = new ArrayCollection();
     }
 
 
@@ -134,5 +140,38 @@ class DrillSchema
     public function getDrillSchemaEvents()
     {
         return $this->drillSchemaEvents;
+    }
+
+    /**
+     * Add drillRegisteredSchemas
+     *
+     * @param \AppBundle\Entity\DrillRegisteredSchema $drillRegisteredSchemas
+     * @return DrillSchema
+     */
+    public function addDrillRegisteredSchema(\AppBundle\Entity\DrillRegisteredSchema $drillRegisteredSchemas)
+    {
+        $this->drillRegisteredSchemas[] = $drillRegisteredSchemas;
+
+        return $this;
+    }
+
+    /**
+     * Remove drillRegisteredSchemas
+     *
+     * @param \AppBundle\Entity\DrillRegisteredSchema $drillRegisteredSchemas
+     */
+    public function removeDrillRegisteredSchema(\AppBundle\Entity\DrillRegisteredSchema $drillRegisteredSchemas)
+    {
+        $this->drillRegisteredSchemas->removeElement($drillRegisteredSchemas);
+    }
+
+    /**
+     * Get drillRegisteredSchemas
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getDrillRegisteredSchemas()
+    {
+        return $this->drillRegisteredSchemas;
     }
 }

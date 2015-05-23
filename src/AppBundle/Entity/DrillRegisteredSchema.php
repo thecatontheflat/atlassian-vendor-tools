@@ -37,6 +37,12 @@ class DrillRegisteredSchema
     private $addonKey;
 
     /**
+     * @ORM\ManyToOne(targetEntity="DrillSchema", inversedBy="drillSchemaEvents")
+     * @ORM\JoinColumn(name="drill_schema_id", referencedColumnName="id")
+     */
+    protected $drillSchema;
+
+    /**
      * @ORM\OneToMany(targetEntity="DrillRegisteredEvent", mappedBy="drillRegisteredSchema")
      */
     protected $drillRegisteredEvents;
@@ -133,5 +139,28 @@ class DrillRegisteredSchema
     public function getDrillRegisteredEvents()
     {
         return $this->drillRegisteredEvents;
+    }
+
+    /**
+     * Set drillSchema
+     *
+     * @param \AppBundle\Entity\DrillSchema $drillSchema
+     * @return DrillRegisteredSchema
+     */
+    public function setDrillSchema(\AppBundle\Entity\DrillSchema $drillSchema = null)
+    {
+        $this->drillSchema = $drillSchema;
+
+        return $this;
+    }
+
+    /**
+     * Get drillSchema
+     *
+     * @return \AppBundle\Entity\DrillSchema 
+     */
+    public function getDrillSchema()
+    {
+        return $this->drillSchema;
     }
 }
