@@ -53,7 +53,7 @@ class DrillSchemaEvent
     /**
      * @var string
      *
-     * @ORM\Column(name="email_template", type="string", length=64000)
+     * @ORM\Column(name="email_template", type="text", length=65536)
      */
     private $emailTemplate;
 

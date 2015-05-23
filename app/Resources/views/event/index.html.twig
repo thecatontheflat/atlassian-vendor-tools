@@ -20,10 +20,10 @@
                 {% for event in events %}
                     <tr>
                         <td>{{ event.name }}</td>
-                        <td>{{ event.addonKey }}</td>
-                        <td>{{ event.licenseType }}</td>
-                        <td>{{ event.licenseField }}</td>
-                        <td>{{ event.shiftDays }}</td>
+                        <td>{{ event.drillSchema.addonKey }}</td>
+                        <td>{{ event.licenseTypeCondition }}</td>
+                        <td>{{ event.dateField }}</td>
+                        <td>{{ event.dateShift }}</td>
                         <td>
                             <a class="aui-button" href="{{ path('event_edit', { 'id': event.id }) }}">edit</a>
                         </td>

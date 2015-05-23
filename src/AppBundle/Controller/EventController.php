@@ -2,6 +2,8 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\DrillSchemaEvent;
+use AppBundle\Form\DrillSchemaEventType;
 use AppBundle\Form\EventType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -19,7 +21,7 @@ class EventController extends Controller
     public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
-        $events = $em->getRepository('AppBundle:Event')->findAll();
+        $events = $em->getRepository('AppBundle:DrillSchemaEvent')->findAll();
 
         return $this->render(':event:index.html.twig', [
             'events' => $events
@@ -31,7 +33,7 @@ class EventController extends Controller
      */
     public function newAction(Request $request)
     {
-        $event = new Event();
+        $event = new DrillSchemaEvent();
 
         return $this->handleForm($request, $event);
     }
@@ -39,19 +41,19 @@ class EventController extends Controller
     /**
      * @Route("/event/{id}/edit", name="event_edit")
      */
-    public function editAction(Request $request, Event $event)
+    public function editAction(Request $request, DrillSchemaEvent $event)
     {
         return $this->handleForm($request, $event);
     }
 
     /**
      * @param Request $request
-     * @param Event $event
+     * @param DrillSchemaEvent $event
      * @return RedirectResponse|Response
      */
-    private function handleForm(Request $request, Event $event)
+    private function handleForm(Request $request, DrillSchemaEvent $event)
     {
-        $form = $this->createForm(new EventType(), $event, [
+        $form = $this->createForm(new DrillSchemaEventType(), $event, [
             'method' => 'POST'
         ]);
 
