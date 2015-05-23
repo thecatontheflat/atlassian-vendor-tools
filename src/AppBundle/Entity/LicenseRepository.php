@@ -117,4 +117,23 @@ class LicenseRepository extends EntityRepository
 
         return $result;
     }
+
+    /**
+     * @return License[]
+     */
+    public function findWithoutRegisteredSchema()
+    {
+        $result = $this->createQueryBuilder('l')
+            ->leftJoin('AppBundle:DrillRegisteredSchema', 'drs', 'WITH', 'l.licenseId = drs.licenseId AND l.addonKey = drs.addonKey')
+            ->where('drs.licenseId IS NULL')
+            ->andWhere('l.endDate >= CURRENT_DATE()')
+            ->andWhere('l.licenseType = :licenseType')
+            ->setParameter('licenseType', 'EVALUATION')
+            ->getQuery()
+            ->getResult();
+
+        var_dump(count($result));
+        die;
+        return $result;
+    }
 }
