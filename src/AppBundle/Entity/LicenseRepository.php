@@ -132,8 +132,6 @@ class LicenseRepository extends EntityRepository
             ->getQuery()
             ->getResult();
 
-        var_dump(count($result));
-        die;
         return $result;
     }
 }

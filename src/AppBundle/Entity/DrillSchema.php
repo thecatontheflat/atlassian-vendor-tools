@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * DrillSchema
  *
- * @ORM\Table(name="drill_schema")
+ * @ORM\Table(name="drill_schema", uniqueConstraints={@ORM\UniqueConstraint(name="unique_ids", columns={"addon_key"})})
  * @ORM\Entity(repositoryClass="AppBundle\Entity\DrillSchemaRepository")
  */
 class DrillSchema
