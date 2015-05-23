@@ -64,7 +64,7 @@ class Scheduler
             foreach ($drillSchemaEvents as $drillSchemaEvent) {
                 $sendDate = $this->calculateSendDate($drillSchemaEvent, $license);
                 $today = new \DateTime();
-                if ($sendDate < $today) {
+                if ($sendDate < $today->modify('-2 days')) {
                     continue;
                 }
 
