@@ -13,6 +13,7 @@
                     <th><h6>addon</h6></th>
                     <th><h6>name</h6></th>
                     <th><h6>status</h6></th>
+                    <th><h6>send at</h6></th>
                     <th><h6>actions</h6></th>
                 </tr>
                 </thead>
@@ -20,13 +21,14 @@
                 {% for event in scheduled %}
                     <tr>
                         <td>
-                            <a href="{{ url('license_detail', {'licenseId': event.licenseId}) }}">{{ event.licenseId }}</a>
+                            <a href="{{ url('license_detail', {'licenseId': event.drillRegisteredSchema.licenseId}) }}">{{ event.drillRegisteredSchema.licenseId }}</a>
                         </td>
-                        <td>{{ event.addonKey }}</td>
-                        <td>{{ event.name }}</td>
+                        <td>{{ event.drillRegisteredSchema.addonKey }}</td>
+                        <td>{{ event.drillSchemaEvent.name }}</td>
                         <td>{{ event.status }}</td>
+                        <td>{{ event.sendDate|date('Y-m-d') }}</td>
                         <td class="buttons">
-                            {{ macro.scheduledEventStatusAction(event) }}
+                            {#{{ macro.scheduledEventStatusAction(event) }}#}
                         </td>
                     </tr>
                 {% endfor %}
