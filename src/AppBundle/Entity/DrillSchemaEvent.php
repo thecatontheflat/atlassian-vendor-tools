@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -68,6 +69,16 @@ class DrillSchemaEvent
      * @ORM\JoinColumn(name="drill_schema_id", referencedColumnName="id")
      */
     protected $drillSchema;
+
+    /**
+     * @ORM\OneToMany(targetEntity="DrillRegisteredEvent", mappedBy="drillSchemaEvent")
+     */
+    protected $drillRegisteredEvents;
+
+    public function __construct()
+    {
+        $this->drillRegisteredEvents = new ArrayCollection();
+    }
 
 
     /**
@@ -239,5 +250,38 @@ class DrillSchemaEvent
     public function getDrillSchema()
     {
         return $this->drillSchema;
+    }
+
+    /**
+     * Add drillRegisteredEvents
+     *
+     * @param \AppBundle\Entity\DrillRegisteredEvent $drillRegisteredEvents
+     * @return DrillSchemaEvent
+     */
+    public function addDrillRegisteredEvent(\AppBundle\Entity\DrillRegisteredEvent $drillRegisteredEvents)
+    {
+        $this->drillRegisteredEvents[] = $drillRegisteredEvents;
+
+        return $this;
+    }
+
+    /**
+     * Remove drillRegisteredEvents
+     *
+     * @param \AppBundle\Entity\DrillRegisteredEvent $drillRegisteredEvents
+     */
+    public function removeDrillRegisteredEvent(\AppBundle\Entity\DrillRegisteredEvent $drillRegisteredEvents)
+    {
+        $this->drillRegisteredEvents->removeElement($drillRegisteredEvents);
+    }
+
+    /**
+     * Get drillRegisteredEvents
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getDrillRegisteredEvents()
+    {
+        return $this->drillRegisteredEvents;
     }
 }

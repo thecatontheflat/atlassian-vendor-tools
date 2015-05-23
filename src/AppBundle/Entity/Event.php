@@ -313,4 +313,14 @@ class Event
     {
         $this->fromName = $fromName;
     }
+
+    /**
+     * Remove scheduledEvents
+     *
+     * @param \AppBundle\Entity\ScheduledEvent $scheduledEvents
+     */
+    public function removeScheduledEvent(\AppBundle\Entity\ScheduledEvent $scheduledEvents)
+    {
+        $this->scheduledEvents->removeElement($scheduledEvents);
+    }
 }
