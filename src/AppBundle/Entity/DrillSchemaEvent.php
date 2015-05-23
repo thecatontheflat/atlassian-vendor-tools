@@ -67,9 +67,16 @@ class DrillSchemaEvent
     /**
      * @var string
      *
-     * @ORM\Column(name="email_from", type="string", length=255)
+     * @ORM\Column(name="email_from_email", type="string", length=255)
      */
-    private $emailFrom;
+    private $emailFromEmail;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="email_from_name", type="string", length=255)
+     */
+    private $emailFromName;
 
     /**
      * @ORM\ManyToOne(targetEntity="DrillSchema", inversedBy="drillSchemaEvents")
@@ -212,26 +219,22 @@ class DrillSchemaEvent
     }
 
     /**
-     * Set emailFrom
-     *
-     * @param string $emailFrom
+     * @param string $emailFromEmail
      * @return DrillSchemaEvent
      */
-    public function setEmailFrom($emailFrom)
+    public function setEmailFromEmail($emailFromEmail)
     {
-        $this->emailFrom = $emailFrom;
+        $this->emailFromEmail = $emailFromEmail;
 
         return $this;
     }
 
     /**
-     * Get emailFrom
-     *
-     * @return string 
+     * @return string
      */
-    public function getEmailFrom()
+    public function getEmailFromEmail()
     {
-        return $this->emailFrom;
+        return $this->emailFromEmail;
     }
 
     /**
@@ -311,5 +314,21 @@ class DrillSchemaEvent
     public function getDateField()
     {
         return $this->dateField;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmailFromName()
+    {
+        return $this->emailFromName;
+    }
+
+    /**
+     * @param string $emailFromName
+     */
+    public function setEmailFromName($emailFromName)
+    {
+        $this->emailFromName = $emailFromName;
     }
 }

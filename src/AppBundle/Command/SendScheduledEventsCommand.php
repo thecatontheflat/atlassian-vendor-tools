@@ -2,8 +2,8 @@
 
 namespace AppBundle\Command;
 
+use AppBundle\Entity\DrillRegisteredEvent;
 use AppBundle\Entity\License;
-use AppBundle\Entity\ScheduledEvent;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -19,51 +19,55 @@ class SendScheduledEventsCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $mandrill = $this->getContainer()->get('app.mandrill');
-        $scheduledEventRepo = $this->getContainer()->get('doctrine')->getRepository('AppBundle:ScheduledEvent');
-        $licenseRepo = $this->getContainer()->get('doctrine')->getRepository('AppBundle:License');
         $em = $this->getContainer()->get('doctrine')->getManager();
+        $licenseRepo = $em->getRepository('AppBundle:License');
+        $drillRegisteredEventRepo = $em->getRepository('AppBundle:DrillRegisteredEvent');
 
-        $scheduledEvents = $scheduledEventRepo->findBy(['status' => 'scheduled']);
+        $eventsToSend = $drillRegisteredEventRepo->findEventsToSendToday();
+        foreach ($eventsToSend as $eventToSend) {
+            $registeredSchema = $eventToSend->getDrillRegisteredSchema();
+            $license = $licenseRepo->findOneBy([
+                'licenseId' => $registeredSchema->getLicenseId(),
+                'addonKey' => $registeredSchema->getAddonKey()
+            ]);
 
-        foreach ($scheduledEvents as $scheduledEvent) {
-            $license = $licenseRepo->findOneBy(['licenseId' => $scheduledEvent->getLicenseId(), 'addonKey' => $scheduledEvent->getAddonKey()]);
-            $message = $this->prepareMessage($license, $scheduledEvent);
+            $message = $this->prepareMessage($license, $eventToSend);
 
             try {
                 $response = $mandrill->messages->send($message, true);
-//                print_r($response);
+                print_r($response);
 
-                $scheduledEvent->setStatus('sent');
-                $output->writeln(sprintf('%s: %s - sent', $scheduledEvent->getLicenseId(), $scheduledEvent->getName()));
+                $eventToSend->setStatus('sent');
+                $output->writeln(sprintf('[%s] %s - sent', $registeredSchema->getLicenseId(), $registeredSchema->getAddonKey()));
             } catch (\Exception $e) {
-                $scheduledEvent->setStatus('error');
+                $eventToSend->setStatus('error');
 
                 $output->writeln($e->getMessage());
             }
 
-            $em->persist($scheduledEvent);
+            $em->persist($eventToSend);
             $em->flush();
         }
 
         $output->writeln('Done');
     }
 
-    private function prepareMessage(License $license, ScheduledEvent $scheduledEvent)
+    private function prepareMessage(License $license, DrillRegisteredEvent $registeredEvent)
     {
+        $event = $registeredEvent->getDrillSchemaEvent();
         $recipient = $this->getContainer()->getParameter('vendor_email');
         $bcc = $this->getContainer()->getParameter('vendor_email');
 
-        $event = $scheduledEvent->getEvent();
-        $html = $event->getTemplate();
-        $subject = $event->getTopic();
+        $html = $event->getEmailTemplate();
+        $subject = $event->getEmailSubject();
 
         $this->replaceTemplateVariables($html, $license);
         $this->replaceTemplateVariables($subject, $license);
 
         $message = [
             'subject' => $subject,
-            'from_email' => $event->getFromEmail(),
-            'from_name' => $event->getFromName(),
+            'from_email' => $event->getEmailFromEmail(),
+            'from_name' => $event->getEmailFromName(),
             'to' => [['email' => $recipient]],
             'bcc_address' => $bcc,
             'html' => $html
