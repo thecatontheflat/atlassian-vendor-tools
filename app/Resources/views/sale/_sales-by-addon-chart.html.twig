@@ -1,0 +1,38 @@
+<script type="text/javascript">
+    var saleData = [];
+    {% for sale in salesByAddon %}
+        saleData.push(["{{ sale.pluginName }}", {{ sale.total }}]);
+    {% endfor %}
+
+    $('#sales-by-addon').highcharts({
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false
+        },
+        colors: ['#4a6785', '#59afe1', '#84bbc6'],
+        credits: {
+            enabled: false
+        },
+        title: {
+            text: 'Sales by Add-On'
+        },
+        tooltip: {
+            pointFormat: '<b>{point.percentage:.1f}%</b> (${point.y})'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: false
+                },
+                showInLegend: true
+            }
+        },
+        series: [{
+            type: 'pie',
+            data: saleData
+        }]
+    });
+</script>

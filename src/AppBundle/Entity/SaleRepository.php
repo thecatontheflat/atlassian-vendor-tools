@@ -122,4 +122,15 @@ class SaleRepository extends EntityRepository
 
         return $total;
     }
+
+    public function findSalesByAddon()
+    {
+        $results = $this->createQueryBuilder('s')
+            ->select(['s.pluginName', 'SUM(s.vendorAmount) as total'])
+            ->groupBy('s.pluginName')
+            ->getQuery()
+            ->getResult();
+
+        return $results;
+    }
 }
