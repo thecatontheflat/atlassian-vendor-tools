@@ -37,7 +37,12 @@
                 {% if loop.index == step %}
                     {% set class = 'aui-progress-tracker-step-current' %}
                 {% endif %}
-                <li class="aui-progress-tracker-step {{ class|default('') }}" style="width:{{ width }}%"><span>{{ event.drillSchemaEvent.name }}</span></li>
+                <li class="aui-progress-tracker-step {{ class|default('') }}" style="width:{{ width }}%">
+                    <span>
+                        {{ event.drillSchemaEvent.name }}
+                        {{ event.status == 'canceled' ? ' (Canceled)' }}
+                    </span>
+                </li>
             {% endfor %}
         </ol>
     {% endif %}

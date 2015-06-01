@@ -17,8 +17,9 @@ class DrillRegisteredEventRepository extends EntityRepository
      */
     public function findEventsToSendToday()
     {
+        // Select events from past only
         $events = $this->createQueryBuilder('e')
-            ->where('DATE_DIFF(e.sendDate, CURRENT_DATE()) = 0')
+            ->where('DATE_DIFF(e.sendDate, CURRENT_DATE()) <= 0')
             ->andWhere('e.status = :status')
             ->setParameter('status', 'new')
             ->getQuery()
