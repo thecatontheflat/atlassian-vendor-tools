@@ -10,6 +10,7 @@
                 <thead>
                 <tr>
                     <th><h6>id</h6></th>
+                    <th><h6>license</h6></th>
                     <th><h6>addon</h6></th>
                     <th><h6>name</h6></th>
                     <th><h6>status</h6></th>
@@ -20,6 +21,7 @@
                 <tbody>
                 {% for event in scheduled %}
                     <tr>
+                        <td>{{ event.id }}</td>
                         <td>
                             <a href="{{ url('license_detail', {'licenseId': event.drillRegisteredSchema.licenseId}) }}">{{ event.drillRegisteredSchema.licenseId }}</a>
                         </td>
