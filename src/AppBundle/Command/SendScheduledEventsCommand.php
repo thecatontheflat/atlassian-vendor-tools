@@ -11,6 +11,10 @@ use Mandrill;
 
 class SendScheduledEventsCommand extends ContainerAwareCommand
 {
+    /** @var $input InputInterface */
+    private $input;
+    private $output;
+
     protected function configure()
     {
         $this->setName('app:events:send');
@@ -18,6 +22,8 @@ class SendScheduledEventsCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->input = $input;
+
         $mandrill = $this->getContainer()->get('app.mandrill');
         $em = $this->getContainer()->get('doctrine')->getManager();
         $licenseRepo = $em->getRepository('AppBundle:License');
@@ -55,7 +61,8 @@ class SendScheduledEventsCommand extends ContainerAwareCommand
     private function prepareMessage(License $license, DrillRegisteredEvent $registeredEvent)
     {
         $event = $registeredEvent->getDrillSchemaEvent();
-        $recipient = $this->getContainer()->getParameter('vendor_email');
+
+        $recipients = $this->getRecipients($license);
         $bcc = $this->getContainer()->getParameter('vendor_email');
 
         $html = $event->getEmailTemplate();
@@ -68,12 +75,34 @@ class SendScheduledEventsCommand extends ContainerAwareCommand
             'subject' => $subject,
             'from_email' => $event->getEmailFromEmail(),
             'from_name' => $event->getEmailFromName(),
-            'to' => [['email' => $recipient]],
+            'to' => $recipients,
             'bcc_address' => $bcc,
             'html' => $html
         ];
 
         return $message;
+    }
+
+    private function getRecipients(License $license)
+    {
+        $recipients = [];
+        if ($this->input->getOption('env') == 'prod') {
+            $recipients[] = [
+                'email' => $license->getTechContactEmail(),
+                'name' => $license->getTechContactName()
+            ];
+
+            if ($license->getTechContactEmail() != $license->getBillingContactEmail()) {
+                $recipients[] = [
+                    'email' => $license->getBillingContactEmail(),
+                    'name' => $license->getBillingContactName()
+                ];
+            }
+        } else {
+            $recipients[] = ['email' => $this->getContainer()->getParameter('vendor_email')];
+        }
+
+        return $recipients;
     }
 
     private function replaceTemplateVariables(&$html, License $license)
