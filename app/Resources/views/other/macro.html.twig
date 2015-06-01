@@ -1,14 +1,14 @@
 {% macro scheduledEventStatusAction(event) %}
     {% set display = false %}
-    {% if event.status in ['scheduled'] %}
+    {% if event.status in ['new'] %}
         {% set action = 'Cancel' %}
-        {% set status = 'cancelled' %}
+        {% set status = 'canceled' %}
         {% set display = true %}
     {% endif %}
 
-    {% if event.status in ['error', 'cancelled'] %}
+    {% if event.status in ['error', 'canceled'] %}
         {% set action = 'Reschedule' %}
-        {% set status = 'scheduled' %}
+        {% set status = 'new' %}
         {% set display = true %}
     {% endif %}
 

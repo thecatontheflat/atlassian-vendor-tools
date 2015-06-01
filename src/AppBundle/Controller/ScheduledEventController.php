@@ -2,7 +2,7 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\ScheduledEvent;
+use AppBundle\Entity\DrillRegisteredEvent;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -24,7 +24,7 @@ class ScheduledEventController extends Controller
     /**
      * @Route("/scheduled-event/change-status/{id}/{status}", name="scheduled_event_change_status")
      */
-    public function cancelEvent(ScheduledEvent $event, $status)
+    public function cancelEvent(DrillRegisteredEvent $event, $status)
     {
         $event->setStatus($status);
         $em = $this->getDoctrine()->getManager();
@@ -32,6 +32,6 @@ class ScheduledEventController extends Controller
 
         $em->flush();
 
-        return $this->redirectToRoute('events');
+        return $this->redirectToRoute('scheduled_events');
     }
 }

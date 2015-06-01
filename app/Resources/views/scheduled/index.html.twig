@@ -28,7 +28,7 @@
                         <td>{{ event.status }}</td>
                         <td>{{ event.sendDate|date('Y-m-d') }}</td>
                         <td class="buttons">
-                            {#{{ macro.scheduledEventStatusAction(event) }}#}
+                            {{ macro.scheduledEventStatusAction(event) }}
                         </td>
                     </tr>
                 {% endfor %}
