@@ -26,6 +26,7 @@
                         <td>{{ event.dateShift }}</td>
                         <td>
                             <a class="aui-button" href="{{ path('event_edit', { 'id': event.id }) }}">edit</a>
+                            <a class="aui-button" href="{{ path('event_send_test', { 'id': event.id }) }}">test</a>
                         </td>
                     </tr>
                 {% endfor %}
