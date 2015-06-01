@@ -4,6 +4,7 @@ namespace AppBundle\Command;
 
 use AppBundle\Entity\DrillRegisteredEvent;
 use AppBundle\Entity\License;
+use AppBundle\Service\MandrillMessage;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -37,7 +38,11 @@ class SendScheduledEventsCommand extends ContainerAwareCommand
                 'addonKey' => $registeredSchema->getAddonKey()
             ]);
 
-            $message = $this->prepareMessage($license, $eventToSend);
+            $recipients = $this->getRecipients($license);
+            $bcc = $this->getContainer()->getParameter('vendor_email');
+            $event = $eventToSend->getDrillSchemaEvent();
+
+            $message = MandrillMessage::prepareMessage($license, $event, $recipients, $bcc);
 
             try {
                 $response = $mandrill->messages->send($message, true);
@@ -56,31 +61,6 @@ class SendScheduledEventsCommand extends ContainerAwareCommand
         }
 
         $output->writeln('Done');
-    }
-
-    private function prepareMessage(License $license, DrillRegisteredEvent $registeredEvent)
-    {
-        $event = $registeredEvent->getDrillSchemaEvent();
-
-        $recipients = $this->getRecipients($license);
-        $bcc = $this->getContainer()->getParameter('vendor_email');
-
-        $html = $event->getEmailTemplate();
-        $subject = $event->getEmailSubject();
-
-        $this->replaceTemplateVariables($html, $license);
-        $this->replaceTemplateVariables($subject, $license);
-
-        $message = [
-            'subject' => $subject,
-            'from_email' => $event->getEmailFromEmail(),
-            'from_name' => $event->getEmailFromName(),
-            'to' => $recipients,
-            'bcc_address' => $bcc,
-            'html' => $html
-        ];
-
-        return $message;
     }
 
     private function getRecipients(License $license)
@@ -103,31 +83,5 @@ class SendScheduledEventsCommand extends ContainerAwareCommand
         }
 
         return $recipients;
-    }
-
-    private function replaceTemplateVariables(&$html, License $license)
-    {
-        $mapping = [
-            '%_TECH_CONTACT_%' => $license->getTechContactName(),
-            '%_ADDON_NAME_%' => $license->getAddonName(),
-            '%_ADDON_KEY_%' => $license->getAddonKey(),
-            '%_ADDON_URL_%' => $this->buildAddonURL($license->getAddonKey()),
-            '%_LICENSE_ID_%' => $license->getLicenseId(),
-            '%_LICENSE_START_DATE_%' => $license->getStartDate()->format('Y-m-d'),
-            '%_LICENSE_END_DATE_%' => $license->getEndDate()->format('Y-m-d'),
-        ];
-
-        foreach ($mapping as $token => $replacement) {
-            $html = str_replace($token, $replacement, $html);
-        }
-    }
-
-    private function buildAddonURL($addonKey)
-    {
-        $base = 'https://marketplace.atlassian.com/plugins/';
-        $addonKey = str_replace('.ondemand', '', $addonKey);
-        $url = $base.$addonKey;
-
-        return $url;
     }
 }

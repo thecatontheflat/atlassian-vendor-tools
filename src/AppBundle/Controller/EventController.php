@@ -6,6 +6,7 @@ use AppBundle\Entity\DrillSchemaEvent;
 use AppBundle\Entity\License;
 use AppBundle\Form\DrillSchemaEventType;
 use AppBundle\Form\EventType;
+use AppBundle\Service\MandrillMessage;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -79,46 +80,12 @@ class EventController extends Controller
     {
         $license = $this->getDoctrine()->getRepository('AppBundle:License')->findOneBy(['licenseId' => 'SEN-3253462']);
         $mandrill = $this->get('app.mandrill');
-        $message = $this->prepareMessage($license, $event);
+        $recipients = [['email' => $this->container->getParameter('vendor_email')]];
+
+        $message = MandrillMessage::prepareMessage($license, $event, $recipients);
+
         $mandrill->messages->send($message, true);
 
         return $this->redirectToRoute('events');
-    }
-
-    private function prepareMessage(License $license, DrillSchemaEvent $event)
-    {
-        $recipients = [['email' => $this->container->getParameter('vendor_email')]];
-
-        $html = $event->getEmailTemplate();
-        $subject = $event->getEmailSubject();
-
-        $this->replaceTemplateVariables($html, $license);
-        $this->replaceTemplateVariables($subject, $license);
-
-        $message = [
-            'subject' => $subject,
-            'from_email' => $event->getEmailFromEmail(),
-            'from_name' => $event->getEmailFromName(),
-            'to' => $recipients,
-            'html' => $html
-        ];
-
-        return $message;
-    }
-
-    private function replaceTemplateVariables(&$html, License $license)
-    {
-        $mapping = [
-            '%_TECH_CONTACT_%' => $license->getTechContactName(),
-            '%_ADDON_NAME_%' => $license->getAddonName(),
-            '%_ADDON_KEY_%' => $license->getAddonKey(),
-            '%_LICENSE_ID_%' => $license->getLicenseId(),
-            '%_LICENSE_START_DATE_%' => $license->getStartDate()->format('Y-m-d'),
-            '%_LICENSE_END_DATE_%' => $license->getEndDate()->format('Y-m-d'),
-        ];
-
-        foreach ($mapping as $token => $replacement) {
-            $html = str_replace($token, $replacement, $html);
-        }
     }
 }
