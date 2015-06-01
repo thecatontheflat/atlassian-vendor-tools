@@ -14,7 +14,7 @@ class ScheduledEventController extends Controller
     public function indexAction()
     {
         $scheduled = $this->getDoctrine()->getRepository('AppBundle:DrillRegisteredEvent')
-            ->findBy([], ['sendDate' => 'DESC'], 100);
+            ->findEventsList();
 
         return $this->render(':scheduled:index.html.twig', [
             'scheduled' => $scheduled

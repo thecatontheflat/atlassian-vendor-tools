@@ -27,4 +27,17 @@ class DrillRegisteredEventRepository extends EntityRepository
 
         return $events;
     }
+
+    public function findEventsList()
+    {
+        // Select events from today on
+        $events = $this->createQueryBuilder('e')
+            ->where('DATE_DIFF(e.sendDate, CURRENT_DATE()) >= 0')
+            ->orderBy('e.sendDate', 'DESC')
+            ->setMaxResults(100)
+            ->getQuery()
+            ->getResult();
+
+        return $events;
+    }
 }
