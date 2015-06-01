@@ -34,6 +34,7 @@ class MandrillMessage
     {
         $mapping = [
             '%_TECH_CONTACT_%' => $license->getTechContactName(),
+            '%_TECH_CONTACT_FIRST_NAME_%' => self::getFirstName($license->getTechContactName()),
             '%_ADDON_NAME_%' => $license->getAddonName(),
             '%_ADDON_KEY_%' => $license->getAddonKey(),
             '%_LICENSE_ID_%' => $license->getLicenseId(),
@@ -54,5 +55,12 @@ class MandrillMessage
         $url = $base.$addonKey;
 
         return $url;
+    }
+
+    protected static function getFirstName($fullname)
+    {
+        $exploded = explode(' ', $fullname);
+
+        return reset($exploded);
     }
 }
