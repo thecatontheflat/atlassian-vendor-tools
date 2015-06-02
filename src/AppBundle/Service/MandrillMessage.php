@@ -24,7 +24,7 @@ class MandrillMessage
         ];
 
         if ($bcc) {
-            $message['bcc'] = $bcc;
+            $message['bcc_address'] = $bcc;
         }
 
         return $message;
