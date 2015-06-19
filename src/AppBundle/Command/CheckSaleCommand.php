@@ -68,7 +68,9 @@ class CheckSaleCommand extends ContainerAwareCommand
             'html' => $this->getHTML($sale),
             'subject' => 'MPCRM - New Sale!',
             'from_email' => $this->login,
-            'to' => [['email' => $this->login]]
+            'to' => [['email' => $this->login]],
+            'track_clicks' => false,
+            'track_opens' => false
         ];
 
         $mandrill->messages->send($message, true);
