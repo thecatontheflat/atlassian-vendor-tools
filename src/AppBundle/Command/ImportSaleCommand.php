@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Doctrine\Common\Persistence\ObjectManager;
+use AppBundle\Service\SaleMailer;
 
 class ImportSaleCommand extends ContainerAwareCommand
 {
@@ -18,6 +19,8 @@ class ImportSaleCommand extends ContainerAwareCommand
     private $url;
     /** @var ObjectManager */
     private $em;
+    /** @var SaleMailer */
+    private $saleMailer;
 
     protected function configure()
     {
@@ -30,20 +33,18 @@ class ImportSaleCommand extends ContainerAwareCommand
         $limit = 50;
         $offset = 0;
         $repository = $this->em->getRepository('AppBundle:Sale');
+        $existingInvoices = $repository->findExistingInvoices();
 
         try {
-            $output->writeln('Removing existing sales');
-            $repository->removeSales();
-
             $json = $this->getSales($limit, $offset);
-            $this->saveSales($json['sales']);
+            $this->saveSales($json['sales'], $existingInvoices);
             $output->writeln('Saving bunch of sales...');
             $total = $json['numSales'];
 
             do {
                 $offset += $limit;
                 $json = $this->getSales($limit, $offset);
-                $this->saveSales($json['sales']);
+                $this->saveSales($json['sales'], $existingInvoices);
                 $output->writeln('Saving bunch of sales...');
             } while ($total > ($limit + $offset));
 
@@ -72,13 +73,16 @@ class ImportSaleCommand extends ContainerAwareCommand
         return $response->json();
     }
 
-    private function saveSales($jsonSales)
+    private function saveSales($jsonSales, $existingInvoices)
     {
         foreach ($jsonSales as $jsonSale) {
-            $sale = new Sale();
-            $sale->setFromJSON($jsonSale);
+            if (!in_array($jsonSale['invoice'], $existingInvoices)) {
+                $sale = new Sale();
+                $sale->setFromJSON($jsonSale);
+                $this->em->persist($sale);
 
-            $this->em->persist($sale);
+                $this->saleMailer->sendEmail($sale);
+            }
         }
     }
 
@@ -90,6 +94,7 @@ class ImportSaleCommand extends ContainerAwareCommand
         $this->login = $this->container->getParameter('vendor_email');
         $this->password = $this->container->getParameter('vendor_password');
         $this->em = $this->container->get('doctrine')->getManager();
+        $this->saleMailer = $this->container->get('app.sale.mailer');
 
         $urlTemplate = 'https://marketplace.atlassian.com/rest/1.0/vendors/%s/sales';
         $this->url = sprintf($urlTemplate, $this->vendorId);

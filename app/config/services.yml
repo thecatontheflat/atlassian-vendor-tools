@@ -14,3 +14,9 @@ services:
     app.mandrill:
         class: Mandrill
         arguments: [%mandrill_api_key%]
+
+    app.sale.mailer:
+        class: AppBundle\Service\SaleMailer
+        arguments:
+            - @app.mandrill
+            - %vendor_email%
