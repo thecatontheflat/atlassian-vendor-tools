@@ -35,6 +35,8 @@ class SaleMailer
 
     private function getHTML(Sale $sale)
     {
+        $url = 'http://mpcrm.agile-values.com/license/'.$sale->getLicenseId();
+
         $html = '<h1>Congrats!</h1>';
         $html .= '<p>Yet another license has been sold for <strong>$%s</strong></p>';
         $html .= '<p>License details:</p>';
@@ -42,9 +44,21 @@ class SaleMailer
             '<tr><td>Type</td><td>%s</td></tr>'.
             '<tr><td>Size</td><td>%s</td></tr>'.
             '<tr><td>License ID</td><td>%s</td></tr>'.
-            '<tr><td>Add-On</td><td>%s</td></tr>'.
+            '<tr><td>Add-On</td><td><a href="%s">%s</a></td></tr>'.
+            '<tr><td>Date</td><td>%s</td></tr>'.
+            '<tr><td>Valid till</td><td>%s</td></tr>'.
             '</table>';
 
-        return sprintf($html, $sale->getVendorAmount(), $sale->getSaleType(), $sale->getLicenseSize(), $sale->getLicenseId(), $sale->getPluginName());
+        return sprintf(
+            $html,
+            $sale->getVendorAmount(),
+            $sale->getSaleType(),
+            $sale->getLicenseSize(),
+            $sale->getLicenseId(),
+            $url,
+            $sale->getPluginName(),
+            $sale->getDate()->format('Y-m-d'),
+            $sale->getMaintenanceEndDate()->format('Y-m-d')
+        );
     }
 }

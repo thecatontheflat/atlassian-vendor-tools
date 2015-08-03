@@ -28,7 +28,7 @@ class SaleRepository extends EntityRepository
 
     public function findSalesForChart()
     {
-        $sales = $this->findAll();
+        $sales = $this->findBy([], ['date' => 'DESC']);
 
         $groupedSales = [];
         foreach ($sales as $sale) {

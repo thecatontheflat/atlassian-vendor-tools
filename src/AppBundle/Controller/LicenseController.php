@@ -47,7 +47,7 @@ class LicenseController extends Controller
             ->findBy(['licenseId' => $licenseId]);
 
         $sales = $this->getDoctrine()->getRepository('AppBundle:Sale')
-            ->findBy(['licenseId' => $licenseId]);
+            ->findBy(['licenseId' => $licenseId], ['date' => 'DESC']);
 
         return $this->render(':license:detail.html.twig', [
             'licenses' => $licenses,
