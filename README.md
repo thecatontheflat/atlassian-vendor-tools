@@ -1,6 +1,8 @@
 Atlassian Marketplace Tools
 ===============
 
+About
+
 ## Installation
 
 ### Step 1 — Clone the Project
