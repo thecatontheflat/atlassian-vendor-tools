@@ -81,7 +81,9 @@ class ImportSaleCommand extends ContainerAwareCommand
                 $sale->setFromJSON($jsonSale);
                 $this->em->persist($sale);
 
-                $this->saleMailer->sendEmail($sale);
+                if (true == $this->getContainer()->getParameter('new_sale_notification')) {
+                    $this->saleMailer->sendEmail($sale);
+                }
             }
         }
     }

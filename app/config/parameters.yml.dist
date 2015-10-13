@@ -20,3 +20,5 @@ parameters:
     vendor_id: 123456789
 
     mandrill_api_key: 123123123
+
+    new_sale_notification: false
