@@ -1,4 +1,10 @@
-marketplace-crm
+Atlassian Marketplace Tools
 ===============
 
-A Symfony project created on April 30, 2015, 9:03 pm.
+## Installation
+
+### Step 1 — Clone the Project
+
+### Step 2 — Install Dependencies
+
+### Step 3 — Create Database & Schema
