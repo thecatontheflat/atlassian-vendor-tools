@@ -1,12 +1,4 @@
 Atlassian Marketplace Tools
 ===============
 
-About
-
-## Installation
-
-### Step 1 — Clone the Project
-
-### Step 2 — Install Dependencies
-
-### Step 3 — Create Database & Schema
+![](https://raw.githubusercontent.com/thecatontheflat/atlassian-marketplace-tools/master/docs/1.png)
