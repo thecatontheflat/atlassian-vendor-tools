@@ -1,6 +1,14 @@
 Atlassian Marketplace Tools
 ===============
 
+# Support & Sponsored Development
+
+For support questions, please raise an issue.
+
+For sponsored development, please contact me vitaliy.zurian@agile-values
+
+# Overview
+
 ### Expiring soon licenses overview:
 ![](https://raw.githubusercontent.com/thecatontheflat/atlassian-marketplace-tools/master/docs/1.png)
 
@@ -21,8 +29,3 @@ Atlassian Marketplace Tools
 
 ### Editing email detail view:
 ![](https://raw.githubusercontent.com/thecatontheflat/atlassian-marketplace-tools/master/docs/5.png)
-
-# Support & Sponsored Development
-
-For support questions, please raise an issue.
-For sponsored development, please contact me vitaliy.zurian@agile-values
