@@ -1,4 +1,4 @@
-Atlassian Marketplace Tools
+Atlassian Vendor Tools
 ===============
 
 # Support & Sponsored Development
