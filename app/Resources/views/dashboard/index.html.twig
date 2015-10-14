@@ -5,20 +5,20 @@
 {% block content %}
     <h2>Started Today</h2>
     <div class="aui-group">
-        <div class="aui-item">
+        <div class="aui-item" id="started-today">
             {% include ':other:license_table.html.twig' with {'licenses': starters} %}
         </div>
     </div>
 
     <h2>Expiring Soon</h2>
     <div class="aui-group">
-        <div class="aui-item">
+        <div class="aui-item" id="expiring-soon">
             {% include ':other:license_table.html.twig' with {'licenses': expiringSoon, 'expiringSoonSales': expiringSoonSales} %}
         </div>
     </div>
 
     <h2>Recent Sales</h2>
-    <h6>expected till the end of month: ${{ estimatedIncome }}</h6>
+    <h6 id="expected-amount">expected till the end of month: ${{ estimatedIncome }}</h6>
     <div class="aui-group">
         <div class="aui-item">
             <div id="sale-chart" style="width:100%; height:300px;"></div>
@@ -27,7 +27,7 @@
 
     <h2>Top Customers</h2>
     <div class="aui-group">
-        <div class="aui-item">
+        <div class="aui-item" id="top-customers">
             <table class="aui">
                 {% for customer in topCustomers %}
                     <tr>
