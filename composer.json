@@ -23,7 +23,8 @@
         "incenteev/composer-parameter-handler": "~2.0",
         "guzzlehttp/guzzle": "~5.2",
         "mandrill/mandrill": "~1.0",
-        "phpunit/phpunit": "^5.0"
+        "phpunit/phpunit": "^5.0",
+        "doctrine/doctrine-fixtures-bundle": "^2.2"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"
