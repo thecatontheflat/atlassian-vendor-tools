@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/thecatontheflat/atlassian-vendor-tools.svg?branch=master)](https://travis-ci.org/atlassian-vendor-tools)
+[![Build Status](https://travis-ci.org/thecatontheflat/atlassian-vendor-tools.svg?branch=master)](https://travis-ci.org/thecatontheflat/atlassian-vendor-tools)
 
 Atlassian Vendor Tools
 ===============
