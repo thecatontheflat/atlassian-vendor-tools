@@ -137,15 +137,10 @@ class SaleRepository extends EntityRepository
     public function findExistingInvoices()
     {
         $results = $this->createQueryBuilder('s')
-            ->select('s.invoice')
+            ->select(['s.invoice', 's.licenseId'])
             ->getQuery()
-            ->getArrayResult();
+            ->getResult();
 
-        $arrayOfValues = [];
-        foreach ($results as $sale) {
-            $arrayOfValues[] = $sale['invoice'];
-        }
-
-        return $arrayOfValues;
+        return $results;
     }
 }

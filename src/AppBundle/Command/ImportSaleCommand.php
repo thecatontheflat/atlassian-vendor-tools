@@ -76,7 +76,14 @@ class ImportSaleCommand extends ContainerAwareCommand
     private function saveSales($jsonSales, $existingInvoices)
     {
         foreach ($jsonSales as $jsonSale) {
-            if (!in_array($jsonSale['invoice'], $existingInvoices)) {
+            $exists = false;
+            foreach ($existingInvoices as $existing) {
+                if ($existing['invoice'] == $jsonSale['invoice'] && $existing['licenseId'] == $jsonSale['licenseId']) {
+                    $exists = true;
+                }
+            }
+
+            if (!$exists) {
                 $sale = new Sale();
                 $sale->setFromJSON($jsonSale);
                 $this->em->persist($sale);
