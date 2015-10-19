@@ -21,6 +21,8 @@ class ImportLicenseCommand extends ContainerAwareCommand
         $container = $this->getContainer();
         $scheduler = $container->get('app.scheduler')->setOutput($output);;
 
+        $contactAdder = $container->get('app.contact.adder');
+
         $vendorId = $container->getParameter('vendor_id');
         $login = $container->getParameter('vendor_email');
         $password = $container->getParameter('vendor_password');
@@ -56,6 +58,7 @@ class ImportLicenseCommand extends ContainerAwareCommand
             $em->persist($license);
 
             if (!$exists) {
+                $contactAdder->addFrom($license);
                 $newCnt++;
             }
             $readCnt++;

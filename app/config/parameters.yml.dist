@@ -24,3 +24,6 @@ parameters:
     mandrill_api_key: 123123123
 
     new_sale_notification: false
+
+    mailchimp_api_key: 123123123
+    mailchimp_plugin_list_map: plugin:list_id;plugin2:list_id2
