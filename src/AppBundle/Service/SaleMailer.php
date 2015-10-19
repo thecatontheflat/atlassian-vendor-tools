@@ -12,11 +12,13 @@ class SaleMailer
      */
     private $mandrill;
     private $email;
+    private $baseUrl;
 
-    public function __construct(\Mandrill $mandrill, $email)
+    public function __construct(\Mandrill $mandrill, $email, $baseUrl)
     {
         $this->mandrill = $mandrill;
         $this->email = $email;
+        $this->baseUrl = $baseUrl;
     }
 
     public function sendEmail(Sale $sale)
@@ -35,7 +37,7 @@ class SaleMailer
 
     private function getHTML(Sale $sale)
     {
-        $url = 'http://mpcrm.agile-values.com/license/'.$sale->getLicenseId();
+        $url = $this->baseUrl.'/license/'.$sale->getLicenseId();
 
         $html = '<h1>Congrats!</h1>';
         $html .= '<p>Yet another license has been sold for <strong>$%s</strong></p>';

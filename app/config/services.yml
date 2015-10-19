@@ -20,3 +20,4 @@ services:
         arguments:
             - @app.mandrill
             - %vendor_email%
+            - %base_url%
