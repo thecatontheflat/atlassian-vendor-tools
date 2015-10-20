@@ -21,6 +21,8 @@ class ImportLicenseCommand extends ContainerAwareCommand
         $container = $this->getContainer();
         $scheduler = $container->get('app.scheduler')->setOutput($output);;
 
+        $contactAdder = $container->get('app.contact.adder');
+
         $vendorId = $container->getParameter('vendor_id');
         $login = $container->getParameter('vendor_email');
         $password = $container->getParameter('vendor_password');
@@ -42,14 +44,27 @@ class ImportLicenseCommand extends ContainerAwareCommand
         }
         unset($csv[0]);
 
+        $readCnt = 0;
+        $newCnt = 0;
+
         foreach ($csv as $row) {
             $row = trim($row);
             if (empty($row)) continue;
 
             $data = str_getcsv($row, ',');
             $license = $repository->findOrCreate($data[0], $data[3]);
+            $exists = $license->getLicenseId() !== null;
             $license->setFromCSV($data);
             $em->persist($license);
+
+            if (!$exists) {
+                $contactAdder->addFrom($license);
+                $newCnt++;
+            }
+            $readCnt++;
+
+            if (($readCnt % 100) == 0)
+                $output->writeln(sprintf('Imported %s of %s licenses, %s new so far', $readCnt, count($csv), $newCnt));
         }
 
         $em->flush();

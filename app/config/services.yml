@@ -20,3 +20,10 @@ services:
         arguments:
             - @app.mandrill
             - %vendor_email%
+            - %base_url%
+
+    app.contact.adder:
+        class: AppBundle\Service\AddLicenseContact
+        arguments:
+            - %mailchimp_api_key%
+            - %mailchimp_plugin_list_map%
