@@ -22,8 +22,10 @@ services:
             - %vendor_email%
             - %base_url%
 
-    app.contact.adder:
-        class: AppBundle\Service\AddLicenseContact
+    app.service.mailchimp:
+        class: AppBundle\Service\MailChimp
         arguments:
             - %mailchimp_api_key%
-            - %mailchimp_plugin_list_map%
+            - %mailchimp_addon_list_map%
+            - %mailchimp_api_dc%
+            - %mailchimp_enabled%

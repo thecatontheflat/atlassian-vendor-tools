@@ -4,7 +4,7 @@ parameters:
     database_driver: pdo_mysql
     database_host: 127.0.0.1
     database_port: ~
-    database_name: marketplace-crm
+    database_name: atlassian-vendor-tools
     database_user: root
     database_password: ~
 
@@ -25,5 +25,7 @@ parameters:
 
     new_sale_notification: false
 
-    mailchimp_api_key: 123123123
-    mailchimp_plugin_list_map: plugin:list_id;plugin2:list_id2
+    mailchimp_enabled: false
+    mailchimp_api_key: 123123zaza123123-us1
+    mailchimp_api_dc: us1
+    mailchimp_addon_list_map: [{ addon_key: 'agile.estimation.3.0_private.ondemand', list_id: '123' }, { addon_key: 'simple-edit.ondemand', list_id: '123' }]
