@@ -40,12 +40,14 @@ class ImportSaleCommand extends ContainerAwareCommand
             $this->saveSales($json['sales'], $existingInvoices);
             $output->writeln('Saving bunch of sales...');
             $total = $json['numSales'];
+            $this->em->flush();
 
             do {
                 $offset += $limit;
                 $json = $this->getSales($limit, $offset);
                 $this->saveSales($json['sales'], $existingInvoices);
                 $output->writeln('Saving bunch of sales...');
+                $this->em->flush();
             } while ($total > ($limit + $offset));
 
         } catch (\Exception $e) {
@@ -53,8 +55,6 @@ class ImportSaleCommand extends ContainerAwareCommand
 
             return;
         }
-
-        $this->em->flush();
 
         $output->writeln(sprintf('Imported %s sales', $total));
     }
