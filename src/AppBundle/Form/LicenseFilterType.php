@@ -27,8 +27,12 @@ class LicenseFilterType extends AbstractType
                 'multiple' => true,
                 'expanded' => true,
                 'choices' => [
+                    'ACADEMIC' => 'ACADEMIC',
                     'COMMERCIAL' => 'COMMERCIAL',
-                    'EVALUATION' => 'EVALUATION'
+                    'COMMUNITY' => 'COMMUNITY',
+                    'EVALUATION' => 'EVALUATION',
+                    'OPEN_SOURCE' => 'OPEN_SOURCE',
+                    'STARTER' => 'STARTER'
                 ]
             ])
 
