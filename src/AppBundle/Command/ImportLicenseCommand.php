@@ -20,8 +20,7 @@ class ImportLicenseCommand extends ContainerAwareCommand
         $urlTemplate = 'https://marketplace.atlassian.com/rest/1.0/vendors/%s/license/report';
         $container = $this->getContainer();
         $scheduler = $container->get('app.scheduler')->setOutput($output);;
-
-        $contactAdder = $container->get('app.contact.adder');
+        $mailChimp = $container->get('app.service.mailchimp')->setOutput($output);
 
         $vendorId = $container->getParameter('vendor_id');
         $login = $container->getParameter('vendor_email');
@@ -33,7 +32,7 @@ class ImportLicenseCommand extends ContainerAwareCommand
 
         try {
             $client = new Client();
-            $response = $client->get($url, ['auth' =>  [$login, $password]]);
+            $response = $client->get($url, ['auth' => [$login, $password]]);
             $contents = $response->getBody()->getContents();
             $csv = str_getcsv($contents, "\n");
 
@@ -53,16 +52,16 @@ class ImportLicenseCommand extends ContainerAwareCommand
 
             $data = str_getcsv($row, ',');
             $license = $repository->findOrCreate($data[0], $data[3]);
-            $exists = $license->getLicenseId() !== null;
             $license->setFromCSV($data);
-            $em->persist($license);
 
-            if (!$exists) {
-                $contactAdder->addFrom($license);
+            $mailChimp->addToList($license);
+            if ($license->isNew()) {
                 $newCnt++;
             }
             $readCnt++;
 
+            $em->persist($license);
+            
             if (($readCnt % 100) == 0)
                 $output->writeln(sprintf('Imported %s of %s licenses, %s new so far', $readCnt, count($csv), $newCnt));
         }
