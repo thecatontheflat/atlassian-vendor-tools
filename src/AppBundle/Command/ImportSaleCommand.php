@@ -32,23 +32,21 @@ class ImportSaleCommand extends ContainerAwareCommand
         $this->init();
         $limit = 50;
         $offset = 0;
+        $newCnt = 0;
         $repository = $this->em->getRepository('AppBundle:Sale');
         $existingInvoices = $repository->findExistingInvoices();
 
         try {
-            $json = $this->getSales($limit, $offset);
-            $this->saveSales($json['sales'], $existingInvoices);
-            $output->writeln('Saving bunch of sales...');
-            $total = $json['numSales'];
-            $this->em->flush();
-
             do {
-                $offset += $limit;
                 $json = $this->getSales($limit, $offset);
-                $this->saveSales($json['sales'], $existingInvoices);
-                $output->writeln('Saving bunch of sales...');
+                $total = $json['numSales'];
+                $newCnt = $newCnt + $this->saveSales($json['sales'], $existingInvoices);
                 $this->em->flush();
-            } while ($total > ($limit + $offset));
+
+                $offset += count($json['sales']);
+
+                $output->writeln(sprintf('Imported %s of %s sales, %s new so far', $offset, $total, $newCnt));
+            } while ($total > $offset);
 
         } catch (\Exception $e) {
             $output->writeln($e->getMessage());
@@ -75,6 +73,8 @@ class ImportSaleCommand extends ContainerAwareCommand
 
     private function saveSales($jsonSales, $existingInvoices)
     {
+        $newCnt = 0;
+
         foreach ($jsonSales as $jsonSale) {
             $exists = false;
             foreach ($existingInvoices as $existing) {
@@ -84,6 +84,7 @@ class ImportSaleCommand extends ContainerAwareCommand
             }
 
             if (!$exists) {
+                $newCnt++;
                 $sale = new Sale();
                 $sale->setFromJSON($jsonSale);
                 $this->em->persist($sale);
@@ -93,6 +94,7 @@ class ImportSaleCommand extends ContainerAwareCommand
                 }
             }
         }
+        return $newCnt;
     }
 
     private function init()
