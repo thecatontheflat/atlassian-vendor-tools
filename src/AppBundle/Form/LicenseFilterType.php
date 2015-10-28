@@ -38,11 +38,11 @@ class LicenseFilterType extends AbstractType
 
             ->add('sort_field', 'choice', [
                 'choices' => [
-                    'organisationName' => 'organisationName',
-                    'addOnName' => 'addOnName',
-                    'licenseType' => 'licenseType',
-                    'startDate' => 'startDate',
-                    'endDate' => 'endDate'
+                    'organisationName' => 'Organization',
+                    'addOnName' => 'Addon',
+                    'licenseType' => 'Type',
+                    'startDate' => 'Start date',
+                    'endDate' => 'End date'
                 ]
             ])
 
