@@ -96,6 +96,18 @@ class SaleRepository extends EntityRepository
 
         return $sales;
     }
+    
+    public function findIfSaleIsNew($invoice, $licenseId)
+    {
+        return count($this->createQueryBuilder('s')
+            ->select(['s.invoice', 's.licenseId'])
+            ->where('s.invoice = ?1')
+            ->andWhere('s.licenseId = ?2')
+            ->setParameter('1', $invoice)
+            ->setParameter('2', $licenseId)
+            ->getQuery()
+            ->getResult()) == 0;
+    }
 
     public function findEstimatedMonthlyIncome()
     {
@@ -128,16 +140,6 @@ class SaleRepository extends EntityRepository
         $results = $this->createQueryBuilder('s')
             ->select(['s.pluginName', 'SUM(s.vendorAmount) as total'])
             ->groupBy('s.pluginName')
-            ->getQuery()
-            ->getResult();
-
-        return $results;
-    }
-
-    public function findExistingInvoices()
-    {
-        $results = $this->createQueryBuilder('s')
-            ->select(['s.invoice', 's.licenseId'])
             ->getQuery()
             ->getResult();
 

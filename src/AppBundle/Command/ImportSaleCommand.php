@@ -34,13 +34,12 @@ class ImportSaleCommand extends ContainerAwareCommand
         $offset = 0;
         $newCnt = 0;
         $repository = $this->em->getRepository('AppBundle:Sale');
-        $existingInvoices = $repository->findExistingInvoices();
 
         try {
             do {
                 $json = $this->getSales($limit, $offset);
                 $total = $json['numSales'];
-                $newCnt = $newCnt + $this->saveSales($json['sales'], $existingInvoices);
+                $newCnt = $newCnt + $this->saveSales($json['sales'], $repository);
                 $this->em->flush();
 
                 $offset += count($json['sales']);
@@ -71,19 +70,12 @@ class ImportSaleCommand extends ContainerAwareCommand
         return $response->json();
     }
 
-    private function saveSales($jsonSales, $existingInvoices)
+    private function saveSales($jsonSales, $repository)
     {
         $newCnt = 0;
 
         foreach ($jsonSales as $jsonSale) {
-            $exists = false;
-            foreach ($existingInvoices as $existing) {
-                if ($existing['invoice'] == $jsonSale['invoice'] && $existing['licenseId'] == $jsonSale['licenseId']) {
-                    $exists = true;
-                }
-            }
-
-            if (!$exists) {
+            if ($repository->findIfSaleIsNew($jsonSale['invoice'], $jsonSale['licenseId'])) {
                 $newCnt++;
                 $sale = new Sale();
                 $sale->setFromJSON($jsonSale);
@@ -94,6 +86,7 @@ class ImportSaleCommand extends ContainerAwareCommand
                 }
             }
         }
+
         return $newCnt;
     }
 
