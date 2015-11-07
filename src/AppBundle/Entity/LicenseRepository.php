@@ -26,22 +26,39 @@ class LicenseRepository extends EntityRepository
         return $license;
     }
 
-    public function findFiltered($filters)
+    public function getFilteredQuery($filters)
     {
-        $criteria = [];
+        $builder = $this->createQueryBuilder('l')
+            ->orderBy('l.startDate', 'DESC');
+        ;
 
         if (!empty($filters['addonKey'])) {
-            $criteria['addonKey'] = $filters['addonKey'];
+            $builder->andWhere('l.addonKey IN (:addonKeys)');
+            $builder->setParameter('addonKeys', $filters['addonKey']);
         }
 
         if (!empty($filters['licenseType'])) {
-            $criteria['licenseType'] = $filters['licenseType'];
+            $builder->andWhere('l.licenseType IN (:licenseTypes)');
+            $builder->setParameter('licenseTypes', $filters['licenseType']);
         }
 
-        $order[$filters['sort_field']] = $filters['sort_direction'];
-        $limit = $filters['limit'];
+        if (!empty($filters['search'])) {
+            $search = '%'.$filters['search'].'%';
 
-        return $this->findBy($criteria, $order, $limit);
+            $builder->orWhere('l.billingContactEmail LIKE :search');
+            $builder->orWhere('l.billingContactName LIKE :search');
+            $builder->orWhere('l.billingContactPhone LIKE :search');
+
+            $builder->orWhere('l.techContactEmail LIKE :search');
+            $builder->orWhere('l.techContactName LIKE :search');
+            $builder->orWhere('l.techContactPhone LIKE :search');
+
+            $builder->orWhere('l.organisationName LIKE :search');
+
+            $builder->setParameter('search', $search);
+        }
+
+        return $builder->getQuery();
     }
 
     public function getAddonChoices()

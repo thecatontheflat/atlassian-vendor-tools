@@ -2,10 +2,17 @@
 
 {% block content %}
     <h2>License Report</h2>
+
     {% include ':license:__filters.html.twig' with {'filterForm': filterForm} %}
+
+    {{ knp_pagination_render(licenses) }}
+
     <div class="aui-group">
         <div class="aui-item">
             {% include ':other:license_table.html.twig' with {'licenses': licenses} %}
         </div>
     </div>
+
+    {{ knp_pagination_render(licenses) }}
+
 {% endblock %}
