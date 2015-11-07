@@ -12,10 +12,17 @@
                 <legend><span>Filter by license</span></legend>
                 {{ form_widget(filterForm.licenseType) }}
             </fieldset>
+
             <div class="field-group">
                 <label>Limit per page</label>
                 {{ form_widget(filterForm.limit, {'attr': {'class': 'select'}}) }}
             </div>
+
+        <div class="field-group">
+            <label>Search</label>
+            {{ form_widget(filterForm.search) }}
+        </div>
+
             <div class="buttons-container">
                 <div class="buttons">
                     <button class="aui-button aui-button-primary">Apply</button>
