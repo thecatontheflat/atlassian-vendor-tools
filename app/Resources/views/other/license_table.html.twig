@@ -4,12 +4,12 @@
     <table class="aui">
         <thead>
         <tr>
-            <th><h6>id</h6></th>
-            <th><h6>organization</h6></th>
-            <th><h6>addon</h6></th>
-            <th><h6>type</h6></th>
-            <th><h6>start date</h6></th>
-            <th><h6>end date</h6></th>
+            <th><h6>{{ knp_pagination_sortable(pagination, 'id', 'l.id') }}</h6></th>
+            <th><h6>{{ knp_pagination_sortable(pagination, 'organisation', 'l.organisationName') }}</h6></th>
+            <th><h6>{{ knp_pagination_sortable(pagination, 'addon', 'l.addonName') }}</h6></th>
+            <th><h6>{{ knp_pagination_sortable(pagination, 'type', 'l.licenseType') }}</h6></th>
+            <th><h6>{{ knp_pagination_sortable(pagination, 'start date', 'l.startDate') }}</h6></th>
+            <th><h6>{{ knp_pagination_sortable(pagination, 'end date', 'l.endDate') }}</h6></th>
         </tr>
         </thead>
         <tbody>

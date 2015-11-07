@@ -15,20 +15,22 @@ class LicenseController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $filters = [
-            'limit' => 50,
-            'sort_field' => 'startDate',
-            'sort_direction' => 'DESC'
-        ];
-
         $repository = $this->getDoctrine()->getRepository('AppBundle:License');
         $addonChoices = $repository->getAddonChoices();
 
-        $filterForm = $this->createForm(new LicenseFilterType($addonChoices), $filters);
-        $filterForm->handleRequest($request);
+        $filterForm = $this->createForm(new LicenseFilterType($addonChoices));
+        $filterForm->submit($request);
         $filters = $filterForm->getData();
 
-        $licenses = $repository->findFiltered($filters);
+        $query = $repository->getFilteredQuery($filters);
+
+        $paginator  = $this->get('knp_paginator');
+        $licenses = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            $filters['limit'] ?: 50
+        );
+
         return $this->render(':license:list.html.twig', [
             'licenses' => $licenses,
             'filterForm' => $filterForm->createView()
