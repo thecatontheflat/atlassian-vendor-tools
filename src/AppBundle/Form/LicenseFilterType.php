@@ -32,24 +32,8 @@ class LicenseFilterType extends AbstractType
                 ]
             ])
 
-            ->add('sort_field', 'choice', [
-                'choices' => [
-                    'organisationName' => 'organisationName',
-                    'addOnName' => 'addOnName',
-                    'licenseType' => 'licenseType',
-                    'startDate' => 'startDate',
-                    'endDate' => 'endDate'
-                ]
-            ])
-
-            ->add('sort_direction', 'choice', [
-                'choices' => [
-                    'ASC' => 'ASC',
-                    'DESC' => 'DESC'
-                ]
-            ])
-
             ->add('limit', 'choice', [
+                'empty_data' => '50',
                 'choices' => [
                     '20' => '20',
                     '50' => '50',

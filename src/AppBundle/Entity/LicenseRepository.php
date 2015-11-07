@@ -26,22 +26,23 @@ class LicenseRepository extends EntityRepository
         return $license;
     }
 
-    public function findFiltered($filters)
+    public function getFilteredQuery($filters)
     {
-        $criteria = [];
+        $builder = $this->createQueryBuilder('l')
+            ->orderBy('l.startDate', 'DESC');
+        ;
 
         if (!empty($filters['addonKey'])) {
-            $criteria['addonKey'] = $filters['addonKey'];
+            $builder->where('l.addonKey IN (:addonKeys)');
+            $builder->setParameter('addonKeys', $filters['addonKey']);
         }
 
         if (!empty($filters['licenseType'])) {
-            $criteria['licenseType'] = $filters['licenseType'];
+            $builder->where('l.licenseType IN (:licenseTypes)');
+            $builder->setParameter('licenseTypes', $filters['licenseType']);
         }
 
-        $order[$filters['sort_field']] = $filters['sort_direction'];
-        $limit = $filters['limit'];
-
-        return $this->findBy($criteria, $order, $limit);
+        return $builder->getQuery();
     }
 
     public function getAddonChoices()

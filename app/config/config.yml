@@ -54,3 +54,8 @@ swiftmailer:
     username: "%mailer_user%"
     password: "%mailer_password%"
     spool: { type: memory }
+
+knp_paginator:
+    page_range: 10
+    template:
+        pagination: :other:_pagination.html.twig
