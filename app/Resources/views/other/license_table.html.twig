@@ -4,12 +4,21 @@
     <table class="aui">
         <thead>
         <tr>
+        {% if licenses.template|default(false) %}
             <th><h6>{{ knp_pagination_sortable(licenses, 'id', 'l.id') }}</h6></th>
             <th><h6>{{ knp_pagination_sortable(licenses, 'organisation', 'l.organisationName') }}</h6></th>
             <th><h6>{{ knp_pagination_sortable(licenses, 'addon', 'l.addonName') }}</h6></th>
             <th><h6>{{ knp_pagination_sortable(licenses, 'type', 'l.licenseType') }}</h6></th>
             <th><h6>{{ knp_pagination_sortable(licenses, 'start date', 'l.startDate') }}</h6></th>
             <th><h6>{{ knp_pagination_sortable(licenses, 'end date', 'l.endDate') }}</h6></th>
+        {% else %}
+            <th><h6>id</h6></th>
+            <th><h6>organisation</h6></th>
+            <th><h6>addon</h6></th>
+            <th><h6>type</h6></th>
+            <th><h6>start date</h6></th>
+            <th><h6>end date</h6></th>
+        {% endif %}
         </tr>
         </thead>
         <tbody>
