@@ -33,13 +33,29 @@ class LicenseRepository extends EntityRepository
         ;
 
         if (!empty($filters['addonKey'])) {
-            $builder->where('l.addonKey IN (:addonKeys)');
+            $builder->andWhere('l.addonKey IN (:addonKeys)');
             $builder->setParameter('addonKeys', $filters['addonKey']);
         }
 
         if (!empty($filters['licenseType'])) {
-            $builder->where('l.licenseType IN (:licenseTypes)');
+            $builder->andWhere('l.licenseType IN (:licenseTypes)');
             $builder->setParameter('licenseTypes', $filters['licenseType']);
+        }
+
+        if (!empty($filters['search'])) {
+            $search = '%'.$filters['search'].'%';
+
+            $builder->orWhere('l.billingContactEmail LIKE :search');
+            $builder->orWhere('l.billingContactName LIKE :search');
+            $builder->orWhere('l.billingContactPhone LIKE :search');
+
+            $builder->orWhere('l.techContactEmail LIKE :search');
+            $builder->orWhere('l.techContactName LIKE :search');
+            $builder->orWhere('l.techContactPhone LIKE :search');
+
+            $builder->orWhere('l.organisationName LIKE :search');
+
+            $builder->setParameter('search', $search);
         }
 
         return $builder->getQuery();
