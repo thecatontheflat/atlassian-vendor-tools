@@ -16,51 +16,38 @@ class LicenseFilterType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('addonKey', 'choice', [
-                'multiple' => true,
-                'expanded' => true,
-                'choices' => $this->addonChoices
-            ])
+        $builder->add('addonKey', 'choice', [
+            'multiple' => true,
+            'expanded' => true,
+            'choices' => $this->addonChoices
+        ]);
 
-            ->add('licenseType', 'choice', [
-                'multiple' => true,
-                'expanded' => true,
-                'choices' => [
-                    'ACADEMIC' => 'ACADEMIC',
-                    'COMMERCIAL' => 'COMMERCIAL',
-                    'COMMUNITY' => 'COMMUNITY',
-                    'EVALUATION' => 'EVALUATION',
-                    'OPEN_SOURCE' => 'OPEN_SOURCE',
-                    'STARTER' => 'STARTER'
-                ]
-            ])
+        $builder->add('licenseType', 'choice', [
+            'multiple' => true,
+            'expanded' => true,
+            'choices' => [
+                'ACADEMIC' => 'ACADEMIC',
+                'COMMERCIAL' => 'COMMERCIAL',
+                'COMMUNITY' => 'COMMUNITY',
+                'EVALUATION' => 'EVALUATION',
+                'OPEN_SOURCE' => 'OPEN_SOURCE',
+                'STARTER' => 'STARTER'
+            ]
+        ]);
 
-            ->add('sort_field', 'choice', [
-                'choices' => [
-                    'organisationName' => 'Organization',
-                    'addOnName' => 'Addon',
-                    'licenseType' => 'Type',
-                    'startDate' => 'Start date',
-                    'endDate' => 'End date'
-                ]
-            ])
+        $builder->add('limit', 'choice', [
+            'empty_data' => '50',
+            'choices' => [
+                '20' => '20',
+                '50' => '50',
+                '100' => '100',
+                '200' => '200'
+            ]
+        ]);
 
-            ->add('sort_direction', 'choice', [
-                'choices' => [
-                    'ASC' => 'ASC',
-                    'DESC' => 'DESC'
-                ]
-            ])
-
-            ->add('limit', 'choice', [
-                'choices' => [
-                    '20' => '20',
-                    '50' => '50',
-                    '100' => '100',
-                    '200' => '200'
-                ]
-            ]);
+        $builder->add('search', 'text', [
+            'required' => false
+        ]);
     }
 
     public function getName()

@@ -1,0 +1,42 @@
+{% if pageCount > 1 %}
+    <div class="aui-group aui-group-trio">
+        <div class="aui-item" style="width: 10px"></div>
+        <div class="aui-item">
+            <div class="aui-buttons">
+                {% if first is defined and current != first %}
+                    <a class="aui-button" href="{{ path(route, query|merge({(pageParameterName): first})) }}">
+                        <span class="aui-icon aui-icon-small aui-iconfont-arrows-left"></span>
+                    </a>
+                {% endif %}
+
+                {% if previous is defined %}
+                    <a class="aui-button" href="{{ path(route, query|merge({(pageParameterName): previous})) }}">
+                        <span class="aui-icon aui-icon-small aui-iconfont-devtools-arrow-left"></span>
+                    </a>
+                {% endif %}
+
+                {% for page in pagesInRange %}
+                    {% if page != current %}
+                        <a class="aui-button" href="{{ path(route, query|merge({(pageParameterName): page})) }}">{{ page }}</a>
+                    {% else %}
+                        <span class="aui-button aui-button-primary">{{ page }}</span>
+                    {% endif %}
+
+                {% endfor %}
+
+                {% if next is defined %}
+                    <a class="aui-button" href="{{ path(route, query|merge({(pageParameterName): next})) }}">
+                        <span class="aui-icon aui-icon-small aui-iconfont-devtools-arrow-right"></span>
+                    </a>
+                {% endif %}
+
+                {% if last is defined and current != last %}
+                    <a class="aui-button" href="{{ path(route, query|merge({(pageParameterName): last})) }}">
+                        <span class="aui-icon aui-icon-small aui-iconfont-arrows-right"></span>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="aui-item" style="width: 10px"></div>
+    </div>
+{% endif %}

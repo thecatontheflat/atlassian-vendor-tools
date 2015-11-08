@@ -686,4 +686,9 @@ class License
             ->setEndDate(new \DateTime($data[19]))
             ->setRenewalAction($data[20]);
     }
+
+    public function isNew()
+    {
+        return $this->id == null;
+    }
 }

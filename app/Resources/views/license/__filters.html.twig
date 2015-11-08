@@ -2,7 +2,7 @@
 
 <div class="aui-group">
     <div class="aui-item">
-        {{ form_start(filterForm, {'attr': {'class': 'aui'}}) }}
+        {{ form_start(filterForm, {'attr': {'class': 'aui'}, 'method': 'get'}) }}
             <fieldset class="group">
                 <legend><span>Filter by addon</span></legend>
                 {{ form_widget(filterForm.addonKey) }}
@@ -12,15 +12,17 @@
                 <legend><span>Filter by license</span></legend>
                 {{ form_widget(filterForm.licenseType) }}
             </fieldset>
-            <div class="field-group">
-                <label>Sorting field</label>
-                {{ form_widget(filterForm.sort_field, {'attr': {'class': 'select'}}) }}
-                {{ form_widget(filterForm.sort_direction, {'attr': {'class': 'select'}}) }}
-            </div>
+
             <div class="field-group">
                 <label>Results to show</label>
                 {{ form_widget(filterForm.limit, {'attr': {'class': 'select'}}) }}
             </div>
+
+        <div class="field-group">
+            <label>Search</label>
+            {{ form_widget(filterForm.search) }}
+        </div>
+
             <div class="buttons-container">
                 <div class="buttons">
                     <button class="aui-button aui-button-primary">Apply</button>
