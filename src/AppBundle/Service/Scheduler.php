@@ -6,7 +6,6 @@ use AppBundle\Entity\DrillRegisteredEvent;
 use AppBundle\Entity\DrillRegisteredSchema;
 use AppBundle\Entity\DrillSchemaEvent;
 use AppBundle\Entity\License;
-use AppBundle\Entity\ScheduledEvent;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -43,22 +42,17 @@ class Scheduler
     public function schedule()
     {
         $licenseRepo = $this->em->getRepository('AppBundle:License');
-        $drillSchemaRepo = $this->em->getRepository('AppBundle:DrillSchema');
+        $drillSchemaEventsRepo = $this->em->getRepository('AppBundle:DrillSchemaEvent');
         $licensesWithoutSchema = $licenseRepo->findWithoutRegisteredSchema();
-        $drillSchemas = $drillSchemaRepo->findAllFormatted();
-
         foreach ($licensesWithoutSchema as $license) {
-            if (empty($drillSchemas[$license->getAddonKey()])) {
+            $drillSchemaEvents = $drillSchemaEventsRepo->findByAddonKey($license->getAddonKey());
+            if (empty($drillSchemaEvents)) {
                 continue;
             }
-
-            $drillSchema = $drillSchemas[$license->getAddonKey()];
-            $drillSchemaEvents = $drillSchema->getDrillSchemaEvents();
 
             $drillRegisteredSchema = new DrillRegisteredSchema();
             $drillRegisteredSchema->setLicenseId($license->getLicenseId());
             $drillRegisteredSchema->setAddonKey($license->getAddonKey());
-            $drillRegisteredSchema->setDrillSchema($drillSchema);
             $this->em->persist($drillRegisteredSchema);
 
             foreach ($drillSchemaEvents as $drillSchemaEvent) {

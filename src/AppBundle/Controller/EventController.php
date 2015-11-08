@@ -10,7 +10,6 @@ use AppBundle\Service\MandrillMessage;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use AppBundle\Entity\Event;
 use \Symfony\Component\HttpFoundation\Response;
 use \Symfony\Component\HttpFoundation\RedirectResponse;
 
@@ -55,7 +54,10 @@ class EventController extends Controller
      */
     private function handleForm(Request $request, DrillSchemaEvent $event)
     {
-        $form = $this->createForm(new DrillSchemaEventType(), $event, [
+        $addonKeys = $this->getDoctrine()->getRepository('AppBundle:License')
+            ->getAddonChoices();
+
+        $form = $this->createForm(new DrillSchemaEventType($addonKeys), $event, [
             'method' => 'POST'
         ]);
 

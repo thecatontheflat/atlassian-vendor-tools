@@ -53,6 +53,13 @@ class DrillSchemaEvent
     /**
      * @var string
      *
+     * @ORM\Column(name="addon_key", type="string", length=255)
+     */
+    private $addonKey;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="email_template", type="text", length=65536)
      */
     private $emailTemplate;
@@ -77,12 +84,6 @@ class DrillSchemaEvent
      * @ORM\Column(name="email_from_name", type="string", length=255)
      */
     private $emailFromName;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="DrillSchema", inversedBy="drillSchemaEvents")
-     * @ORM\JoinColumn(name="drill_schema_id", referencedColumnName="id")
-     */
-    protected $drillSchema;
 
     /**
      * @ORM\OneToMany(targetEntity="DrillRegisteredEvent", mappedBy="drillSchemaEvent")
@@ -238,29 +239,6 @@ class DrillSchemaEvent
     }
 
     /**
-     * Set drillSchema
-     *
-     * @param \AppBundle\Entity\DrillSchema $drillSchema
-     * @return DrillSchemaEvent
-     */
-    public function setDrillSchema(\AppBundle\Entity\DrillSchema $drillSchema = null)
-    {
-        $this->drillSchema = $drillSchema;
-
-        return $this;
-    }
-
-    /**
-     * Get drillSchema
-     *
-     * @return \AppBundle\Entity\DrillSchema 
-     */
-    public function getDrillSchema()
-    {
-        return $this->drillSchema;
-    }
-
-    /**
      * Add drillRegisteredEvents
      *
      * @param \AppBundle\Entity\DrillRegisteredEvent $drillRegisteredEvents
@@ -330,5 +308,21 @@ class DrillSchemaEvent
     public function setEmailFromName($emailFromName)
     {
         $this->emailFromName = $emailFromName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAddonKey()
+    {
+        return $this->addonKey;
+    }
+
+    /**
+     * @param string $addonKey
+     */
+    public function setAddonKey($addonKey)
+    {
+        $this->addonKey = $addonKey;
     }
 }

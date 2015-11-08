@@ -2,12 +2,20 @@
 
 namespace AppBundle\Form;
 
+use AppBundle\Entity\LicenseRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class DrillSchemaEventType extends AbstractType
 {
+    private $addonKeys;
+
+    public function __construct($addonKeys)
+    {
+        $this->addonKeys = $addonKeys;
+    }
+
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -36,9 +44,8 @@ class DrillSchemaEventType extends AbstractType
                 ]
             ])
 
-            ->add('drillSchema', 'entity', [
-                'class' => 'AppBundle:DrillSchema',
-                'property' => 'name'
+            ->add('addon', 'choice', [
+                'choices' => $this->addonKeys
             ])
         ;
     }
