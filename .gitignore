@@ -10,4 +10,4 @@
 /vendor/
 /web/bundles/
 .idea
-_coverage
+web/_coverage

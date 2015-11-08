@@ -1,7 +1,7 @@
 <?php
 
 // Resetting DB
-$cmd = 'app/console doctrine:database:drop --force --env=test --if-exists';
+$cmd = 'app/console doctrine:database:drop --force --env=test';
 exec($cmd);
 $cmd = 'app/console doctrine:database:create --env=test';
 exec($cmd);

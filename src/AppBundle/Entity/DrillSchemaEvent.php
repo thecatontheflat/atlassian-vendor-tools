@@ -324,5 +324,7 @@ class DrillSchemaEvent
     public function setAddonKey($addonKey)
     {
         $this->addonKey = $addonKey;
+
+        return $this;
     }
 }
