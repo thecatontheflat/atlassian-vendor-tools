@@ -69,6 +69,9 @@ class ImportLicenseCommand extends ContainerAwareCommand
         return str_getcsv($content, "\n");
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     private function getRemoteFile()
     {
         $container = $this->getContainer();
