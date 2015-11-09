@@ -22,7 +22,7 @@ class ImportSaleCommand extends ContainerAwareCommand
     private $em;
     /** @var SaleMailer */
     private $saleMailer;
-    private $salesNotificationFlag;
+    private $input;
 
     protected function configure()
     {
@@ -37,7 +37,7 @@ class ImportSaleCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->init();
+        $this->init($input);
         $limit = 50;
         $offset = 0;
         $repository = $this->em->getRepository('AppBundle:Sale');
@@ -62,10 +62,6 @@ class ImportSaleCommand extends ContainerAwareCommand
             $output->writeln($e->getMessage());
 
             return;
-        }
-
-        if ($input->getOption('new-sale-notification')) {
-            $this->salesNotificationFlag = true;
         }
 
         $output->writeln(sprintf('Imported %s sales', $total));
@@ -100,16 +96,18 @@ class ImportSaleCommand extends ContainerAwareCommand
                 $sale->setFromJSON($jsonSale);
                 $this->em->persist($sale);
 
-                if (true == $this->salesNotificationFlag) {
+                if (true == $this->input->getOption('new-sale-notification')) {
                     $this->saleMailer->sendEmail($sale);
                 }
             }
         }
     }
 
-    private function init()
+    private function init($input)
     {
         $this->container = $this->getContainer();
+
+        $this->input = $input;
 
         $this->vendorId = $this->container->getParameter('vendor_id');
         $this->login = $this->container->getParameter('vendor_email');
