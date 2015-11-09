@@ -484,7 +484,10 @@ class Sale
 
     public function setFromJSON($json)
     {
-        $this->setLicenseType($json['licenseType'])
+        //@TODO: For some reason there are sales without licenseType. Clarify with AMKT?
+        $licenseType = !empty($json['licenseType']) ? $json['licenseType'] : 'UNKNOWN';
+
+        $this->setLicenseType($licenseType)
             ->setSaleType($json['saleType'])
             ->setLicenseId($json['licenseId'])
             ->setLicenseSize($json['licenseSize'])
