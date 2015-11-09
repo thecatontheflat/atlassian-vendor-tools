@@ -13,11 +13,11 @@ class LoadSaleData implements FixtureInterface
         $sale = $this->createSale(
             'COMMERCIAL',
             'Renewal',
-            'SEN-222222',
+            'SEN-3259293',
             '15 Users',
             'Norway',
             '375',
-            'planning.poker',
+            'agile.estimation.3.0_private.ondemand',
             'AT-123123123',
             null,
             'Planning Poker',

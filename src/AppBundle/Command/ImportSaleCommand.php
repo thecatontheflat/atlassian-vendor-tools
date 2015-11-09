@@ -22,6 +22,7 @@ class ImportSaleCommand extends ContainerAwareCommand
     private $em;
     /** @var SaleMailer */
     private $saleMailer;
+    /** @var InputInterface */
     private $input;
 
     protected function configure()
@@ -31,13 +32,14 @@ class ImportSaleCommand extends ContainerAwareCommand
                 'new-sale-notification',
                 null,
                 InputOption::VALUE_NONE,
-                'If set, the task will email a new sale notification'
+                'Sends the email notification when a new sale is found'
              );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->init($input);
+
         $limit = 50;
         $offset = 0;
         $repository = $this->em->getRepository('AppBundle:Sale');
