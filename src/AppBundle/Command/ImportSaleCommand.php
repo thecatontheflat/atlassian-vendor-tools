@@ -6,6 +6,7 @@ use AppBundle\Entity\Sale;
 use GuzzleHttp\Client;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use AppBundle\Service\SaleMailer;
@@ -21,10 +22,17 @@ class ImportSaleCommand extends ContainerAwareCommand
     private $em;
     /** @var SaleMailer */
     private $saleMailer;
+    private $salesNotificationFlag;
 
     protected function configure()
     {
-        $this->setName('app:import:sale');
+        $this->setName('app:import:sale')
+             ->addOption(
+                'new-sale-notification',
+                null,
+                InputOption::VALUE_NONE,
+                'If set, the task will email a new sale notification'
+             );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -54,6 +62,10 @@ class ImportSaleCommand extends ContainerAwareCommand
             $output->writeln($e->getMessage());
 
             return;
+        }
+
+        if ($input->getOption('new-sale-notification')) {
+            $this->salesNotificationFlag = true;
         }
 
         $output->writeln(sprintf('Imported %s sales', $total));
@@ -88,7 +100,7 @@ class ImportSaleCommand extends ContainerAwareCommand
                 $sale->setFromJSON($jsonSale);
                 $this->em->persist($sale);
 
-                if (true == $this->getContainer()->getParameter('new_sale_notification')) {
+                if (true == $this->salesNotificationFlag) {
                     $this->saleMailer->sendEmail($sale);
                 }
             }
