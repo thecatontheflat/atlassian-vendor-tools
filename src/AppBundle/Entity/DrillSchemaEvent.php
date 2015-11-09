@@ -320,6 +320,8 @@ class DrillSchemaEvent
 
     /**
      * @param string $addonKey
+     *
+     * @return $this
      */
     public function setAddonKey($addonKey)
     {

@@ -44,7 +44,7 @@ class DrillSchemaEventType extends AbstractType
                 ]
             ])
 
-            ->add('addon', 'choice', [
+            ->add('addonKey', 'choice', [
                 'choices' => $this->addonKeys
             ])
         ;
