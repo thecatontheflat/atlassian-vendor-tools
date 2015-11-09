@@ -486,11 +486,12 @@ class Sale
     {
         //@TODO: For some reason there are sales without licenseType. Clarify with AMKT?
         $licenseType = !empty($json['licenseType']) ? $json['licenseType'] : 'UNKNOWN';
+        $licenseSize = !empty($json['licenseSize']) ? $json['licenseSize'] : 'UNKNOWN';
 
         $this->setLicenseType($licenseType)
             ->setSaleType($json['saleType'])
             ->setLicenseId($json['licenseId'])
-            ->setLicenseSize($json['licenseSize'])
+            ->setLicenseSize($licenseSize)
             ->setCountry($json['country'])
             ->setVendorAmount($json['vendorAmount'])
             ->setPluginKey($json['pluginKey'])
