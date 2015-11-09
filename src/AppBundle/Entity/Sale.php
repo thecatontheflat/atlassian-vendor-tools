@@ -484,9 +484,11 @@ class Sale
 
     public function setFromJSON($json)
     {
-        //@TODO: For some reason there are sales without licenseType. Clarify with AMKT?
+        //@TODO: For some reason there are sales with inconsistent data. Clarify with AMKT?
         $licenseType = !empty($json['licenseType']) ? $json['licenseType'] : 'UNKNOWN';
         $licenseSize = !empty($json['licenseSize']) ? $json['licenseSize'] : 'UNKNOWN';
+        $maintenanceEndDate = !empty($json['maintenanceEndDate']) ? $json['maintenanceEndDate'] : $json['date'];
+        $maintenanceStartDate = !empty($json['maintenanceStartDate']) ? $json['maintenanceStartDate'] : $json['date'];
 
         $this->setLicenseType($licenseType)
             ->setSaleType($json['saleType'])
@@ -498,8 +500,8 @@ class Sale
             ->setInvoice($json['invoice'])
             ->setDate(new \DateTime($json['date']))
             ->setPluginName($json['pluginName'])
-            ->setMaintenanceEndDate(new \DateTime($json['maintenanceEndDate']))
-            ->setMaintenanceStartDate(new \DateTime($json['maintenanceStartDate']))
+            ->setMaintenanceEndDate(new \DateTime($maintenanceEndDate))
+            ->setMaintenanceStartDate(new \DateTime($maintenanceStartDate))
             ->setOrganisationName($json['organisationName'])
             ->setDiscounted($json['discounted'])
             ->setPurchasePrice($json['purchasePrice']);
