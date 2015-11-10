@@ -88,7 +88,11 @@ class ImportSaleCommand extends ContainerAwareCommand
         foreach ($jsonSales as $jsonSale) {
             $exists = false;
             foreach ($existingInvoices as $existing) {
-                if ($existing['invoice'] == $jsonSale['invoice'] && $existing['licenseId'] == $jsonSale['licenseId']) {
+                if (
+                    $existing['invoice'] == $jsonSale['invoice'] &&
+                    $existing['licenseId'] == $jsonSale['licenseId'] &&
+                    $existing['pluginKey'] == $jsonSale['pluginKey']
+                ) {
                     $exists = true;
                 }
             }
