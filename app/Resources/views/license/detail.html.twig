@@ -89,6 +89,7 @@
                 {% for sale in sales %}
                     {% set totalSales = totalSales + sale.vendorAmount %}
                     <tr>
+                        <td><a href="{{ path('sale_detail', {'invoice': sale.invoice}) }}">{{ sale.invoice }}</a></td>
                         <td>{{ sale.date|date('Y-m-d') }}</td>
                         <td>${{ sale.vendorAmount }}</td>
                         <td>{{ sale.pluginName }}</td>
@@ -98,6 +99,7 @@
                 <tr>
                     <td><strong>Total:</strong></td>
                     <td><strong>${{ totalSales }}</strong></td>
+                    <td></td>
                     <td></td>
                     <td></td>
                 </tr>
