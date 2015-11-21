@@ -97,14 +97,16 @@ class SaleRepository extends EntityRepository
         return $sales;
     }
     
-    public function findIfSaleIsNew($invoice, $licenseId)
+    public function findIfSaleIsNew($invoice, $licenseId, $pluginKey)
     {
         return count($this->createQueryBuilder('s')
-            ->select(['s.invoice', 's.licenseId'])
+            ->select(['s.invoice', 's.licenseId', 's.pluginKey'])
             ->where('s.invoice = ?1')
             ->andWhere('s.licenseId = ?2')
+            ->andWhere('s.pluginKey = ?3')
             ->setParameter('1', $invoice)
             ->setParameter('2', $licenseId)
+            ->setParameter('3', $pluginKey)
             ->getQuery()
             ->getResult()) == 0;
     }

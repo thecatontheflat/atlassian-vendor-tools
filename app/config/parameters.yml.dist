@@ -23,8 +23,6 @@ parameters:
 
     mandrill_api_key: 123123123
 
-    new_sale_notification: false
-
     mailchimp_enabled: false
     mailchimp_api_key: 123123zaza123123-us1
     mailchimp_api_dc: us1

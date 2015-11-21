@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Sale
  *
- * @ORM\Table(name="sale", uniqueConstraints={@ORM\UniqueConstraint(name="sale", columns={"invoice", "license_id"})})
+ * @ORM\Table(name="sale", uniqueConstraints={@ORM\UniqueConstraint(name="sale", columns={"invoice", "license_id", "plugin_key"})})
  * @ORM\Entity(repositoryClass="AppBundle\Entity\SaleRepository")
  */
 class Sale
@@ -484,18 +484,24 @@ class Sale
 
     public function setFromJSON($json)
     {
-        $this->setLicenseType($json['licenseType'])
+        //@TODO: For some reason there are sales with inconsistent data. Clarify with AMKT?
+        $licenseType = !empty($json['licenseType']) ? $json['licenseType'] : 'UNKNOWN';
+        $licenseSize = !empty($json['licenseSize']) ? $json['licenseSize'] : 'UNKNOWN';
+        $maintenanceEndDate = !empty($json['maintenanceEndDate']) ? $json['maintenanceEndDate'] : $json['date'];
+        $maintenanceStartDate = !empty($json['maintenanceStartDate']) ? $json['maintenanceStartDate'] : $json['date'];
+
+        $this->setLicenseType($licenseType)
             ->setSaleType($json['saleType'])
             ->setLicenseId($json['licenseId'])
-            ->setLicenseSize($json['licenseSize'])
+            ->setLicenseSize($licenseSize)
             ->setCountry($json['country'])
             ->setVendorAmount($json['vendorAmount'])
             ->setPluginKey($json['pluginKey'])
             ->setInvoice($json['invoice'])
             ->setDate(new \DateTime($json['date']))
             ->setPluginName($json['pluginName'])
-            ->setMaintenanceEndDate(new \DateTime($json['maintenanceEndDate']))
-            ->setMaintenanceStartDate(new \DateTime($json['maintenanceStartDate']))
+            ->setMaintenanceEndDate(new \DateTime($maintenanceEndDate))
+            ->setMaintenanceStartDate(new \DateTime($maintenanceStartDate))
             ->setOrganisationName($json['organisationName'])
             ->setDiscounted($json['discounted'])
             ->setPurchasePrice($json['purchasePrice']);

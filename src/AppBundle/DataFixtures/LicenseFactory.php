@@ -1,30 +1,14 @@
 <?php
 
-namespace Acme\HelloBundle\DataFixtures\ORM;
+namespace AppBundle\DataFixtures;
 
-use Doctrine\Common\DataFixtures\FixtureInterface;
-use Doctrine\Common\Persistence\ObjectManager;
 use AppBundle\Entity\License;
 
-class LoadLicenseData implements FixtureInterface
+class LicenseFactory
 {
-    public function load(ObjectManager $manager)
-    {
-        $license1 = $this->createLicense(
-            'SEN-111111', 'Agile Values', 'Planning Poker', 'planning.poker', 'Vitaliy Zurian', 'vitaliy.zurian@agile-values.com', '+49178 174 147 4', null, '+1 months'
-        );
-
-        $license2 = $this->createLicense(
-            'SEN-222222', 'Agile Values', 'Planning Poker', 'planning.poker', 'Vitaliy Zurian', 'vitaliy.zurian@agile-values.com', '+49178 174 147 4', '-1 months', '+5 days'
-        );
-
-        $manager->persist($license1);
-        $manager->persist($license2);
-        $manager->flush();
-    }
-
     /**
      * @param $licenseId
+     * @param $licenseType
      * @param $organisationName
      * @param $addonName
      * @param $addonKey
@@ -36,8 +20,9 @@ class LoadLicenseData implements FixtureInterface
      *
      * @return License
      */
-    private function createLicense(
+    public static function createLicense(
         $licenseId,
+        $licenseType,
         $organisationName,
         $addonName,
         $addonKey,
@@ -50,6 +35,7 @@ class LoadLicenseData implements FixtureInterface
         $license = new License();
         $license
             ->setLicenseId($licenseId)
+            ->setLicenseType($licenseType)
             ->setOrganisationName($organisationName)
             ->setAddonName($addonName)
             ->setAddonKey($addonKey)
