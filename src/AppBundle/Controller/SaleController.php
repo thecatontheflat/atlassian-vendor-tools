@@ -12,10 +12,14 @@ class SaleController extends Controller
     /**
      * @Route("/sales", name="sales")
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
-        $sales = $this->getDoctrine()->getRepository('AppBundle:Sale')->findAll();
-        $salesByAddon = $this->getDoctrine()->getRepository('AppBundle:Sale')->findSalesByAddon();
+        $repository = $this->getDoctrine()->getRepository('AppBundle:Sale');
+        $query = $repository->getFilteredQuery([]);
+        $paginator  = $this->get('knp_paginator');
+        $sales = $paginator->paginate($query, $request->query->getInt('page', 1), 50);
+
+        $salesByAddon = $repository->findSalesByAddon();
 
         return $this->render(':sale:index.html.twig', [
             'sales' => $sales,
