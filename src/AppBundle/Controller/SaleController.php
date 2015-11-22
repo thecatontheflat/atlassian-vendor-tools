@@ -21,7 +21,7 @@ class SaleController extends Controller
 
         $salesByAddon = $repository->findSalesByAddon();
 
-        return $this->render(':sale:index.html.twig', [
+        return $this->render(':sale:list.html.twig', [
             'sales' => $sales,
             'salesByAddon' => $salesByAddon
         ]);
