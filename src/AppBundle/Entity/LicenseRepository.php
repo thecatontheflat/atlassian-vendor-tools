@@ -30,7 +30,6 @@ class LicenseRepository extends EntityRepository
     {
         $builder = $this->createQueryBuilder('l')
             ->orderBy('l.startDate', 'DESC');
-        ;
 
         if (!empty($filters['addonKey'])) {
             $builder->andWhere('l.addonKey IN (:addonKeys)');

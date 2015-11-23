@@ -147,4 +147,12 @@ class SaleRepository extends EntityRepository
 
         return $results;
     }
+
+    public function getFilteredQuery($filters)
+    {
+        $builder = $this->createQueryBuilder('s')
+            ->orderBy('s.date', 'DESC');
+
+        return $builder->getQuery();
+    }
 }

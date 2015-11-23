@@ -1,0 +1,21 @@
+{% extends '::base.html.twig' %}
+
+{% block content %}
+    <h2>Sales by Add-On</h2>
+    <div class="aui-group">
+        <div id="sales-by-addon" style="width:100%; height:300px;"></div>
+    </div>
+
+    <h2>All Sales ({{ sales.totalItemCount }})</h2>
+    {{ knp_pagination_render(sales) }}
+
+    <div class="aui-group">
+        {% include ':other:sale_table.html.twig' with {'sales': sales}  %}
+    </div>
+
+    {{ knp_pagination_render(sales) }}
+{% endblock %}
+
+{% block js %}
+    {% include ':sale:_sales-by-addon-chart.html.twig' %}
+{% endblock %}

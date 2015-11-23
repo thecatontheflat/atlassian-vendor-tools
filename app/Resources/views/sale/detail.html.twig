@@ -1,0 +1,96 @@
+{% extends '::base.html.twig' %}
+
+{% block content %}
+    <h2>Sale Details</h2>
+           <div class="aui-group">
+            <div class="aui-item">
+                <h3>{{ sale.pluginName }}</h3>
+                <table class="aui">
+                    <tbody>
+                    <tr>
+                        <td><h6>SALE ID</h6></td>
+                        <td>{{ sale.id }}</td>
+                    </tr>
+
+                    <tr>
+                        <td><h6>SALE TYPE</h6></td>
+                        <td>{{ sale.saleType }}</td>
+                    </tr>
+
+                    <tr>
+                        <td><h6>LICENSE ID</h6></td>
+                        <td>{{ sale.licenseId }} </td>
+                    </tr>
+
+                    <tr>
+                        <td><h6>LICENCE SIZE</h6></td>
+                        <td> {{ sale.licenseSize }} </td>
+                    </tr>
+
+                    <tr>
+                        <td><h6>COUNTRY</h6></td>
+                        <td>{{ sale.country }} </td>
+                    </tr>
+
+                    <tr>
+                        <td><h6>VENDOR AMOUNT</h6></td>
+                        <td>{{ sale.vendorAmount }}</td>
+                    </tr>
+
+                    <tr>
+                        <td><h6>PLUGIN KEY</h6></td>
+                        <td>{{ sale.pluginKey }}</td>
+                    </tr>
+
+                    <tr>
+                        <td><h6>INVOICE</h6></td>
+                        <td>{{ sale.invoice}}</td>
+                    </tr>
+
+                    <tr>
+                        <td><h6>DATE</h6></td>
+                        <td>{{ sale.date|date('Y-m-d') }}</td>
+                    </tr>
+
+                    <tr>
+                        <td><h6>PLUGIN NAME</h6></td>
+                        <td>{{ sale.pluginName }}</td>
+                    </tr>
+
+                    <tr>
+                        <td><h6>MAINTENANCE END DATE</h6></td>
+                        <td>{{ sale.maintenanceEndDate|date('Y-m-d') }}</td>
+                    </tr>
+
+                    <tr>
+                        <td><h6>MAINTENANCE START DATE</h6></td>
+                        <td>{{ sale.maintenanceStartDate|date('Y-m-d') }}</td>
+                    </tr>
+
+                    <tr>
+                        <td><h6>ORGANISATION NAME</h6></td>
+                        <td>{{ sale.organisationName }}</td>
+                    </tr>
+
+                    <tr>
+                        <td><h6>DISCOUNT</h6></td>
+                        <td>
+                            {% if sale.discounted == null %}
+                            No discount available
+                            {% else %}
+                            {{ sale.discounted }}
+                            {% endif %}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><h6>PURCHASE PRICE</h6></td>
+                        <td>{{ sale.purchasePrice }}</td>
+                    </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+{% endblock %}
