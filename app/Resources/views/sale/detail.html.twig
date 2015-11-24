@@ -1,5 +1,7 @@
 {% extends '::base.html.twig' %}
 
+{% import ':other:macro.html.twig' as macro %}
+
 {% block content %}
     <h2>Sale Details</h2>
            <div class="aui-group">
@@ -19,7 +21,7 @@
 
                     <tr>
                         <td><h6>LICENSE ID</h6></td>
-                        <td>{{ sale.licenseId }} </td>
+                        <td>{{ macro.licenseUrl(sale.licenseId) }}</td>
                     </tr>
 
                     <tr>
