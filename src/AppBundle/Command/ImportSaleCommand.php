@@ -49,13 +49,14 @@ class ImportSaleCommand extends ContainerAwareCommand
             do {
                 $json = $this->getSales($limit, $offset);
                 $total = $json['numSales'];
-                $newCnt = $newCnt + $this->saveSales($json['sales'], $repository);
+                $newCur = $this->saveSales($json['sales'], $repository);
+                $newCnt = $newCnt + $newCur;
                 $this->em->flush();
 
                 $offset += count($json['sales']);
 
                 $output->writeln(sprintf('Imported %s of %s sales, %s new so far', $offset, $total, $newCnt));
-            } while ($total > $offset);
+            } while ($total > $offset and $newCur > 0);
 
         } catch (\Exception $e) {
             $output->writeln($e->getMessage());
@@ -63,7 +64,7 @@ class ImportSaleCommand extends ContainerAwareCommand
             return;
         }
 
-        $output->writeln(sprintf('Imported %s sales', $total));
+        $output->writeln(sprintf('Imported %s sales', $offset));
     }
 
     private function getSales($limit, $offset)
