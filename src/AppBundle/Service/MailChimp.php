@@ -68,8 +68,13 @@ class MailChimp
             $client = new Client();
             $client->post($url, $headers);
 
-            $this->output->writeln('Added '.$license->getTechContactEmail().' to the '.$listId);
+            $this->output->writeln('Added '.$license->getTechContactEmail().' to mailchimp list '.$listId);
         } catch (ClientException $e) {
+            $err = $e->getMessage();
+            if ($e->hasResponse()) {
+                $err = $e->getResponse()->getBody();
+            }
+            $this->output->writeln('Failed to add '.$license->getTechContactEmail().' to mailchimp list '.$listId.' due to error: '.$err);
         }
     }
 

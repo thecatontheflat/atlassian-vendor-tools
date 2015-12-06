@@ -42,23 +42,21 @@ class ImportSaleCommand extends ContainerAwareCommand
 
         $limit = 50;
         $offset = 0;
+        $newCnt = 0;
         $repository = $this->em->getRepository('AppBundle:Sale');
-        $existingInvoices = $repository->findExistingInvoices();
 
         try {
-            $json = $this->getSales($limit, $offset);
-            $this->saveSales($json['sales'], $existingInvoices);
-            $output->writeln('Saving bunch of sales...');
-            $total = $json['numSales'];
-            $this->em->flush();
-
             do {
-                $offset += $limit;
                 $json = $this->getSales($limit, $offset);
-                $this->saveSales($json['sales'], $existingInvoices);
-                $output->writeln('Saving bunch of sales...');
+                $total = $json['numSales'];
+                $newCur = $this->saveSales($json['sales'], $repository);
+                $newCnt = $newCnt + $newCur;
                 $this->em->flush();
-            } while ($total > ($limit + $offset));
+
+                $offset += count($json['sales']);
+
+                $output->writeln(sprintf('Imported %s of %s sales, %s new so far', $offset, $total, $newCnt));
+            } while ($total > $offset and $newCur > 0);
 
         } catch (\Exception $e) {
             $output->writeln($e->getMessage());
@@ -66,7 +64,7 @@ class ImportSaleCommand extends ContainerAwareCommand
             return;
         }
 
-        $output->writeln(sprintf('Imported %s sales', $total));
+        $output->writeln(sprintf('Imported %s sales', $offset));
     }
 
     private function getSales($limit, $offset)
@@ -83,21 +81,13 @@ class ImportSaleCommand extends ContainerAwareCommand
         return $response->json();
     }
 
-    private function saveSales($jsonSales, $existingInvoices)
+    private function saveSales($jsonSales, $repository)
     {
-        foreach ($jsonSales as $jsonSale) {
-            $exists = false;
-            foreach ($existingInvoices as $existing) {
-                if (
-                    $existing['invoice'] == $jsonSale['invoice'] &&
-                    $existing['licenseId'] == $jsonSale['licenseId'] &&
-                    $existing['pluginKey'] == $jsonSale['pluginKey']
-                ) {
-                    $exists = true;
-                }
-            }
+        $newCnt = 0;
 
-            if (!$exists) {
+        foreach ($jsonSales as $jsonSale) {
+            if ($repository->findIfSaleIsNew($jsonSale['invoice'], $jsonSale['licenseId'], $jsonSale['pluginKey'])) {
+                $newCnt++;
                 $sale = new Sale();
                 $sale->setFromJSON($jsonSale);
                 $this->em->persist($sale);
@@ -107,6 +97,8 @@ class ImportSaleCommand extends ContainerAwareCommand
                 }
             }
         }
+
+        return $newCnt;
     }
 
     private function init($input)

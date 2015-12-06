@@ -39,8 +39,11 @@ class ImportLicenseCommand extends ContainerAwareCommand
         } else {
             $csv = $this->getRemoteFile();
         }
-
+        
         unset($csv[0]);
+        $readCnt = 0;
+        $newCnt = 0;
+        
         foreach ($csv as $row) {
             $row = trim($row);
             if (empty($row)) continue;
@@ -50,8 +53,15 @@ class ImportLicenseCommand extends ContainerAwareCommand
             $license->setFromCSV($data);
 
             $mailChimp->addToList($license);
+            if ($license->isNew()) {
+                $newCnt++;
+            }
+            $readCnt++;
 
             $em->persist($license);
+            
+            if (($readCnt % 100) == 0)
+                $output->writeln(sprintf('Imported %s of %s licenses, %s new so far', $readCnt, count($csv), $newCnt));
         }
 
         $em->flush();
