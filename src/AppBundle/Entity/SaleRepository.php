@@ -80,18 +80,24 @@ class SaleRepository extends EntityRepository
         }
 
         $result = $this->createQueryBuilder('s')
-            ->select(['s.licenseId', 's.vendorAmount', 's.date'])
+            ->select(['s.licenseId', 's.pluginKey', 's.vendorAmount', 's.date'])
             ->where('s.licenseId IN (?1)')
             ->setParameter('1', array_values($licenseIds))
-            ->groupBy('s.licenseId')
-            ->orderBy('s.licenseId', 'DESC')
-            ->addOrderBy('s.date', 'DESC')
+            ->orderBy('s.date', 'DESC')
+            ->addOrderBy('s.licenseId', 'DESC')
+            ->addOrderBy('s.pluginKey', 'DESC')
             ->getQuery()
             ->getResult();
 
         $sales = [];
+        // Kind of grouping by taking the first item from the ordered result set
         foreach ($result as $sale) {
-            $sales[$sale['licenseId']] = $sale;
+            $key = $sale['licenseId'].$sale['pluginKey'];
+            if (!empty($sales[$key])) {
+                continue;
+            }
+
+            $sales[$key] = $sale;
         }
 
         return $sales;
