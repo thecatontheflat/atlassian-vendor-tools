@@ -3,10 +3,10 @@
 {% import ':other:macro.html.twig' as macro %}
 
 {% block content %}
-    <h2>Started Today</h2>
+    <h2>Recent Licenses</h2>
     <div class="aui-group">
-        <div class="aui-item" id="started-today">
-            {% include ':other:license_table.html.twig' with {'licenses': starters} %}
+        <div class="aui-item" id="recent-licenses">
+            {% include ':other:license_table.html.twig' with {'licenses': recent} %}
         </div>
     </div>
 

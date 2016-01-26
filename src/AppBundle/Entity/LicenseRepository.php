@@ -123,11 +123,11 @@ class LicenseRepository extends EntityRepository
     /**
      * @return License[]
      */
-    public function findStartedToday()
+    public function findRecent()
     {
         $result = $this->createQueryBuilder('l')
-            ->where('DATE_DIFF(l.startDate, CURRENT_DATE()) = ?1')
-            ->setParameter('1', 0)
+            ->orderBy('l.startDate', 'DESC')
+            ->setMaxResults(10)
             ->getQuery()
             ->getResult();
 

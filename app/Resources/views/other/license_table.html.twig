@@ -34,8 +34,9 @@
                 <td>{{ license.addonName }}</td>
                 <td>
                     {{ license.licenseType }}
-                    {% if expiringSoonSales[license.licenseId]|default(false) %}
-                        <span class="aui-lozenge aui-lozenge-success aui-lozenge-subtle">${{ expiringSoonSales[license.licenseId].vendorAmount }}</span>
+                    {% set key = license.licenseId ~ license.addonKey %}
+                    {% if expiringSoonSales[key]|default(false) %}
+                        <span class="aui-lozenge aui-lozenge-success aui-lozenge-subtle">${{ expiringSoonSales[key].vendorAmount }}</span>
                     {% endif %}
                 </td>
                 <td>{{ license.startDate|date('Y-m-d') }}</td>
