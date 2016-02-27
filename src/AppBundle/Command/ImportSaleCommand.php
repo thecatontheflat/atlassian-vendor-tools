@@ -90,6 +90,9 @@ class ImportSaleCommand extends ContainerAwareCommand
                 $newCnt++;
                 $sale = new Sale();
                 $sale->setFromJSON($jsonSale);
+
+                if (!$this->allowedForImport($sale)) continue;
+
                 $this->em->persist($sale);
 
                 if (true == $this->input->getOption('new-sale-notification')) {
@@ -115,5 +118,26 @@ class ImportSaleCommand extends ContainerAwareCommand
 
         $urlTemplate = 'https://marketplace.atlassian.com/rest/1.0/vendors/%s/sales';
         $this->url = sprintf($urlTemplate, $this->vendorId);
+    }
+
+    /**
+     * The use-case of filtered add-ons is when a vendor wants to share information only relevant to a certain add-on
+     *
+     * @param Sale $sale
+     *
+     * @return bool
+     */
+    private function allowedForImport(Sale $sale)
+    {
+        if ($this->getContainer()->getParameter('filter_addons_enabled')) {
+            $allowedKeys = $this->getContainer()->getParameter('filter_addons');
+            if (in_array($sale->getPluginKey(), $allowedKeys)) {
+                return true;
+            }
+
+            return false;
+        }
+
+        return true;
     }
 }

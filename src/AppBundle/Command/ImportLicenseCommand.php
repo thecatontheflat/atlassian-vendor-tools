@@ -39,11 +39,11 @@ class ImportLicenseCommand extends ContainerAwareCommand
         } else {
             $csv = $this->getRemoteFile();
         }
-        
+
         unset($csv[0]);
         $readCnt = 0;
         $newCnt = 0;
-        
+
         foreach ($csv as $row) {
             $row = trim($row);
             if (empty($row)) continue;
@@ -52,6 +52,8 @@ class ImportLicenseCommand extends ContainerAwareCommand
             $license = $repository->findOrCreate($data[0], $data[3]);
             $license->setFromCSV($data);
 
+            if (!$this->allowedForImport($license)) continue;
+
             $mailChimp->addToList($license);
             if ($license->isNew()) {
                 $newCnt++;
@@ -59,7 +61,7 @@ class ImportLicenseCommand extends ContainerAwareCommand
             $readCnt++;
 
             $em->persist($license);
-            
+
             if (($readCnt % 100) == 0)
                 $output->writeln(sprintf('Imported %s of %s licenses, %s new so far', $readCnt, count($csv), $newCnt));
         }
@@ -105,5 +107,26 @@ class ImportLicenseCommand extends ContainerAwareCommand
 
             return [];
         }
+    }
+
+    /**
+     * The use-case of filtered add-ons is when a vendor wants to share information only relevant to a certain add-on
+     *
+     * @param License $license
+     *
+     * @return bool
+     */
+    private function allowedForImport(License $license)
+    {
+        if ($this->getContainer()->getParameter('filter_addons_enabled')) {
+            $allowedKeys = $this->getContainer()->getParameter('filter_addons');
+            if (in_array($license->getAddonKey(), $allowedKeys)) {
+                return true;
+            }
+
+            return false;
+        }
+
+        return true;
     }
 }
