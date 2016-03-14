@@ -28,7 +28,7 @@ class DashboardController extends Controller
         $topCustomers = $this->getDoctrine()->getRepository('AppBundle:Sale')
             ->findTopCustomers();
 
-        $estimatedIncome = $this->getDoctrine()->getRepository('AppBundle:Sale')
+        $estimatedIncome = $this->getDoctrine()->getRepository('AppBundle:License')
         ->findEstimatedMonthlyIncome();
 
         return $this->render(':dashboard:index.html.twig', [

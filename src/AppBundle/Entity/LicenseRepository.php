@@ -134,6 +134,81 @@ class LicenseRepository extends EntityRepository
         return $result;
     }
 
+    private function getExpectedValue($date) {
+        // Probability for renewal of a license today given the end date relative to today (normal distribution)
+        // TODO: Change this to integrated probability (cdf) for time between now and month end
+        $pi = 3.141592;
+        $loc = -12.0;
+        $scale = 31.0;
+
+        $today = new \DateTime();
+        $daysToMonthEnd = (new \DateTime('last day of this month'))->diff($today, True)->days;
+        $endDateOffset = $today->diff($date)->days - ($daysToMonthEnd / 2); // Actually get probability for day halfway to month's end
+
+        $renewalProb = 1/($scale*sqrt(2*$pi))*exp(-($endDateOffset-$loc)**2/(2*$scale**2));
+        return $daysToMonthEnd * $renewalProb;
+    }
+
+    private function getPrice($addonKey, $userCnt) {
+        $amount = $this->getEntityManager()->getRepository('AppBundle:Price')->getRenewalPrice($addonKey, $userCnt, 1);
+        if ($amount == 0) {
+            $amount = $this->getEntityManager()->getRepository('AppBundle:Price')->getRenewalPrice($addonKey, $userCnt, 12);
+        }
+        return $amount;
+    }
+
+    public function findEstimatedMonthlyIncome()
+    {
+        $licenses = $this->createQueryBuilder('l')
+            ->where('l.licenseType in (?1)')
+            ->andWhere('l.endDate >= :beginning')
+            ->andWhere('l.endDate <= :end')
+            ->setParameter('1', array_values(['COMMERCIAL', 'STARTER', 'ACADEMIC']))
+            ->setParameter('beginning', new \DateTime('-150 days'))
+            ->setParameter('end', new \DateTime('+175 days'))
+            ->getQuery()
+            ->getResult();
+
+        $yesterday = new \DateTime('-1 days');
+        $endofmonth = new \DateTime('last day of this month');
+
+        $total = 0;
+        foreach ($licenses as $license) {
+            $lastSales = $this->getEntityManager()->getRepository('AppBundle:Sale')->findLastSalesByLicenses(array($license));
+            $lastSale = reset($lastSales);
+
+            $price = 0.8; // Take off Atlassian's share
+
+            if ($license->getLicenseType() == 'ACADEMIC') {
+                $price *= 0.5;
+            }
+
+            if ($license->getEdition() == 'Subscription') {
+                $userCnt = $lastSale['licenseSize'];
+
+                if (($license->getEndDate() < $yesterday)
+                    or ($license->getEndDate() > $endofmonth)) {
+                    // Either uninstalled or not expiring this month
+                    continue;
+                }
+            } else {
+                $userCnt = $license->getEdition();
+
+                // Find probability of license getting renewed this month
+                $price *= $this->getExpectedValue($license->getEndDate());
+            }
+
+            $price *= $this->getPrice($license->getAddonKey(), $userCnt);
+
+            if (reset($lastSales)['discounted'] == 1) {
+                $price += 0.8*$price; // Take off expert's share
+            }
+
+            $total += $price;
+        }
+        return $total;
+    }
+
     /**
      * @return License[]
      */
