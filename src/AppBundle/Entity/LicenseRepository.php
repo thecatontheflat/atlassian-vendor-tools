@@ -134,19 +134,24 @@ class LicenseRepository extends EntityRepository
         return $result;
     }
 
-    private function getExpectedValue($date) {
-        // Probability for renewal of a license today given the end date relative to today (normal distribution)
-        // TODO: Change this to integrated probability (cdf) for time between now and month end
+    private function Erf($x) {
         $pi = 3.141592;
+        $a = 0.140012;
+        return ($x > 0) - ($x < 0) * sqrt(1-exp(-$x**2*(4/$pi+$a*$x**2)/(1+$a*$x**2)));
+    }
+
+    private function NormalCdf($x) {
         $loc = -12.0;
         $scale = 31.0;
+        return 0.5*(1+$this->Erf(($x-$loc)/($scale*sqrt(2))));
+    }
 
-        $today = new \DateTime();
-        $daysToMonthEnd = (new \DateTime('last day of this month'))->diff($today, True)->days;
-        $endDateOffset = $today->diff($date)->days - ($daysToMonthEnd / 2); // Actually get probability for day halfway to month's end
+    private function getExpectedValue($date) {
+        // Probability for renewal of a license today given the end date relative to today (normal distribution)
+        $todayOffset = (int) $date->diff(new \DateTime('yesterday'))->format("%r%a");
+        $endOfMonthOffset = (int) $date->diff(new \DateTime('last day of this month'))->format("%r%a");
 
-        $renewalProb = 1/($scale*sqrt(2*$pi))*exp(-($endDateOffset-$loc)**2/(2*$scale**2));
-        return $daysToMonthEnd * $renewalProb;
+        return $this->NormalCdf($endOfMonthOffset)-$this->NormalCdf($todayOffset);
     }
 
     private function getPrice($addonKey, $userCnt) {
