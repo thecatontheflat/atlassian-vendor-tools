@@ -146,20 +146,27 @@ class LicenseRepository extends EntityRepository
         return 0.5*(1+$this->Erf(($x-$loc)/($scale*sqrt(2))));
     }
 
-    private function getExpectedValue($date) {
-        // Probability for renewal of a license today given the end date relative to today (normal distribution)
-        $todayOffset = (int) $date->diff(new \DateTime('yesterday'))->format("%r%a");
-        $endOfMonthOffset = (int) $date->diff(new \DateTime('last day of this month'))->format("%r%a");
+    private function getExpectedValue($endDate, $renewalType) {
+        $yesterday = new \DateTime('-1 day');
+        $endofmonth = new \DateTime('last day of this month');
 
-        return $this->NormalCdf($endOfMonthOffset)-$this->NormalCdf($todayOffset);
+        if ($renewalType == "AUTO_RENEW") {
+            if (($endDate >= $yesterday) and ($endDate <= $endofmonth)) {
+                return 1.0;
+            } else {
+                return 0.0;
+            }
+        } else {
+            // Probability for renewal of a license today given the end date relative to today (normal distribution)
+            $renewalRate = 0.9;
+            $endOfMonthOffset = (int)$endDate->diff($endofmonth)->format("%r%a");
+
+            return $renewalRate * $this->NormalCdf($endOfMonthOffset);
+        }
     }
 
-    private function getPrice($addonKey, $userCnt) {
-        $amount = $this->getEntityManager()->getRepository('AppBundle:Price')->getRenewalPrice($addonKey, $userCnt, 1);
-        if ($amount == 0) {
-            $amount = $this->getEntityManager()->getRepository('AppBundle:Price')->getRenewalPrice($addonKey, $userCnt, 12);
-        }
-        return $amount;
+    private function getPrice($addonKey, $userCnt, $renewalLength) {
+        return $this->getEntityManager()->getRepository('AppBundle:Price')->getRenewalPrice($addonKey, $userCnt, $renewalLength);
     }
 
     public function findEstimatedMonthlyIncome()
@@ -188,22 +195,20 @@ class LicenseRepository extends EntityRepository
                 $price *= 0.5;
             }
 
-            if ($license->getEdition() == 'Subscription') {
+            // Get user count
+            $userCnt = $license->getEdition();
+            $renewalLength = 12;
+            if ($userCnt == 'Subscription') {
                 $userCnt = $lastSale['licenseSize'];
-
-                if (($license->getEndDate() < $yesterday)
-                    or ($license->getEndDate() > $endofmonth)) {
-                    // Either uninstalled or not expiring this month
-                    continue;
+                if ($lastSale['maintenanceEndDate']->diff($lastSale['maintenanceStartDate'])->days < 45) {
+                    $renewalLength = 1;
                 }
-            } else {
-                $userCnt = $license->getEdition();
-
-                // Find probability of license getting renewed this month
-                $price *= $this->getExpectedValue($license->getEndDate());
             }
 
-            $price *= $this->getPrice($license->getAddonKey(), $userCnt);
+            $price *= $this->getPrice($license->getAddonKey(), $userCnt, $renewalLength);
+
+            // Find probability of license getting renewed this month
+            $price *= $this->getExpectedValue($license->getEndDate(), $license->getRenewalAction());
 
             if (reset($lastSales)['discounted'] == 1) {
                 $price += 0.8*$price; // Take off expert's share

@@ -80,7 +80,7 @@ class SaleRepository extends EntityRepository
         }
 
         $result = $this->createQueryBuilder('s')
-            ->select(['s.licenseId', 's.pluginKey', 's.vendorAmount', 's.date', 's.discounted', 's.licenseSize'])
+            ->select(['s.licenseId', 's.pluginKey', 's.vendorAmount', 's.date', 's.discounted', 's.licenseSize', 's.maintenanceEndDate', 's.maintenanceStartDate'])
             ->where('s.licenseId IN (?1)')
             ->setParameter('1', array_values($licenseIds))
             ->orderBy('s.date', 'DESC')
