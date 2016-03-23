@@ -161,7 +161,7 @@ class LicenseRepository extends EntityRepository
             $renewalRate = 0.9;
             $endOfMonthOffset = (int)$endDate->diff($endofmonth)->format("%r%a");
 
-            return $renewalRate * $this->NormalCdf($endOfMonthOffset);
+            return $renewalRate * $this->NormalCdf($endOfMonthOffset) / 30 * ((new \DateTime())->diff($endofmonth)->days+1);
         }
     }
 
