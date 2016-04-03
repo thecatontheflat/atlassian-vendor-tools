@@ -141,8 +141,8 @@ class LicenseRepository extends EntityRepository
     }
 
     private function NormalCdf($x) {
-        $loc = -12.0;
-        $scale = 31.0;
+        $loc = -17.0;
+        $scale = 4;
         return 0.5*(1+$this->Erf(($x-$loc)/($scale*sqrt(2))));
     }
 
@@ -158,7 +158,7 @@ class LicenseRepository extends EntityRepository
             }
         } else {
             // Probability for renewal of a license today given the end date relative to today (normal distribution)
-            $renewalRate = 0.9;
+            $renewalRate = 0.65;
             $endOfMonthOffset = (int)$endDate->diff($endofmonth)->format("%r%a");
 
             return $renewalRate * $this->NormalCdf($endOfMonthOffset) / 30 * ((new \DateTime())->diff($endofmonth)->days+1);
@@ -176,8 +176,8 @@ class LicenseRepository extends EntityRepository
             ->andWhere('l.endDate >= :beginning')
             ->andWhere('l.endDate <= :end')
             ->setParameter('1', array_values(['COMMERCIAL', 'STARTER', 'ACADEMIC']))
-            ->setParameter('beginning', new \DateTime('-150 days'))
-            ->setParameter('end', new \DateTime('+175 days'))
+            ->setParameter('beginning', new \DateTime('-360 days'))
+            ->setParameter('end', new \DateTime('+360 days'))
             ->getQuery()
             ->getResult();
 
@@ -199,9 +199,13 @@ class LicenseRepository extends EntityRepository
             $userCnt = $license->getEdition();
             $renewalLength = 12;
             if ($userCnt == 'Subscription') {
-                $userCnt = $lastSale['licenseSize'];
-                if ($lastSale['maintenanceEndDate']->diff($lastSale['maintenanceStartDate'])->days < 45) {
-                    $renewalLength = 1;
+                if ($lastSale) {
+                    $userCnt = $lastSale['licenseSize'];
+                    if ($lastSale['maintenanceEndDate']->diff($lastSale['maintenanceStartDate'])->days < 45) {
+                        $renewalLength = 1;
+                    }
+                } else {
+                    $price = 0; // No way to find the price for this one, so we give up
                 }
             }
 
@@ -210,8 +214,8 @@ class LicenseRepository extends EntityRepository
             // Find probability of license getting renewed this month
             $price *= $this->getExpectedValue($license->getEndDate(), $license->getRenewalAction());
 
-            if (reset($lastSales)['discounted'] == 1) {
-                $price += 0.8*$price; // Take off expert's share
+            if ($lastSale && ($lastSale['discounted'] == 1)) {
+                $price *= 0.8; // Take off expert's share
             }
 
             $total += $price;
