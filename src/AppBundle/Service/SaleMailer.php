@@ -23,9 +23,13 @@ class SaleMailer
 
     public function sendEmail(Sale $sale)
     {
+        $saleType = $sale->getSaleType();
+        if ($saleType != 'Renewal') {
+            $saleType = 'New Sale';
+        }
         $message = [
             'html' => $this->getHTML($sale),
-            'subject' => 'MPCRM - New Sale!',
+            'subject' => 'MPCRM - '.$saleType.'!',
             'from_email' => $this->email,
             'to' => [['email' => $this->email]],
             'track_clicks' => false,
@@ -39,8 +43,7 @@ class SaleMailer
     {
         $url = $this->baseUrl.'/license/'.$sale->getLicenseId();
 
-        $html = '<h1>Congrats!</h1>';
-        $html .= '<p>Yet another license has been sold for <strong>$%s</strong></p>';
+        $html = '<p>A license has been sold for <strong>$%s</strong></p>';
         $html .= '<p>License details:</p>';
         $html .= '<table>'.
             '<tr><td>Customer</td><td>%s</td></tr>'.
