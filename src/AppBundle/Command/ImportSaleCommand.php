@@ -24,6 +24,8 @@ class ImportSaleCommand extends ContainerAwareCommand
     private $saleMailer;
     /** @var InputInterface */
     private $input;
+    /** @var OutputInterface */
+    private $output;
 
     protected function configure()
     {

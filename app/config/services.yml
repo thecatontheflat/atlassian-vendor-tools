@@ -11,16 +11,13 @@ services:
         class: AppBundle\Service\Scheduler
         arguments: [@doctrine.orm.entity_manager]
 
-    app.mandrill:
-        class: Mandrill
-        arguments: [%mandrill_api_key%]
-
     app.sale.mailer:
         class: AppBundle\Service\SaleMailer
         arguments:
-            - @app.mandrill
-            - %vendor_email%
+            - @mailer
             - %base_url%
+            - %mailer_user%
+            - %vendor_email%
 
     app.service.mailchimp:
         class: AppBundle\Service\MailChimp

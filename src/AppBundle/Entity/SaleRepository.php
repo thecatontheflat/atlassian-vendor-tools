@@ -32,7 +32,7 @@ class SaleRepository extends EntityRepository
 
         $groupedSales = [];
         foreach ($sales as $sale) {
-            $this->addMonltySale($groupedSales, $sale);
+            $this->addMonthlySale($groupedSales, $sale);
         }
 
         $groupedSales = array_reverse($groupedSales, true);
@@ -41,7 +41,7 @@ class SaleRepository extends EntityRepository
         return $groupedSales;
     }
 
-    private function addMonltySale(&$groupedSales, Sale $sale)
+    private function addMonthlySale(&$groupedSales, Sale $sale)
     {
         if (!isset($groupedSales[$sale->getDate()->format('Y-m')])) {
             $monthlySale = [

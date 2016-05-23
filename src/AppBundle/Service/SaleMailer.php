@@ -2,37 +2,35 @@
 
 namespace AppBundle\Service;
 
-
 use AppBundle\Entity\Sale;
 
 class SaleMailer
 {
     /**
-     * @var \Mandrill
+     * @var \Swift_Mailer
      */
-    private $mandrill;
-    private $email;
+    private $mailer;
     private $baseUrl;
+    private $from;
+    private $to;
 
-    public function __construct(\Mandrill $mandrill, $email, $baseUrl)
+    public function __construct(\Swift_Mailer $mailer, $baseUrl, $from, $to)
     {
-        $this->mandrill = $mandrill;
-        $this->email = $email;
         $this->baseUrl = $baseUrl;
+        $this->mailer = $mailer;
+        $this->from = $from;
+        $this->to = $to;
     }
 
     public function sendEmail(Sale $sale)
     {
-        $message = [
-            'html' => $this->getHTML($sale),
-            'subject' => 'MPCRM - New Sale!',
-            'from_email' => $this->email,
-            'to' => [['email' => $this->email]],
-            'track_clicks' => false,
-            'track_opens' => false
-        ];
+        $message = \Swift_Message::newInstance()
+            ->setSubject('MPCRM - New Sale!')
+            ->setFrom($this->from, 'MPCRM')
+            ->setTo($this->to)
+            ->setBody($this->getHTML($sale), 'text/html');
 
-        $this->mandrill->messages->send($message, true);
+        $this->mailer->send($message);
     }
 
     private function getHTML(Sale $sale)

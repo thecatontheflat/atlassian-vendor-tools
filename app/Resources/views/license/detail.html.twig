@@ -1,7 +1,5 @@
 {% extends '::base.html.twig' %}
 
-{% from ':other:macro.html.twig' import drillProgress %}
-
 {% block content %}
     <h2>License Details</h2>
     {% for license in licenses %}
@@ -68,15 +66,6 @@
 
                 </tbody>
             </table>
-        </div>
-    </div>
-    <div class="aui-group">
-        <div class="aui-item">
-            {% for drill in registeredDrills if license.addonKey == drill.addonKey %}
-                <h3>Drill Progress for {{ license.addonName }}</h3>
-                <a href="{{ url('drill_cancel', {'id': drill.id}) }}" class="aui-button aui-button-primary">Cancel Drill</a>
-                {{  drillProgress(drill) }}
-            {% endfor %}
         </div>
     </div>
     {% endfor %}

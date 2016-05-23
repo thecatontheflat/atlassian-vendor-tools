@@ -29,7 +29,6 @@ class ImportLicenseCommand extends ContainerAwareCommand
         $this->output = $output;
 
         $container = $this->getContainer();
-        $scheduler = $container->get('app.scheduler')->setOutput($output);;
         $mailChimp = $container->get('app.service.mailchimp')->setOutput($output);
         $em = $container->get('doctrine')->getManager();
         $repository = $container->get('doctrine')->getRepository('AppBundle:License');
@@ -69,8 +68,6 @@ class ImportLicenseCommand extends ContainerAwareCommand
         $em->flush();
 
         $output->writeln(sprintf('Imported %s licenses', count($csv)));
-
-        $scheduler->schedule();
     }
 
     private function getLocalFile()
