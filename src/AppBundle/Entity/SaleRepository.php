@@ -17,7 +17,7 @@ class SaleRepository extends EntityRepository
     {
         $result = $this->createQueryBuilder('s')
             ->select(['s.licenseId', 's.organisationName', 'SUM(s.vendorAmount) as total'])
-            ->groupBy('s.licenseId')
+            ->groupBy('s.licenseId', 's.organisationName')
             ->orderBy('total', 'DESC')
             ->setMaxResults(10)
             ->getQuery()
