@@ -17,7 +17,7 @@ class SaleRepository extends EntityRepository
     {
         $result = $this->createQueryBuilder('s')
             ->select(['s.licenseId', 's.organisationName', 'SUM(s.vendorAmount) as total'])
-            ->groupBy('s.licenseId')
+            ->groupBy('s.licenseId', 's.organisationName')
             ->orderBy('total', 'DESC')
             ->setMaxResults(10)
             ->getQuery()
@@ -80,7 +80,7 @@ class SaleRepository extends EntityRepository
         }
 
         $result = $this->createQueryBuilder('s')
-            ->select(['s.licenseId', 's.pluginKey', 's.vendorAmount', 's.date'])
+            ->select(['s.licenseId', 's.pluginKey', 's.vendorAmount', 's.date', 's.discounted', 's.licenseSize', 's.maintenanceEndDate', 's.maintenanceStartDate'])
             ->where('s.licenseId IN (?1)')
             ->setParameter('1', array_values($licenseIds))
             ->orderBy('s.date', 'DESC')
@@ -115,32 +115,6 @@ class SaleRepository extends EntityRepository
             ->setParameter('3', $pluginKey)
             ->getQuery()
             ->getResult()) == 0;
-    }
-
-    public function findEstimatedMonthlyIncome()
-    {
-        $beginning = new \DateTime();
-        $end = new \DateTime('last day of this month');
-
-        $licenses = $this->getEntityManager()->getRepository('AppBundle:License')
-            ->createQueryBuilder('l')
-            ->where('l.licenseType = ?1')
-            ->andWhere('l.endDate >= :beginning')
-            ->andWhere('l.endDate <= :end')
-            ->setParameter('1', 'COMMERCIAL')
-            ->setParameter('beginning', $beginning)
-            ->setParameter('end', $end)
-            ->getQuery()
-            ->getResult();
-
-        $lastSales = $this->findLastSalesByLicenses($licenses);
-
-        $total = 0;
-        foreach ($lastSales as $sale) {
-            $total += $sale['vendorAmount'];
-        }
-
-        return $total;
     }
 
     public function findSalesByAddon()

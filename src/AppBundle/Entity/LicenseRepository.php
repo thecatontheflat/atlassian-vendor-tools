@@ -134,6 +134,95 @@ class LicenseRepository extends EntityRepository
         return $result;
     }
 
+    private function Erf($x) {
+        $pi = 3.141592;
+        $a = 0.140012;
+        return ($x > 0) - ($x < 0) * sqrt(1-exp(-$x**2*(4/$pi+$a*$x**2)/(1+$a*$x**2)));
+    }
+
+    private function NormalCdf($x) {
+        $loc = -17.0;
+        $scale = 4;
+        return 0.5*(1+$this->Erf(($x-$loc)/($scale*sqrt(2))));
+    }
+
+    private function getExpectedValue($endDate, $renewalType) {
+        $yesterday = new \DateTime('-1 day');
+        $endofmonth = new \DateTime('last day of this month');
+
+        if ($renewalType == "AUTO_RENEW") {
+            if (($endDate >= $yesterday) and ($endDate <= $endofmonth)) {
+                return 1.0;
+            } else {
+                return 0.0;
+            }
+        } else {
+            // Probability for renewal of a license today given the end date relative to today (normal distribution)
+            $renewalRate = 0.65;
+            $endOfMonthOffset = (int)$endDate->diff($endofmonth)->format("%r%a");
+
+            return $renewalRate * $this->NormalCdf($endOfMonthOffset) / 30 * ((new \DateTime())->diff($endofmonth)->days+1);
+        }
+    }
+
+    private function getPrice($addonKey, $userCnt, $renewalLength) {
+        return $this->getEntityManager()->getRepository('AppBundle:Price')->getRenewalPrice($addonKey, $userCnt, $renewalLength);
+    }
+
+    public function findEstimatedMonthlyIncome()
+    {
+        $licenses = $this->createQueryBuilder('l')
+            ->where('l.licenseType in (?1)')
+            ->andWhere('l.endDate >= :beginning')
+            ->andWhere('l.endDate <= :end')
+            ->setParameter('1', array_values(['COMMERCIAL', 'STARTER', 'ACADEMIC']))
+            ->setParameter('beginning', new \DateTime('-360 days'))
+            ->setParameter('end', new \DateTime('+360 days'))
+            ->getQuery()
+            ->getResult();
+
+        $yesterday = new \DateTime('-1 days');
+        $endofmonth = new \DateTime('last day of this month');
+
+        $total = 0;
+        foreach ($licenses as $license) {
+            $lastSales = $this->getEntityManager()->getRepository('AppBundle:Sale')->findLastSalesByLicenses(array($license));
+            $lastSale = reset($lastSales);
+
+            $price = 0.8; // Take off Atlassian's share
+
+            if ($license->getLicenseType() == 'ACADEMIC') {
+                $price *= 0.5;
+            }
+
+            // Get user count
+            $userCnt = $license->getEdition();
+            $renewalLength = 12;
+            if ($userCnt == 'Subscription') {
+                if ($lastSale) {
+                    $userCnt = $lastSale['licenseSize'];
+                    if ($lastSale['maintenanceEndDate']->diff($lastSale['maintenanceStartDate'])->days < 45) {
+                        $renewalLength = 1;
+                    }
+                } else {
+                    $price = 0; // No way to find the price for this one, so we give up
+                }
+            }
+
+            $price *= $this->getPrice($license->getAddonKey(), $userCnt, $renewalLength);
+
+            // Find probability of license getting renewed this month
+            $price *= $this->getExpectedValue($license->getEndDate(), $license->getRenewalAction());
+
+            if ($lastSale && ($lastSale['discounted'] == 1)) {
+                $price *= 0.8; // Take off expert's share
+            }
+
+            $total += $price;
+        }
+        return $total;
+    }
+
     /**
      * @return License[]
      */
