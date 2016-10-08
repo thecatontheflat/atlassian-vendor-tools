@@ -25,9 +25,3 @@ For sponsored development, please contact me vitaliy.zurian@agile-values
 
 ### License details view:
 ![](https://raw.githubusercontent.com/thecatontheflat/atlassian-marketplace-tools/master/docs/7.png)
-
-### Email automation management view:
-![](https://raw.githubusercontent.com/thecatontheflat/atlassian-marketplace-tools/master/docs/6.png)
-
-### Editing email detail view:
-![](https://raw.githubusercontent.com/thecatontheflat/atlassian-marketplace-tools/master/docs/5.png)
