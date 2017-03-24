@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use AppBundle\Service\SaleMailer;
 
-class ImportSaleCommand extends ContainerAwareCommand
+class ImportTransactionCommand extends ContainerAwareCommand
 {
     private $container;
     private $vendorId;
@@ -29,12 +29,12 @@ class ImportSaleCommand extends ContainerAwareCommand
 
     protected function configure()
     {
-        $this->setName('app:import:sale')
+        $this->setName('app:import:transaction')
              ->addOption(
-                'new-sale-notification',
+                'new-transaction-notification',
                 null,
                 InputOption::VALUE_NONE,
-                'Sends the email notification when a new sale is found'
+                'Sends the email notification when a new transaction is found'
              );
     }
 

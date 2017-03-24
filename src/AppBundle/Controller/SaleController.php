@@ -14,7 +14,7 @@ class SaleController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $repository = $this->getDoctrine()->getRepository('AppBundle:Sale');
+        $repository = $this->getDoctrine()->getRepository('AppBundle:Transaction');
         $query = $repository->getFilteredQuery([]);
         $paginator  = $this->get('knp_paginator');
         $sales = $paginator->paginate($query, $request->query->getInt('page', 1), 50);

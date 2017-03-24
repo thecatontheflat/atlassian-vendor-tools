@@ -5,13 +5,18 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Sale
+ * Transaction
  *
- * @ORM\Table(name="sale", uniqueConstraints={@ORM\UniqueConstraint(name="sale", columns={"invoice", "license_id", "plugin_key"})})
- * @ORM\Entity(repositoryClass="AppBundle\Entity\SaleRepository")
+ * @ORM\Table()
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\TransactionRepository")
  */
-class Sale
+class Transaction
 {
+    const SALE_TYPE_NEW = 1;
+    const SALE_TYPE_UPGRADE = 2;
+    const SALE_TYPE_RENEWAL = 3;
+    const SALE_TYPE_REFUND = 4;
+
     /**
      * @var integer
      *
@@ -22,107 +27,71 @@ class Sale
     private $id;
 
     /**
-     * @var string
+     * @var int
      *
-     * @ORM\Column(name="license_type", type="string", length=255)
-     */
-    private $licenseType;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="sale_type", type="string", length=255)
+     * @ORM\Column(type="smallint")
      */
     private $saleType;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="license_id", type="string", length=255)
+     * @ORM\ManyToOne(targetEntity="License", inversedBy="transactions")
      */
-    private $licenseId;
+    private $license;
+
+    /**
+     * @var string
+     * License Size
+     *
+     * @ORM\Column(type="string", length=255)
+     */
+    private $tier;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="license_size", type="string", length=255)
-     */
-    private $licenseSize;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="country", type="string", length=255)
-     */
-    private $country;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="vendor_amount", type="decimal", precision=6, scale=2)
+     * @ORM\Column(type="decimal", precision=6, scale=2)
      */
     private $vendorAmount;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="plugin_key", type="string", length=255)
+     * @ORM\Column(type="string", length=255)
      */
-    private $pluginKey;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="invoice", type="string", length=255)
-     */
-    private $invoice;
+    private $transactionId;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date", type="datetime")
+     * @ORM\Column(type="datetime")
      */
     private $date;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="plugin_name", type="string", length=255)
-     */
-    private $pluginName;
-
-    /**
      * @var \DateTime
      *
-     * @ORM\Column(name="maintenance_end_date", type="datetime")
+     * @ORM\Column(type="datetime")
      */
     private $maintenanceEndDate;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="maintenance_start_date", type="datetime")
+     * @ORM\Column(type="datetime")
      */
     private $maintenanceStartDate;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="organisation_name", type="string", length=255)
-     */
-    private $organisationName;
-
-    /**
      * @var boolean
      *
-     * @ORM\Column(name="discounted", type="boolean")
+     * @ORM\Column(type="boolean")
      */
-    private $discounted;
+    private $discounted; // TODO: cant find it in https://developer.atlassian.com/market/api/2/reference/resource/vendors/%7BvendorId%7D/reporting/sales/transactions
 
     /**
      * @var string
      *
-     * @ORM\Column(name="purchase_price", type="decimal", precision=6, scale=2)
+     * @ORM\Column(type="decimal", precision=6, scale=2)
      */
     private $purchasePrice;
 
@@ -138,36 +107,16 @@ class Sale
     }
 
     /**
-     * Set licenseType
-     *
-     * @param string $licenseType
-     * @return Sale
-     */
-    public function setLicenseType($licenseType)
-    {
-        $this->licenseType = $licenseType;
-
-        return $this;
-    }
-
-    /**
-     * Get licenseType
-     *
-     * @return string 
-     */
-    public function getLicenseType()
-    {
-        return $this->licenseType;
-    }
-
-    /**
      * Set saleType
      *
      * @param string $saleType
-     * @return Sale
+     * @return Transaction
      */
     public function setSaleType($saleType)
     {
+        if(!Transaction::isValidSaleType($saleType)) {
+            throw new \Exception("Invalid saleType - ".$saleType);
+        }
         $this->saleType = $saleType;
 
         return $this;
@@ -184,79 +133,10 @@ class Sale
     }
 
     /**
-     * Set licenseId
-     *
-     * @param string $licenseId
-     * @return Sale
-     */
-    public function setLicenseId($licenseId)
-    {
-        $this->licenseId = $licenseId;
-
-        return $this;
-    }
-
-    /**
-     * Get licenseId
-     *
-     * @return string 
-     */
-    public function getLicenseId()
-    {
-        return $this->licenseId;
-    }
-
-    /**
-     * Set licenseSize
-     *
-     * @param string $licenseSize
-     * @return Sale
-     */
-    public function setLicenseSize($licenseSize)
-    {
-        $this->licenseSize = $licenseSize;
-
-        return $this;
-    }
-
-    /**
-     * Get licenseSize
-     *
-     * @return string 
-     */
-    public function getLicenseSize()
-    {
-        return $this->licenseSize;
-    }
-
-    /**
-     * Set country
-     *
-     * @param string $country
-     * @return Sale
-     */
-    public function setCountry($country)
-    {
-        $this->country = $country;
-
-        return $this;
-    }
-
-    /**
-     * Get country
-     *
-     * @return string 
-     */
-    public function getCountry()
-    {
-        return $this->country;
-    }
-
-    /**
      * Set vendorAmount
      *
      * @param float $vendorAmount
-     * @return Sale
+     * @return Transaction
      */
     public function setVendorAmount($vendorAmount)
     {
@@ -276,56 +156,10 @@ class Sale
     }
 
     /**
-     * Set pluginKey
-     *
-     * @param string $pluginKey
-     * @return Sale
-     */
-    public function setPluginKey($pluginKey)
-    {
-        $this->pluginKey = $pluginKey;
-
-        return $this;
-    }
-
-    /**
-     * Get pluginKey
-     *
-     * @return string 
-     */
-    public function getPluginKey()
-    {
-        return $this->pluginKey;
-    }
-
-    /**
-     * Set invoice
-     *
-     * @param string $invoice
-     * @return Sale
-     */
-    public function setInvoice($invoice)
-    {
-        $this->invoice = $invoice;
-
-        return $this;
-    }
-
-    /**
-     * Get invoice
-     *
-     * @return string 
-     */
-    public function getInvoice()
-    {
-        return $this->invoice;
-    }
-
-    /**
      * Set date
      *
      * @param \DateTime $date
-     * @return Sale
+     * @return Transaction
      */
     public function setDate($date)
     {
@@ -345,33 +179,10 @@ class Sale
     }
 
     /**
-     * Set pluginName
-     *
-     * @param string $pluginName
-     * @return Sale
-     */
-    public function setPluginName($pluginName)
-    {
-        $this->pluginName = $pluginName;
-
-        return $this;
-    }
-
-    /**
-     * Get pluginName
-     *
-     * @return string 
-     */
-    public function getPluginName()
-    {
-        return $this->pluginName;
-    }
-
-    /**
      * Set maintenanceEndDate
      *
      * @param \DateTime $maintenanceEndDate
-     * @return Sale
+     * @return Transaction
      */
     public function setMaintenanceEndDate($maintenanceEndDate)
     {
@@ -394,7 +205,7 @@ class Sale
      * Set maintenanceStartDate
      *
      * @param \DateTime $maintenanceStartDate
-     * @return Sale
+     * @return Transaction
      */
     public function setMaintenanceStartDate($maintenanceStartDate)
     {
@@ -414,33 +225,10 @@ class Sale
     }
 
     /**
-     * Set organisationName
-     *
-     * @param string $organisationName
-     * @return Sale
-     */
-    public function setOrganisationName($organisationName)
-    {
-        $this->organisationName = $organisationName;
-
-        return $this;
-    }
-
-    /**
-     * Get organisationName
-     *
-     * @return string 
-     */
-    public function getOrganisationName()
-    {
-        return $this->organisationName;
-    }
-
-    /**
      * Set discounted
      *
      * @param boolean $discounted
-     * @return Sale
+     * @return Transaction
      */
     public function setDiscounted($discounted)
     {
@@ -463,7 +251,7 @@ class Sale
      * Set purchasePrice
      *
      * @param string $purchasePrice
-     * @return Sale
+     * @return Transaction
      */
     public function setPurchasePrice($purchasePrice)
     {
@@ -507,5 +295,91 @@ class Sale
             ->setPurchasePrice($json['purchasePrice']);
 
         return $this;
+    }
+
+    /**
+     * Set tier
+     *
+     * @param string $tier
+     * @return Transaction
+     */
+    public function setTier($tier)
+    {
+        $this->tier = $tier;
+
+        return $this;
+    }
+
+    /**
+     * Get tier
+     *
+     * @return string 
+     */
+    public function getTier()
+    {
+        return $this->tier;
+    }
+
+    /**
+     * Set transactionId
+     *
+     * @param string $transactionId
+     * @return Transaction
+     */
+    public function setTransactionId($transactionId)
+    {
+        $this->transactionId = $transactionId;
+
+        return $this;
+    }
+
+    /**
+     * Get transactionId
+     *
+     * @return string 
+     */
+    public function getTransactionId()
+    {
+        return $this->transactionId;
+    }
+
+    /**
+     * Set license
+     *
+     * @param \AppBundle\Entity\License $license
+     * @return Transaction
+     */
+    public function setLicense(\AppBundle\Entity\License $license = null)
+    {
+        $this->license = $license;
+
+        return $this;
+    }
+
+    /**
+     * Get license
+     *
+     * @return \AppBundle\Entity\License 
+     */
+    public function getLicense()
+    {
+        return $this->license;
+    }
+
+    public static function getSaleTypes()
+    {
+        $types = [];
+        $class = new \ReflectionClass("\\AppBundle\\Entity\\Transaction");
+        foreach ($class->getConstants() as $constantName=>$value) {
+            if(preg_match("'^SALE_TYPE_(.+)$'sui",$constantName,$match)) {
+                $types[$value] = strtolower($match[1]);
+            }
+        }
+        return $types;
+    }
+
+    public static function isValidSaleType($saleType)
+    {
+        return in_array($saleType,Transaction::getSaleTypes());
     }
 }

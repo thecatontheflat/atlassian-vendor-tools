@@ -1,10 +1,12 @@
 <?php
 
-namespace AppBundle\Entity;
+namespace AppBundle\Repository;
 
+use AppBundle\Entity\License;
+use AppBundle\Entity\Transaction;
 use Doctrine\ORM\EntityRepository;
 
-class SaleRepository extends EntityRepository
+class TransactionRepository extends EntityRepository
 {
     public function removeSales()
     {
@@ -41,31 +43,31 @@ class SaleRepository extends EntityRepository
         return $groupedSales;
     }
 
-    private function addMonthlySale(&$groupedSales, Sale $sale)
+    private function addMonthlySale(&$groupedSales, Transaction $transaction)
     {
-        if (!isset($groupedSales[$sale->getDate()->format('Y-m')])) {
+        if (!isset($groupedSales[$transaction->getDate()->format('Y-m')])) {
             $monthlySale = [
                 'new' => 0.00,
                 'renewal' => 0.00,
                 'other' => 0.00
             ];
         } else {
-            $monthlySale = $groupedSales[$sale->getDate()->format('Y-m')];
+            $monthlySale = $groupedSales[$transaction->getDate()->format('Y-m')];
         }
 
-        switch ($sale->getSaleType()) {
+        switch ($transaction->getSaleType()) {
             case 'Renewal':
-                $monthlySale['renewal'] += $sale->getVendorAmount();
+                $monthlySale['renewal'] += $transaction->getVendorAmount();
                 break;
             case 'New':
-                $monthlySale['new'] += $sale->getVendorAmount();
+                $monthlySale['new'] += $transaction->getVendorAmount();
                 break;
             default:
-                $monthlySale['other'] += $sale->getVendorAmount();
+                $monthlySale['other'] += $transaction->getVendorAmount();
                 break;
         }
 
-        $groupedSales[$sale->getDate()->format('Y-m')] = $monthlySale;
+        $groupedSales[$transaction->getDate()->format('Y-m')] = $monthlySale;
     }
 
     /**
@@ -102,19 +104,19 @@ class SaleRepository extends EntityRepository
 
         return $sales;
     }
-    
+
     public function findIfSaleIsNew($invoice, $licenseId, $pluginKey)
     {
         return count($this->createQueryBuilder('s')
-            ->select(['s.invoice', 's.licenseId', 's.pluginKey'])
-            ->where('s.invoice = ?1')
-            ->andWhere('s.licenseId = ?2')
-            ->andWhere('s.pluginKey = ?3')
-            ->setParameter('1', $invoice)
-            ->setParameter('2', $licenseId)
-            ->setParameter('3', $pluginKey)
-            ->getQuery()
-            ->getResult()) == 0;
+                ->select(['s.invoice', 's.licenseId', 's.pluginKey'])
+                ->where('s.invoice = ?1')
+                ->andWhere('s.licenseId = ?2')
+                ->andWhere('s.pluginKey = ?3')
+                ->setParameter('1', $invoice)
+                ->setParameter('2', $licenseId)
+                ->setParameter('3', $pluginKey)
+                ->getQuery()
+                ->getResult()) == 0;
     }
 
     public function findEstimatedMonthlyIncome()

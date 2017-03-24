@@ -1,7 +1,8 @@
 <?php
 
-namespace AppBundle\Entity;
+namespace AppBundle\Repository;
 
+use AppBundle\Entity\License;
 use Doctrine\ORM\EntityRepository;
 
 class LicenseRepository extends EntityRepository
@@ -74,33 +75,6 @@ class LicenseRepository extends EntityRepository
         }
 
         return $choices;
-    }
-
-    /**
-     * @param $event
-     *
-     * @return License[]
-     */
-    public function findForEvent(Event $event)
-    {
-        if ('startDate' == $event->getLicenseField()) {
-            $where = 'DATE_DIFF(CURRENT_DATE(), l.startDate) = ?1';
-        } else {
-            $where = 'DATE_DIFF(l.endDate, CURRENT_DATE()) = ?1';
-        }
-
-        $criteria = $this->createQueryBuilder('l')
-            ->where($where)
-            ->andWhere('l.licenseType = ?2')
-            ->setParameter('1', $event->getShiftDays())
-            ->setParameter('2', $event->getLicenseType());
-
-        if (null != $event->getAddonKey()) {
-            $criteria->andWhere('l.addonKey = ?3')
-                ->setParameter('3', $event->getAddonKey());
-        }
-
-        return $criteria->getQuery()->getResult();
     }
 
     /**
