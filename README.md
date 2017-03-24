@@ -7,7 +7,7 @@ Atlassian Vendor Tools
 
 For support questions, please raise an issue.
 
-For sponsored development, please contact me vitaliy.zurian@agile-values
+For sponsored development, please contact me vit.zurian@lizardbrain.rocks
 
 # Overview
 
