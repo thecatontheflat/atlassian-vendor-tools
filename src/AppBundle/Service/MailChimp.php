@@ -37,12 +37,13 @@ class MailChimp
      */
     public function addToList(License $license)
     {
-        if (!$this->enabled) {
+        if (!$this->enabled || !$license->isNew() && $license->getCompany()->getTechnicalContactEmail()) {
+            // TODO: Not sure what to do, if we do not have technical contact email?
             return;
         }
 
         foreach ($this->lists as $list) {
-            if ($license->isNew() && $license->getAddonKey() == $list['addon_key']) {
+            if ($license->getAddon()->getAddonKey() == $list['addon_key']) {
                 $this->add($list['list_id'], $license);
             }
         }
@@ -51,10 +52,10 @@ class MailChimp
     private function add($listId, License $license)
     {
         $body = [
-            'email_address' => $license->getTechContactEmail(),
+            'email_address' => $license->getCompany()->getTechnicalContactEmail(),
             'status' => 'subscribed',
             'merge_fields' => [
-                'FNAME' => $license->getTechContactName()
+                'FNAME' => $license->getCompany()->getTechnicalContactName()
             ]
         ];
         $headers = [
@@ -68,13 +69,13 @@ class MailChimp
             $client = new Client();
             $client->post($url, $headers);
 
-            $this->output->writeln('Added '.$license->getTechContactEmail().' to mailchimp list '.$listId);
+            $this->output->writeln('Added '.$body["email_address"].' to mailchimp list '.$listId);
         } catch (ClientException $e) {
             $err = $e->getMessage();
             if ($e->hasResponse()) {
                 $err = $e->getResponse()->getBody();
             }
-            $this->output->writeln('Failed to add '.$license->getTechContactEmail().' to mailchimp list '.$listId.' due to error: '.$err);
+            $this->output->writeln('Failed to add '.$body["email_address"].' to mailchimp list '.$listId.' due to error: '.$err);
         }
     }
 

@@ -2,7 +2,7 @@
 
 namespace AppBundle\Service;
 
-use AppBundle\Entity\Sale;
+use AppBundle\Entity\Transaction;
 
 class SaleMailer
 {
@@ -22,20 +22,20 @@ class SaleMailer
         $this->to = $to;
     }
 
-    public function sendEmail(Sale $sale)
+    public function sendEmail(Transaction $transaction)
     {
         $message = \Swift_Message::newInstance()
             ->setSubject('MPCRM - New Sale!')
             ->setFrom($this->from, 'MPCRM')
             ->setTo($this->to)
-            ->setBody($this->getHTML($sale), 'text/html');
+            ->setBody($this->getHTML($transaction), 'text/html');
 
         $this->mailer->send($message);
     }
 
-    private function getHTML(Sale $sale)
+    private function getHTML(Transaction $transaction)
     {
-        $url = $this->baseUrl.'/license/'.$sale->getLicenseId();
+        $url = $this->baseUrl.'/license/'.$transaction->getLicense()->getLicenseId();
 
         $html = '<h1>Congrats!</h1>';
         $html .= '<p>Yet another license has been sold for <strong>$%s</strong></p>';
@@ -52,15 +52,15 @@ class SaleMailer
 
         return sprintf(
             $html,
-            $sale->getVendorAmount(),
-            $sale->getOrganisationName(),
-            $sale->getSaleType(),
-            $sale->getLicenseSize(),
-            $sale->getLicenseId(),
+            $transaction->getVendorAmount(),
+            $transaction->getLicense()->getCompany()->getCompany(),
+            $transaction->getSaleTypeStr(),
+            $transaction->getTier(),
+            $transaction->getLicense()->getLicenseId(),
             $url,
-            $sale->getPluginName(),
-            $sale->getDate()->format('Y-m-d'),
-            $sale->getMaintenanceEndDate()->format('Y-m-d')
+            $transaction->getLicense()->getAddon()->getAddonName(),
+            $transaction->getSaleDate()->format('Y-m-d'),
+            $transaction->getMaintenanceEndDate()->format('Y-m-d')
         );
     }
 }

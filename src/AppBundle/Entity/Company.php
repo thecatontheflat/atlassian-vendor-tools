@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Company
  *
  * @ORM\Table()
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\CompanyRepository")
  */
 class Company
 {
@@ -24,7 +24,7 @@ class Company
     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      */
     private $company;
 
@@ -51,63 +51,63 @@ class Company
      *
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $techContactName;
+    private $technicalContactName;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $techContactEmail;
+    private $technicalContactEmail;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $techContactPhone;
+    private $technicalContactPhone;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $techContactAddress1;
+    private $technicalContactAddress1;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $techContactAddress2;
+    private $technicalContactAddress2;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $techContactCity;
+    private $technicalContactCity;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $techContactState;
+    private $technicalContactState;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $techContactPostcode;
+    private $technicalContactPostcode;
 
     /**
      * @var string
      *
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $techContactCountry;
+    private $technicalContactCountry;
 
     /**
      * @var string
@@ -225,210 +225,165 @@ class Company
     }
 
     /**
-     * Set techContactName
-     *
-     * @param string $techContactName
-     * @return Company
+     * @return string
      */
-    public function setTechContactName($techContactName)
+    public function getTechnicalContactName()
     {
-        $this->techContactName = $techContactName;
+        return $this->technicalContactName;
+    }
 
+    /**
+     * @param string $technicalContactName
+     * @return $this
+     */
+    public function setTechnicalContactName($technicalContactName)
+    {
+        $this->technicalContactName = $technicalContactName;
         return $this;
     }
 
     /**
-     * Get techContactName
-     *
-     * @return string 
+     * @return string
      */
-    public function getTechContactName()
+    public function getTechnicalContactEmail()
     {
-        return $this->techContactName;
+        return $this->technicalContactEmail;
     }
 
     /**
-     * Set techContactEmail
-     *
-     * @param string $techContactEmail
-     * @return Company
+     * @param string $technicalContactEmail
+     * @return $this
      */
-    public function setTechContactEmail($techContactEmail)
+    public function setTechnicalContactEmail($technicalContactEmail)
     {
-        $this->techContactEmail = $techContactEmail;
-
+        $this->technicalContactEmail = $technicalContactEmail;
         return $this;
     }
 
     /**
-     * Get techContactEmail
-     *
-     * @return string 
+     * @return string
      */
-    public function getTechContactEmail()
+    public function getTechnicalContactPhone()
     {
-        return $this->techContactEmail;
+        return $this->technicalContactPhone;
     }
 
     /**
-     * Set techContactPhone
-     *
-     * @param string $techContactPhone
-     * @return Company
+     * @param string $technicalContactPhone
+     * @return $this
      */
-    public function setTechContactPhone($techContactPhone)
+    public function setTechnicalContactPhone($technicalContactPhone)
     {
-        $this->techContactPhone = $techContactPhone;
-
+        $this->technicalContactPhone = $technicalContactPhone;
         return $this;
     }
 
     /**
-     * Get techContactPhone
-     *
-     * @return string 
+     * @return string
      */
-    public function getTechContactPhone()
+    public function getTechnicalContactAddress1()
     {
-        return $this->techContactPhone;
+        return $this->technicalContactAddress1;
     }
 
     /**
-     * Set techContactAddress1
-     *
-     * @param string $techContactAddress1
-     * @return Company
+     * @param string $technicalContactAddress1
+     * @return $this
      */
-    public function setTechContactAddress1($techContactAddress1)
+    public function setTechnicalContactAddress1($technicalContactAddress1)
     {
-        $this->techContactAddress1 = $techContactAddress1;
-
+        $this->technicalContactAddress1 = $technicalContactAddress1;
         return $this;
     }
 
     /**
-     * Get techContactAddress1
-     *
-     * @return string 
+     * @return string
      */
-    public function getTechContactAddress1()
+    public function getTechnicalContactAddress2()
     {
-        return $this->techContactAddress1;
+        return $this->technicalContactAddress2;
     }
 
     /**
-     * Set techContactAddress2
-     *
-     * @param string $techContactAddress2
-     * @return Company
+     * @param string $technicalContactAddress2
+     * @return $this
      */
-    public function setTechContactAddress2($techContactAddress2)
+    public function setTechnicalContactAddress2($technicalContactAddress2)
     {
-        $this->techContactAddress2 = $techContactAddress2;
-
+        $this->technicalContactAddress2 = $technicalContactAddress2;
         return $this;
     }
 
     /**
-     * Get techContactAddress2
-     *
-     * @return string 
+     * @return string
      */
-    public function getTechContactAddress2()
+    public function getTechnicalContactCity()
     {
-        return $this->techContactAddress2;
+        return $this->technicalContactCity;
     }
 
     /**
-     * Set techContactCity
-     *
-     * @param string $techContactCity
-     * @return Company
+     * @param string $technicalContactCity
+     * @return $this
      */
-    public function setTechContactCity($techContactCity)
+    public function setTechnicalContactCity($technicalContactCity)
     {
-        $this->techContactCity = $techContactCity;
-
+        $this->technicalContactCity = $technicalContactCity;
         return $this;
     }
 
     /**
-     * Get techContactCity
-     *
-     * @return string 
+     * @return string
      */
-    public function getTechContactCity()
+    public function getTechnicalContactState()
     {
-        return $this->techContactCity;
+        return $this->technicalContactState;
     }
 
     /**
-     * Set techContactState
-     *
-     * @param string $techContactState
-     * @return Company
+     * @param string $technicalContactState
+     * @return $this
      */
-    public function setTechContactState($techContactState)
+    public function setTechnicalContactState($technicalContactState)
     {
-        $this->techContactState = $techContactState;
-
+        $this->technicalContactState = $technicalContactState;
         return $this;
     }
 
     /**
-     * Get techContactState
-     *
-     * @return string 
+     * @return string
      */
-    public function getTechContactState()
+    public function getTechnicalContactPostcode()
     {
-        return $this->techContactState;
+        return $this->technicalContactPostcode;
     }
 
     /**
-     * Set techContactPostcode
-     *
-     * @param string $techContactPostcode
-     * @return Company
+     * @param string $technicalContactPostcode
+     * @return $this
      */
-    public function setTechContactPostcode($techContactPostcode)
+    public function setTechnicalContactPostcode($technicalContactPostcode)
     {
-        $this->techContactPostcode = $techContactPostcode;
-
+        $this->technicalContactPostcode = $technicalContactPostcode;
         return $this;
     }
 
     /**
-     * Get techContactPostcode
-     *
-     * @return string 
+     * @return string
      */
-    public function getTechContactPostcode()
+    public function getTechnicalContactCountry()
     {
-        return $this->techContactPostcode;
+        return $this->technicalContactCountry;
     }
 
     /**
-     * Set techContactCountry
-     *
-     * @param string $techContactCountry
-     * @return Company
+     * @param string $technicalContactCountry
+     * @return $this
      */
-    public function setTechContactCountry($techContactCountry)
+    public function setTechnicalContactCountry($technicalContactCountry)
     {
-        $this->techContactCountry = $techContactCountry;
-
+        $this->technicalContactCountry = $technicalContactCountry;
         return $this;
-    }
-
-    /**
-     * Get techContactCountry
-     *
-     * @return string 
-     */
-    public function getTechContactCountry()
-    {
-        return $this->techContactCountry;
     }
 
     /**
@@ -531,5 +486,13 @@ class Company
     public function getLicenses()
     {
         return $this->licenses;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNew()
+    {
+        return $this->id == null;
     }
 }

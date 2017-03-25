@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Helper\Setter;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -24,21 +25,21 @@ class License
     /**
      * @var integer
      *
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      */
     private $addonLicenseId;
 
     /**
      * @var Company
      *
-     * @ORM\ManyToOne(targetEntity="Company", inversedBy="licenses")
+     * @ORM\ManyToOne(targetEntity="Company", inversedBy="licenses", cascade={"persist"})
      */
     private $company;
 
     /**
      * @var Addon
      *
-     * @ORM\ManyToOne(targetEntity="Addon", inversedBy="licenses")
+     * @ORM\ManyToOne(targetEntity="Addon", inversedBy="licenses", cascade={"persist"})
      */
     private $addon;
 
@@ -61,14 +62,14 @@ class License
      *
      * @ORM\Column(type="date", nullable=true)
      */
-    private $startDate;
+    private $maintenanceStartDate;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(type="date", nullable=true)
      */
-    private $endDate;
+    private $maintenanceEndDate;
 
     /**
      * @var string
@@ -171,49 +172,45 @@ class License
     }
 
     /**
-     * Set startDate
-     *
-     * @param \DateTime $startDate
-     * @return License
+     * @return \DateTime
      */
-    public function setStartDate($startDate)
+    public function getMaintenanceStartDate()
     {
-        $this->startDate = $startDate;
+        return $this->maintenanceStartDate;
+    }
 
+    /**
+     * @param \DateTime $maintenanceStartDate
+     * @return $this
+     */
+    public function setMaintenanceStartDate($maintenanceStartDate)
+    {
+        if(is_string($maintenanceStartDate)) {
+            $maintenanceStartDate = new \DateTime($maintenanceStartDate);
+        }
+        $this->maintenanceStartDate = $maintenanceStartDate;
         return $this;
     }
 
     /**
-     * Get startDate
-     *
-     * @return \DateTime 
+     * @return \DateTime
      */
-    public function getStartDate()
+    public function getMaintenanceEndDate()
     {
-        return $this->startDate;
+        return $this->maintenanceEndDate;
     }
 
     /**
-     * Set endDate
-     *
-     * @param \DateTime $endDate
-     * @return License
+     * @param \DateTime $maintenanceEndDate
+     * @return $this
      */
-    public function setEndDate($endDate)
+    public function setMaintenanceEndDate($maintenanceEndDate)
     {
-        $this->endDate = $endDate;
-
+        if(is_string($maintenanceEndDate)) {
+            $maintenanceEndDate = new \DateTime($maintenanceEndDate);
+        }
+        $this->maintenanceEndDate = $maintenanceEndDate;
         return $this;
-    }
-
-    /**
-     * Get endDate
-     *
-     * @return \DateTime 
-     */
-    public function getEndDate()
-    {
-        return $this->endDate;
     }
 
     /**
@@ -329,5 +326,13 @@ class License
     public function getTransactions()
     {
         return $this->transactions;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNew()
+    {
+        return $this->id == null;
     }
 }

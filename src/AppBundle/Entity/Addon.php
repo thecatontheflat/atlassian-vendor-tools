@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Addon
  *
  * @ORM\Table()
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\AddonRepository")
  */
 class Addon
 {
@@ -24,7 +24,7 @@ class Addon
     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      */
     private $addonKey;
 
@@ -137,4 +137,12 @@ class Addon
     {
         return $this->licenses;
     }
+    /**
+     * @return bool
+     */
+    public function isNew()
+    {
+        return $this->id == null;
+    }
+
 }

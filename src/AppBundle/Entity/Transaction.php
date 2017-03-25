@@ -56,7 +56,7 @@ class Transaction
     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      */
     private $transactionId;
 
@@ -65,7 +65,14 @@ class Transaction
      *
      * @ORM\Column(type="datetime")
      */
-    private $date;
+    private $saleDate;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", length=255)
+     */
+    private $billingPeriod;
 
     /**
      * @var \DateTime
@@ -80,13 +87,6 @@ class Transaction
      * @ORM\Column(type="datetime")
      */
     private $maintenanceStartDate;
-
-    /**
-     * @var boolean
-     *
-     * @ORM\Column(type="boolean")
-     */
-    private $discounted; // TODO: cant find it in https://developer.atlassian.com/market/api/2/reference/resource/vendors/%7BvendorId%7D/reporting/sales/transactions
 
     /**
      * @var string
@@ -114,6 +114,12 @@ class Transaction
      */
     public function setSaleType($saleType)
     {
+        if(is_string($saleType)) {
+            if(!$saleTypeChecked = Transaction::getSaleTypeForStr($saleType)) {
+                throw new \Exception("Invalid saleType - ".$saleType);
+            }
+            $saleType = $saleTypeChecked;
+        }
         if(!Transaction::isValidSaleType($saleType)) {
             throw new \Exception("Invalid saleType - ".$saleType);
         }
@@ -156,26 +162,24 @@ class Transaction
     }
 
     /**
-     * Set date
-     *
-     * @param \DateTime $date
-     * @return Transaction
+     * @return \DateTime
      */
-    public function setDate($date)
+    public function getSaleDate()
     {
-        $this->date = $date;
-
-        return $this;
+        return $this->saleDate;
     }
 
     /**
-     * Get date
-     *
-     * @return \DateTime 
+     * @param \DateTime $saleDate
+     * @return $this
      */
-    public function getDate()
+    public function setSaleDate($saleDate)
     {
-        return $this->date;
+        if(is_string($saleDate)) {
+            $saleDate = new \DateTime($saleDate);
+        }
+        $this->saleDate = $saleDate;
+        return $this;
     }
 
     /**
@@ -186,6 +190,9 @@ class Transaction
      */
     public function setMaintenanceEndDate($maintenanceEndDate)
     {
+        if(is_string($maintenanceEndDate)) {
+            $maintenanceEndDate = new \DateTime($maintenanceEndDate);
+        }
         $this->maintenanceEndDate = $maintenanceEndDate;
 
         return $this;
@@ -209,6 +216,9 @@ class Transaction
      */
     public function setMaintenanceStartDate($maintenanceStartDate)
     {
+        if(is_string($maintenanceStartDate)) {
+            $maintenanceStartDate = new \DateTime($maintenanceStartDate);
+        }
         $this->maintenanceStartDate = $maintenanceStartDate;
 
         return $this;
@@ -222,29 +232,6 @@ class Transaction
     public function getMaintenanceStartDate()
     {
         return $this->maintenanceStartDate;
-    }
-
-    /**
-     * Set discounted
-     *
-     * @param boolean $discounted
-     * @return Transaction
-     */
-    public function setDiscounted($discounted)
-    {
-        $this->discounted = $discounted;
-
-        return $this;
-    }
-
-    /**
-     * Get discounted
-     *
-     * @return boolean 
-     */
-    public function getDiscounted()
-    {
-        return $this->discounted;
     }
 
     /**
@@ -268,33 +255,6 @@ class Transaction
     public function getPurchasePrice()
     {
         return $this->purchasePrice;
-    }
-
-    public function setFromJSON($json)
-    {
-        //@TODO: For some reason there are sales with inconsistent data. Clarify with AMKT?
-        $licenseType = !empty($json['licenseType']) ? $json['licenseType'] : 'UNKNOWN';
-        $licenseSize = !empty($json['licenseSize']) ? $json['licenseSize'] : 'UNKNOWN';
-        $maintenanceEndDate = !empty($json['maintenanceEndDate']) ? $json['maintenanceEndDate'] : $json['date'];
-        $maintenanceStartDate = !empty($json['maintenanceStartDate']) ? $json['maintenanceStartDate'] : $json['date'];
-
-        $this->setLicenseType($licenseType)
-            ->setSaleType($json['saleType'])
-            ->setLicenseId($json['licenseId'])
-            ->setLicenseSize($licenseSize)
-            ->setCountry($json['country'])
-            ->setVendorAmount($json['vendorAmount'])
-            ->setPluginKey($json['pluginKey'])
-            ->setInvoice($json['invoice'])
-            ->setDate(new \DateTime($json['date']))
-            ->setPluginName($json['pluginName'])
-            ->setMaintenanceEndDate(new \DateTime($maintenanceEndDate))
-            ->setMaintenanceStartDate(new \DateTime($maintenanceStartDate))
-            ->setOrganisationName($json['organisationName'])
-            ->setDiscounted($json['discounted'])
-            ->setPurchasePrice($json['purchasePrice']);
-
-        return $this;
     }
 
     /**
@@ -366,6 +326,9 @@ class Transaction
         return $this->license;
     }
 
+    /**
+     * @return array
+     */
     public static function getSaleTypes()
     {
         $types = [];
@@ -377,9 +340,48 @@ class Transaction
         }
         return $types;
     }
-
+    public function getSaleTypeStr()
+    {
+        return Transaction::getSaleTypes()[$this->saleType];
+    }
+    /**
+     * @return bool
+     */
+    public static function getSaleTypeForStr($saleTypeStr)
+    {
+        return array_search(strtolower($saleTypeStr),Transaction::getSaleTypes());
+    }
+    /**
+     * @return bool
+     */
     public static function isValidSaleType($saleType)
     {
-        return in_array($saleType,Transaction::getSaleTypes());
+        return array_key_exists(strtolower($saleType),Transaction::getSaleTypes());
     }
+    /**
+     * @return bool
+     */
+    public function isNew()
+    {
+        return $this->id == null;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBillingPeriod()
+    {
+        return $this->billingPeriod;
+    }
+
+    /**
+     * @param string $billingPeriod
+     * @return $this
+     */
+    public function setBillingPeriod($billingPeriod)
+    {
+        $this->billingPeriod = $billingPeriod;
+        return $this;
+    }
+
 }

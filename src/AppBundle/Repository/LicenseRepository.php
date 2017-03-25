@@ -8,16 +8,14 @@ use Doctrine\ORM\EntityRepository;
 class LicenseRepository extends EntityRepository
 {
     /**
-     * @param $licenseId
-     * @param $addonKey
+     * @param $addonLicenseId
      *
      * @return License
      */
-    public function findOrCreate($licenseId, $addonKey)
+    public function findOrCreate($addonLicenseId)
     {
         $license = $this->findOneBy([
-            'licenseId' => $licenseId,
-            'addonKey' => $addonKey
+            'addonLicenseId' => $addonLicenseId,
         ]);
 
         if (!$license) {

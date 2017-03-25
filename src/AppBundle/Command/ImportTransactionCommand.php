@@ -3,6 +3,8 @@
 namespace AppBundle\Command;
 
 use AppBundle\Entity\Sale;
+use AppBundle\Entity\Transaction;
+use AppBundle\Helper\Setter;
 use GuzzleHttp\Client;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -27,6 +29,8 @@ class ImportTransactionCommand extends ContainerAwareCommand
     /** @var OutputInterface */
     private $output;
 
+    private $locatedExistingLicense = false;
+
     protected function configure()
     {
         $this->setName('app:import:transaction')
@@ -45,20 +49,19 @@ class ImportTransactionCommand extends ContainerAwareCommand
         $limit = 50;
         $offset = 0;
         $newCnt = 0;
-        $repository = $this->em->getRepository('AppBundle:Sale');
 
         try {
             do {
-                $json = $this->getSales($limit, $offset);
-                $total = $json['numSales'];
-                $newCur = $this->saveSales($json['sales'], $repository);
+                $json = $this->getTransactions($limit, $offset);
+//                $total = $json['numSales']; // TODO: find total transactions count in APIv2
+                $newCur = $this->saveTransactions($json['transactions']);
                 $newCnt = $newCnt + $newCur;
                 $this->em->flush();
 
-                $offset += count($json['sales']);
+                $offset += count($json['transactions']);
 
-                $output->writeln(sprintf('Imported %s of %s sales, %s new so far', $offset, $total, $newCnt));
-            } while ($total > $offset and $newCur > 0);
+                $output->writeln(sprintf('Imported %s of %s transactions, %s new so far', $offset, "TODO", $newCnt));
+            } while ($newCur > 0);
 
         } catch (\Exception $e) {
             $output->writeln($e->getMessage());
@@ -66,10 +69,10 @@ class ImportTransactionCommand extends ContainerAwareCommand
             return;
         }
 
-        $output->writeln(sprintf('Imported %s sales', $offset));
+        $output->writeln(sprintf('Imported %s transactions', $offset));
     }
 
-    private function getSales($limit, $offset)
+    private function getTransactions($limit, $offset)
     {
         $client = new Client();
         $response = $client->get(
@@ -83,22 +86,48 @@ class ImportTransactionCommand extends ContainerAwareCommand
         return $response->json();
     }
 
-    private function saveSales($jsonSales, $repository)
+    private function saveTransactions($jsonTransactions)
     {
+        $transactionRepository = $this->em->getRepository('AppBundle:Transaction');
+        $licenseRepository = $this->em->getRepository('AppBundle:License');
+        $addonRepository = $this->em->getRepository('AppBundle:Addon');
         $newCnt = 0;
 
-        foreach ($jsonSales as $jsonSale) {
-            if ($repository->findIfSaleIsNew($jsonSale['invoice'], $jsonSale['licenseId'], $jsonSale['pluginKey'])) {
+        foreach ($jsonTransactions as $jsonTransaction) {
+            if ($transaction = $transactionRepository->findOneBy(["transactionId"=>$jsonTransaction['transactionId']])) {
+                // TODO: check if transaction is changed.
+            } else {
                 $newCnt++;
-                $sale = new Sale();
-                $sale->setFromJSON($jsonSale);
+                $transaction = new Transaction();
+                if($license = $licenseRepository->findOneBy(["addonLicenseId"=>$jsonTransaction["addonLicenseId"]])) {
+                    $this->locatedExistingLicense = true;
+                    $transaction->setLicense($license);
+                    // TODO: check if license info is changed
+                } else {
+                    if($this->locatedExistingLicense) {
+                        // Something weird happens. We already located transaction with existing licence. So either transactions is incorrectly ordered, OR we have bug
+                        // TODO: set flag
+                        throw new \Exception("Lost license for transaction #".$transaction->getTransactionId());
+                    }
+                    continue;
+                }
+                Setter::set($jsonTransaction,$transaction,"transactionId");
 
-                if (!$this->allowedForImport($sale)) continue;
+                if(!$addon = $addonRepository->findOneBy(["addonKey"=>$jsonTransaction["addonKey"]])) {
+                    continue;
+                }
+                if($addon->getId() != $license->getAddon()->getId()) {
+                    throw new \Exception("Invalid addon or license info in transaction #".$transaction->getTransactionId());
+                }
 
-                $this->em->persist($sale);
+                Setter::set($jsonTransaction["purchaseDetails"],$transaction,"saleDate,tier,billingPeriod,purchasePrice,vendorAmount,saleType,maintenanceStartDate,maintenanceEndDate");
 
-                if (true == $this->input->getOption('new-sale-notification')) {
-                    $this->saleMailer->sendEmail($sale);
+                if (!$this->allowedForImport($transaction)) continue;
+
+                $this->em->persist($transaction);
+
+                if (true == $this->input->getOption('new-transaction-notification')) {
+                    $this->saleMailer->sendEmail($transaction);
                 }
             }
         }
@@ -118,7 +147,7 @@ class ImportTransactionCommand extends ContainerAwareCommand
         $this->em = $this->container->get('doctrine')->getManager();
         $this->saleMailer = $this->container->get('app.sale.mailer');
 
-        $urlTemplate = 'https://marketplace.atlassian.com/rest/1.0/vendors/%s/sales';
+        $urlTemplate = 'https://marketplace.atlassian.com/rest/2/vendors/%s/reporting/sales/transactions';
         $this->url = sprintf($urlTemplate, $this->vendorId);
     }
 
@@ -129,11 +158,11 @@ class ImportTransactionCommand extends ContainerAwareCommand
      *
      * @return bool
      */
-    private function allowedForImport(Sale $sale)
+    private function allowedForImport(Transaction $transaction)
     {
         if ($this->getContainer()->getParameter('filter_addons_enabled')) {
             $allowedKeys = $this->getContainer()->getParameter('filter_addons');
-            if (in_array($sale->getPluginKey(), $allowedKeys)) {
+            if (in_array($transaction->getLicense()->getAddon()->getAddonKey(), $allowedKeys)) {
                 return true;
             }
 
