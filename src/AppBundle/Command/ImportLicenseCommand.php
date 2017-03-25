@@ -26,6 +26,10 @@ class ImportLicenseCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+//        var_dump($this->getContainer()->get("doctrine")->getRepository("AppBundle:Company")->findTopCustomers());
+//        die();
+
+
         $this->input = $input;
         $this->output = $output;
 
@@ -64,7 +68,7 @@ class ImportLicenseCommand extends ContainerAwareCommand
             }
 
             $license = $licenseRepository->findOrCreate($licenseJson->addonLicenseId);
-            Setter::set($licenseJson,$license,"tier,addonLicenseId,licenseType,maintenanceStartDate,maintenanceEndDate");
+            Setter::set($licenseJson,$license,"tier,addonLicenseId,licenseType,maintenanceStartDate,maintenanceEndDate,licenseId");
             $license
                 ->setAddon($addon)
                 ->setCompany($company)

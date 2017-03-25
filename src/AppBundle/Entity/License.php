@@ -25,6 +25,13 @@ class License
     /**
      * @var integer
      *
+     * @ORM\Column(type="string", length=255)
+     */
+    private $licenseId;
+
+    /**
+     * @var integer
+     *
      * @ORM\Column(type="string", length=255, unique=true)
      */
     private $addonLicenseId;
@@ -79,7 +86,7 @@ class License
     private $renewalAction;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Transaction", inversedBy="license")
+     * @ORM\OneToMany(targetEntity="Transaction", mappedBy="license")
      */
     private $transactions;
 
@@ -334,5 +341,23 @@ class License
     public function isNew()
     {
         return $this->id == null;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLicenseId()
+    {
+        return $this->licenseId;
+    }
+
+    /**
+     * @param int $licenseId
+     * @return $this
+     */
+    public function setLicenseId($licenseId)
+    {
+        $this->licenseId = $licenseId;
+        return $this;
     }
 }

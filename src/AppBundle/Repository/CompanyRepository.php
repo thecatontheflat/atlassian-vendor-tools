@@ -24,4 +24,19 @@ class CompanyRepository extends EntityRepository
 
         return $company;
     }
+
+    public function findTopCustomers($count = 10)
+    {
+        $result = $this->createQueryBuilder('c')
+            ->select("c, SUM(t.vendorAmount) as total")
+            ->join("c.licenses","l")
+            ->join("l.transactions","t")
+            ->groupBy('c')
+            ->orderBy('total', 'DESC')
+            ->setMaxResults($count)
+            ->getQuery()
+            ->getResult();
+
+        return $result;
+    }
 }

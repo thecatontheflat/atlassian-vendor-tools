@@ -15,22 +15,9 @@ class TransactionRepository extends EntityRepository
         $connection->exec('TRUNCATE TABLE sale');
     }
 
-    public function findTopCustomers()
-    {
-        $result = $this->createQueryBuilder('s')
-            ->select(['s.licenseId', 's.organisationName', 'SUM(s.vendorAmount) as total'])
-            ->groupBy('s.licenseId')
-            ->orderBy('total', 'DESC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult();
-
-        return $result;
-    }
-
     public function findSalesForChart()
     {
-        $sales = $this->findBy([], ['date' => 'DESC']);
+        $sales = $this->findBy([], ['saleDate' => 'DESC']);
 
         $groupedSales = [];
         foreach ($sales as $sale) {
@@ -45,14 +32,14 @@ class TransactionRepository extends EntityRepository
 
     private function addMonthlySale(&$groupedSales, Transaction $transaction)
     {
-        if (!isset($groupedSales[$transaction->getDate()->format('Y-m')])) {
+        if (!isset($groupedSales[$transaction->getSaleDate()->format('Y-m')])) {
             $monthlySale = [
                 'new' => 0.00,
                 'renewal' => 0.00,
                 'other' => 0.00
             ];
         } else {
-            $monthlySale = $groupedSales[$transaction->getDate()->format('Y-m')];
+            $monthlySale = $groupedSales[$transaction->getSaleDate()->format('Y-m')];
         }
 
         switch ($transaction->getSaleType()) {
@@ -67,7 +54,7 @@ class TransactionRepository extends EntityRepository
                 break;
         }
 
-        $groupedSales[$transaction->getDate()->format('Y-m')] = $monthlySale;
+        $groupedSales[$transaction->getSaleDate()->format('Y-m')] = $monthlySale;
     }
 
     /**
@@ -82,10 +69,10 @@ class TransactionRepository extends EntityRepository
         }
 
         $result = $this->createQueryBuilder('s')
-            ->select(['s.licenseId', 's.pluginKey', 's.vendorAmount', 's.date'])
+            ->select(['s.licenseId', 's.pluginKey', 's.vendorAmount', 's.saleDate'])
             ->where('s.licenseId IN (?1)')
             ->setParameter('1', array_values($licenseIds))
-            ->orderBy('s.date', 'DESC')
+            ->orderBy('s.saleDate', 'DESC')
             ->addOrderBy('s.licenseId', 'DESC')
             ->addOrderBy('s.pluginKey', 'DESC')
             ->getQuery()
@@ -159,7 +146,7 @@ class TransactionRepository extends EntityRepository
     public function getFilteredQuery($filters)
     {
         $builder = $this->createQueryBuilder('s')
-            ->orderBy('s.date', 'DESC');
+            ->orderBy('s.saleDate', 'DESC');
 
         return $builder->getQuery();
     }

@@ -28,7 +28,7 @@ class LicenseRepository extends EntityRepository
     public function getFilteredQuery($filters)
     {
         $builder = $this->createQueryBuilder('l')
-            ->orderBy('l.startDate', 'DESC');
+            ->orderBy('l.maintenanceStartDate', 'DESC');
 
         if (!empty($filters['addonKey'])) {
             $builder->andWhere('l.addonKey IN (:addonKeys)');
@@ -78,13 +78,13 @@ class LicenseRepository extends EntityRepository
     /**
      * @return License[]
      */
-    public function findExpiringSoon()
+    public function findExpiringSoon($expirationLimit = 5)
     {
         $result = $this->createQueryBuilder('l')
-            ->where('DATE_DIFF(l.endDate, CURRENT_DATE()) <= ?1')
-            ->andWhere('DATE_DIFF(l.endDate, CURRENT_DATE()) >= ?2')
-            ->orderBy('l.endDate', 'DESC')
-            ->setParameter('1', 5)
+            ->where('DATE_DIFF(l.maintenanceEndDate, CURRENT_DATE()) <= ?1')
+            ->andWhere('DATE_DIFF(l.maintenanceEndDate, CURRENT_DATE()) >= ?2')
+            ->orderBy('l.maintenanceEndDate', 'DESC')
+            ->setParameter('1', $expirationLimit)
             ->setParameter('2', 0)
             ->getQuery()
             ->getResult();
@@ -98,8 +98,22 @@ class LicenseRepository extends EntityRepository
     public function findRecent()
     {
         $result = $this->createQueryBuilder('l')
-            ->orderBy('l.startDate', 'DESC')
+            ->orderBy('l.maintenanceStartDate', 'DESC')
             ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+
+        return $result;
+    }
+
+    public function findTopLicenses($count = 10)
+    {
+        $result = $this->createQueryBuilder('l')
+            ->select("l, SUM(t.vendorAmount) as total")
+            ->join("l.transactions","t")
+            ->groupBy('l')
+            ->orderBy('total', 'DESC')
+            ->setMaxResults($count)
             ->getQuery()
             ->getResult();
 
