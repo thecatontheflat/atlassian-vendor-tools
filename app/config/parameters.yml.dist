@@ -21,8 +21,6 @@ parameters:
     vendor_password: ~
     vendor_id: 123456789
 
-    mandrill_api_key: 123123123
-
     mailchimp_enabled: false
     mailchimp_api_key: 123123zaza123123-us1
     mailchimp_api_dc: us1
