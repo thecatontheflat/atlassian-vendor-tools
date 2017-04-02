@@ -34,6 +34,7 @@ class ImportTransactionCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this->setName('app:import:transaction')
+             ->addOption("log-json")
              ->addOption(
                 'new-transaction-notification',
                 null,
@@ -53,11 +54,12 @@ class ImportTransactionCommand extends ContainerAwareCommand
         try {
             do {
                 $json = $this->getTransactions($limit, $offset);
+                if($input->getOption("log-json")) {
+                    $this->getContainer()->get('logger')->info(var_export($json));
+                }
 //                $total = $json['numSales']; // TODO: find total transactions count in APIv2
                 $newCur = $this->saveTransactions($json['transactions']);
                 $newCnt = $newCnt + $newCur;
-
-
                 $offset += count($json['transactions']);
 
                 $output->writeln(sprintf('Imported %s of %s transactions, %s new so far', $offset, "TODO", $newCnt));
