@@ -131,7 +131,7 @@ class Transaction
     /**
      * Get saleType
      *
-     * @return string 
+     * @return integer
      */
     public function getSaleType()
     {

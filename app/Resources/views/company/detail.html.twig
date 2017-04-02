@@ -1,0 +1,121 @@
+{% extends '::base.html.twig' %}
+
+{% block content %}
+    {# @var company AppBundle\Entity\Company #}
+    <h2>Company Details</h2>
+    <table class="aui">
+        <tbody>
+        <tr>
+            <td><h6>SEN</h6></td>
+            <td>{{ company.senId }}</td>
+        </tr>
+        <tr>
+            <td><h6>Company</h6></td>
+            <td>{{ company.company }}</td>
+        </tr>
+        <tr>
+            <td><h6>TECHNICAL CONTACT</h6></td>
+            <td>
+                {{ company.technicalContactName }} <br/>
+                {{ company.technicalContactEmail }}
+            </td>
+        </tr>
+        <tr>
+            <td><h6>BILLING CONTACT</h6></td>
+            <td>
+                {{ company.billingContactName }} <br/>
+                {{ company.billingContactEmail }}
+            </td>
+        </tr>
+        <tr>
+            <td><h6>TOTAL EARNINGS</h6></td>
+            <td>
+                ${{ company.getTotalVendorAmount() }}
+            </td>
+        </tr>
+        {# <tr>
+            <td><h6>RELATED ISSUES</h6></td>
+            <td>
+                TODO: Add custom property SEN to Jira issue tracker, link issues from this company on this page?
+            </td>
+        </tr> #}
+        </tbody>
+    </table>
+    <h2>Licenses</h2>
+    {% for license in company.licenses %}
+    <div class="aui-group">
+        <div class="aui-item">
+            <h3>{{ license.addon.addonName }}({{ license.addon.addonKey }})</h3>
+            <table class="aui">
+                <tbody>
+                    <tr>
+                        <td><h6>LICENSE ID</h6></td>
+                        <td>{{ license.addonLicenseId }}</td>
+                    </tr>
+
+
+                    <tr>
+                        <td><h6>LICENSE TYPE</h6></td>
+                        <td>{{ license.licenseType }}</td>
+                    </tr>
+
+                    <tr>
+                        <td><h6>START DATE</h6></td>
+                        <td>{{ license.maintenanceStartDate|date('Y-m-d') }}</td>
+                    </tr>
+
+                    <tr>
+                        <td><h6>END DATE</h6></td>
+                        <td>{{ license.maintenanceEndDate|date('Y-m-d') }}</td>
+                    </tr>
+                    {# add days left
+                    <tr>
+                        <td><h6>Days left</h6></td>
+                        <td>{{ 'now'|time_diff(license.maintenanceEndDate) }}</td>
+                    </tr>
+                    #}
+
+                    <tr>
+                        <td><h6>RENEWAL ACTION</h6></td>
+                        <td>{{ license.renewalAction }}</td>
+                    </tr>
+                    <tr>
+                        <td><h6>Transactions</h6></td>
+                        <td>
+                            {% if license.transactions | length %}
+                            <div class="aui-group">
+                                <div class="aui-item">
+                                    <table class="aui">
+                                        {% set totalSales = 0 %}
+                                        {% for transaction in license.transactions %}
+                                            {% set totalSales = totalSales + transaction.vendorAmount %}
+                                            <tr>
+                                                <td><a href="{{ path('sale_detail', {'invoice': transaction.transactionId}) }}">{{ transaction.transactionId }}</a></td>
+                                                <td>{{ transaction.saleDate|date('Y-m-d') }}</td>
+                                                <td>${{ transaction.vendorAmount }}</td>
+                                                <td>{{ transaction.license.addon.addonName }}</td>
+                                                <td>{{ transaction.tier}}</td>
+                                            </tr>
+                                        {% endfor %}
+                                        <tr>
+                                            <td><strong>Total:</strong></td>
+                                            <td><strong>${{ totalSales }}</strong></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            {% else %}
+                                None
+                            {% endif %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endfor %}
+
+{% endblock %}

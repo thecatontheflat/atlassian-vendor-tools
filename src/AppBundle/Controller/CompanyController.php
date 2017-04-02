@@ -44,7 +44,7 @@ class CompanyController extends Controller
      */
     public function detailAction(Request $request, $company)
     {
-        return $this->render(':license:detail.html.twig', [
+        return $this->render(':company:detail.html.twig', [
             'company' => $company
         ]);
     }

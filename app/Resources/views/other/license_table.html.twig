@@ -34,9 +34,9 @@
                 <td>{{ license.addon.addonName }}</td>
                 <td>
                     {{ license.licenseType }}
-                    {% set recentSales = expiringSoonSales[license.id]|default(false) %}
-                    {% if recentSales %}
-                        <span class="aui-lozenge aui-lozenge-success aui-lozenge-subtle">${{ recentSales.vendorAmount }}</span>
+                    {% set lastTransaction = license.getLastTransaction() %}
+                    {% if lastTransaction %}
+                        <span class="aui-lozenge aui-lozenge-success aui-lozenge-subtle">${{ lastTransaction.vendorAmount }}</span>
                     {% endif %}
                 </td>
                 <td>{{ license.maintenanceStartDate|date('Y-m-d') }}</td>

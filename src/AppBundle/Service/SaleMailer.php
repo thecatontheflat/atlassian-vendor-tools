@@ -35,7 +35,7 @@ class SaleMailer
 
     private function getHTML(Transaction $transaction)
     {
-        $url = $this->baseUrl.'/license/'.$transaction->getLicense()->getLicenseId();
+        $url = $this->baseUrl.'/company/'.$transaction->getLicense()->getCompany()->getSenId();
 
         $html = '<h1>Congrats!</h1>';
         $html .= '<p>Yet another license has been sold for <strong>$%s</strong></p>';

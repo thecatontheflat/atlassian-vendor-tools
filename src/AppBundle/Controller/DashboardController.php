@@ -20,15 +20,14 @@ class DashboardController extends Controller
             ->findRecent();
 
         $sales = $this->getDoctrine()->getRepository('AppBundle:Transaction')
-            ->findSalesForChart();
+            ->findTransactionsForChart();
 
-        // TODO: add top customers?
         $topLicenses = $this->getDoctrine()->getRepository('AppBundle:License')
             ->findTopLicenses();
 
-        // TODO: refactor estimatedIncome
-//        $estimatedIncome = $this->getDoctrine()->getRepository('AppBundle:Transaction')->findEstimatedMonthlyIncome();
-        $estimatedIncome = 0;
+        // TODO: add top customers?
+
+        $estimatedIncome =  $this->getDoctrine()->getRepository('AppBundle:Transaction')->findEstimatedMonthlyIncome();
 
         return $this->render(':dashboard:index.html.twig', [
             'expiringSoon' => $expiringSoon,
@@ -36,7 +35,6 @@ class DashboardController extends Controller
             'recent' => $recent,
             'topLicenses' => $topLicenses,
             'estimatedIncome' => $estimatedIncome,
-            'expiringSoonSales' => [] // TODO: refactor
         ]);
     }
 }

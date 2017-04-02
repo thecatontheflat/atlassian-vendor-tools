@@ -488,7 +488,7 @@ class Company
     /**
      * Get licenses
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return License[]
      */
     public function getLicenses()
     {
@@ -519,5 +519,16 @@ class Company
     {
         $this->senId = $senId;
         return $this;
+    }
+
+    public function getTotalVendorAmount()
+    {
+        $total = 0;
+        foreach ($this->getLicenses() as $license) {
+            foreach ($license->getTransactions() as $transaction) {
+                $total += $transaction->getVendorAmount();
+            }
+        }
+        return $total;
     }
 }

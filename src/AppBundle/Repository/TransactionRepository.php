@@ -8,88 +8,46 @@ use Doctrine\ORM\EntityRepository;
 
 class TransactionRepository extends EntityRepository
 {
-    public function removeSales()
+    public function findTransactionsForChart()
     {
-        // Truncating to reset IDs
-        $connection = $this->getEntityManager()->getConnection();
-        $connection->exec('TRUNCATE TABLE sale');
-    }
+        $transactions = $this->findBy([], ['saleDate' => 'DESC']);
 
-    public function findSalesForChart()
-    {
-        $sales = $this->findBy([], ['saleDate' => 'DESC']);
-
-        $groupedSales = [];
-        foreach ($sales as $sale) {
-            $this->addMonthlySale($groupedSales, $sale);
+        $groupedTransactions = [];
+        foreach ($transactions as $transaction) {
+            $this->addMonthlyTransaction($groupedTransactions, $transaction);
         }
 
-        $groupedSales = array_reverse($groupedSales, true);
-        $groupedSales = array_slice($groupedSales, -6, 6, true);
+        $groupedTransactions = array_reverse($groupedTransactions, true);
+        $groupedTransactions = array_slice($groupedTransactions, -6, 6, true);
 
-        return $groupedSales;
+        return $groupedTransactions;
     }
 
-    private function addMonthlySale(&$groupedSales, Transaction $transaction)
+    private function addMonthlyTransaction(&$groupedTransactions, Transaction $transaction)
     {
-        if (!isset($groupedSales[$transaction->getSaleDate()->format('Y-m')])) {
-            $monthlySale = [
+        if (!isset($groupedTransactions[$transaction->getSaleDate()->format('Y-m')])) {
+            $monthlyTransactionsTotals = [
                 'new' => 0.00,
                 'renewal' => 0.00,
                 'other' => 0.00
             ];
         } else {
-            $monthlySale = $groupedSales[$transaction->getSaleDate()->format('Y-m')];
+            $monthlyTransactionsTotals = $groupedTransactions[$transaction->getSaleDate()->format('Y-m')];
         }
 
-        switch ($transaction->getSaleType()) {
-            case 'Renewal':
-                $monthlySale['renewal'] += $transaction->getVendorAmount();
+        switch ($transaction->getSaleTypeStr()) {
+            case 'renewal':
+                $monthlyTransactionsTotals['renewal'] += $transaction->getVendorAmount();
                 break;
-            case 'New':
-                $monthlySale['new'] += $transaction->getVendorAmount();
+            case 'new':
+                $monthlyTransactionsTotals['new'] += $transaction->getVendorAmount();
                 break;
             default:
-                $monthlySale['other'] += $transaction->getVendorAmount();
+                $monthlyTransactionsTotals['other'] += $transaction->getVendorAmount();
                 break;
         }
 
-        $groupedSales[$transaction->getSaleDate()->format('Y-m')] = $monthlySale;
-    }
-
-    /**
-     * @param License[] $licenses
-     * @return array
-     */
-    public function findLastSalesByLicenses($licenses)
-    {
-        $licenseIds = [];
-        foreach ($licenses as $license) {
-            $licenseIds[] = $license->getLicenseId();
-        }
-
-        $result = $this->createQueryBuilder('s')
-            ->select(['s.licenseId', 's.pluginKey', 's.vendorAmount', 's.saleDate'])
-            ->where('s.licenseId IN (?1)')
-            ->setParameter('1', array_values($licenseIds))
-            ->orderBy('s.saleDate', 'DESC')
-            ->addOrderBy('s.licenseId', 'DESC')
-            ->addOrderBy('s.pluginKey', 'DESC')
-            ->getQuery()
-            ->getResult();
-
-        $sales = [];
-        // Kind of grouping by taking the first item from the ordered result set
-        foreach ($result as $sale) {
-            $key = $sale['licenseId'].$sale['pluginKey'];
-            if (!empty($sales[$key])) {
-                continue;
-            }
-
-            $sales[$key] = $sale;
-        }
-
-        return $sales;
+        $groupedTransactions[$transaction->getSaleDate()->format('Y-m')] = $monthlyTransactionsTotals;
     }
 
     public function findIfSaleIsNew($invoice, $licenseId, $pluginKey)
@@ -111,22 +69,23 @@ class TransactionRepository extends EntityRepository
         $beginning = new \DateTime();
         $end = new \DateTime('last day of this month');
 
-        $licenses = $this->getEntityManager()->getRepository('AppBundle:License')
+        /** @var $expiringInThisMonthLicenses License[] */
+        $expiringInThisMonthLicenses = $this->getEntityManager()->getRepository('AppBundle:License')
             ->createQueryBuilder('l')
             ->where('l.licenseType = ?1')
-            ->andWhere('l.endDate >= :beginning')
-            ->andWhere('l.endDate <= :end')
+            ->andWhere('l.maintenanceEndDate >= :beginning')
+            ->andWhere('l.maintenanceEndDate <= :end')
             ->setParameter('1', 'COMMERCIAL')
             ->setParameter('beginning', $beginning)
             ->setParameter('end', $end)
             ->getQuery()
             ->getResult();
 
-        $lastSales = $this->findLastSalesByLicenses($licenses);
-
         $total = 0;
-        foreach ($lastSales as $sale) {
-            $total += $sale['vendorAmount'];
+        foreach ($expiringInThisMonthLicenses as $license) {
+            if($lastTransaction = $license->getLastTransaction()) {
+                $total += $lastTransaction->getVendorAmount();
+            }
         }
 
         return $total;

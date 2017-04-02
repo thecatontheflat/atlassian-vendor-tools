@@ -73,6 +73,7 @@ class License
 
     /**
      * @ORM\OneToMany(targetEntity="Transaction", mappedBy="license")
+     * @ORM\OrderBy({"saleDate"="DESC"})
      */
     private $transactions;
 
@@ -291,7 +292,7 @@ class License
     /**
      * Get transactions
      *
-     * @return \AppBundle\Entity\Transaction 
+     * @return \AppBundle\Entity\Transaction[]
      */
     public function getTransactions()
     {
@@ -322,5 +323,14 @@ class License
     {
         $this->licenseId = $licenseId;
         return $this;
+    }
+
+    public function getLastTransaction()
+    {
+        if(count($this->getTransactions())) {
+            return $this->getTransactions()[0];
+        } else {
+            return null;
+        }
     }
 }
