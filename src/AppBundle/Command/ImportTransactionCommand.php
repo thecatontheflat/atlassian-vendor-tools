@@ -59,6 +59,7 @@ class ImportTransactionCommand extends ContainerAwareCommand
                 }
 //                $total = $json['numSales']; // TODO: find total transactions count in APIv2
                 $newCur = $this->saveTransactions($json['transactions']);
+                $this->em->flush();
                 $newCnt = $newCnt + $newCur;
                 $offset += count($json['transactions']);
 
@@ -122,7 +123,6 @@ class ImportTransactionCommand extends ContainerAwareCommand
 //                  Probably, this should be refactored later.
 //                  Could be used as $company->getCompanyTitleFixed()
                     $license->getCompany()->setCompanyFromTransaction($jsonTransaction["customerDetails"]["company"]);
-                    $this->em->flush($license->getCompany());
                 }
 
                 if(!$addon = $addonRepository->findOneBy(["addonKey"=>$jsonTransaction["addonKey"]])) {
