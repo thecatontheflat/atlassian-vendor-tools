@@ -56,7 +56,7 @@ class ImportTransactionCommand extends ContainerAwareCommand
 //                $total = $json['numSales']; // TODO: find total transactions count in APIv2
                 $newCur = $this->saveTransactions($json['transactions']);
                 $newCnt = $newCnt + $newCur;
-                $this->em->flush();
+
 
                 $offset += count($json['transactions']);
 
@@ -99,6 +99,9 @@ class ImportTransactionCommand extends ContainerAwareCommand
             } else {
                 $newCnt++;
                 $transaction = new Transaction();
+                $transaction->setTransactionId($jsonTransaction['transactionId']);
+                $this->em->persist($transaction);
+                $this->em->flush($transaction);
                 if($license = $licenseRepository->findOneBy(["addonLicenseId"=>$jsonTransaction["addonLicenseId"]])) {
                     $this->locatedExistingLicense = true;
                     $transaction->setLicense($license);
