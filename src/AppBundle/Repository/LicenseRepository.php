@@ -28,11 +28,15 @@ class LicenseRepository extends EntityRepository
     public function getFilteredQuery($filters)
     {
         $builder = $this->createQueryBuilder('l')
+            ->join("l.addon","addon")
+            ->join("l.company","company")
             ->orderBy('l.maintenanceStartDate', 'DESC');
 
         if (!empty($filters['addonKey'])) {
-            $builder->andWhere('l.addonKey IN (:addonKeys)');
-            $builder->setParameter('addonKeys', $filters['addonKey']);
+            $builder
+                ->andWhere('addon.addonKey IN (:addonKeys)')
+                ->setParameter('addonKeys', $filters['addonKey'])
+            ;
         }
 
         if (!empty($filters['licenseType'])) {
@@ -43,17 +47,22 @@ class LicenseRepository extends EntityRepository
         if (!empty($filters['search'])) {
             $search = '%'.$filters['search'].'%';
 
-            $builder->orWhere('l.billingContactEmail LIKE :search');
-            $builder->orWhere('l.billingContactName LIKE :search');
-            $builder->orWhere('l.billingContactPhone LIKE :search');
+            $builder
 
-            $builder->orWhere('l.techContactEmail LIKE :search');
-            $builder->orWhere('l.techContactName LIKE :search');
-            $builder->orWhere('l.techContactPhone LIKE :search');
 
-            $builder->orWhere('l.organisationName LIKE :search');
+                ->orWhere('company.billingContactEmail LIKE :search')
+                ->orWhere('company.billingContactName LIKE :search')
+                ->orWhere('company.billingContactPhone LIKE :search')
 
-            $builder->setParameter('search', $search);
+                ->orWhere('company.technicalContactEmail LIKE :search')
+                ->orWhere('company.technicalContactName LIKE :search')
+                ->orWhere('company.technicalContactPhone LIKE :search')
+
+                ->orWhere('company.company LIKE :search')
+                ->orWhere('company.companyFromTransaction LIKE :search')
+
+                ->setParameter('search', $search)
+            ;
         }
 
         return $builder->getQuery();

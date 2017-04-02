@@ -16,7 +16,11 @@ class LicenseController extends Controller
     public function indexAction(Request $request)
     {
         $repository = $this->getDoctrine()->getRepository('AppBundle:License');
-        $addonChoices = $repository->getAddonChoices();
+        $addonChoices = [];
+        $addons = $this->getDoctrine()->getRepository('AppBundle:Addon')->findAll();
+        foreach ($addons as $addon) {
+            $addonChoices[$addon->getAddonKey()] = $addon->getAddonName();
+        }
 
         $filterForm = $this->createForm(new LicenseFilterType($addonChoices));
         $filterForm->submit($request);

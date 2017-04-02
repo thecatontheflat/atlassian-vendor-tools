@@ -5,9 +5,9 @@
         <thead>
         <tr>
         {% if licenses.template|default(false) %}
-            <th><h6>{{ knp_pagination_sortable(licenses, 'id', 'l.addonLicenseId') }}</h6></th>
-            <th><h6>{{ knp_pagination_sortable(licenses, 'organisation', 'l.organisationName') }}</h6></th>
-            <th><h6>{{ knp_pagination_sortable(licenses, 'addon', 'l.addonName') }}</h6></th>
+            <th><h6>{{ knp_pagination_sortable(licenses, 'id', 'l.senId') }}</h6></th>
+            <th><h6>{{ knp_pagination_sortable(licenses, 'organisation', 'company.company') }}</h6></th>
+            <th><h6>{{ knp_pagination_sortable(licenses, 'addon', 'addon.addonName') }}</h6></th>
             <th><h6>{{ knp_pagination_sortable(licenses, 'type', 'l.licenseType') }}</h6></th>
             <th><h6>{{ knp_pagination_sortable(licenses, 'start date', 'l.maintenanceStartDate') }}</h6></th>
             <th><h6>{{ knp_pagination_sortable(licenses, 'end date', 'l.maintenanceEndDate') }}</h6></th>
