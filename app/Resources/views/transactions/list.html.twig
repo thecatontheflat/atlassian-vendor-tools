@@ -1,0 +1,21 @@
+{% extends '::base.html.twig' %}
+
+{% block content %}
+    <h2>Totals by Add-On</h2>
+    <div class="aui-group">
+        <div id="sales-by-addon" style="width:100%; height:300px;"></div>
+    </div>
+
+    <h2>All transactions ({{ transactions.totalItemCount }})</h2>
+    {{ knp_pagination_render(transactions) }}
+
+    <div class="aui-group">
+        {% include ':other:transactions_table.html.twig' with {'transactions': transactions}  %}
+    </div>
+
+    {{ knp_pagination_render(transactions) }}
+{% endblock %}
+
+{% block js %}
+    {% include ':transactions:_transactions-by-addon-chart.html.twig' %}
+{% endblock %}

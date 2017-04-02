@@ -31,9 +31,19 @@ class Company
     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=255, unique=true)
+     * @ORM\Column(type="string", length=255)
      */
     private $company;
+
+    /**
+     * @var string
+     * Pretty weird, but Atlassian provide full company name in transactions list and brief company name for licenses list.
+     * Probably, should be refactored later.
+     * Could be used as $company->getCompanyTitleFixed()
+     *
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $companyFromTransaction;
 
     /**
      * @var string
@@ -530,5 +540,28 @@ class Company
             }
         }
         return $total;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCompanyFromTransaction()
+    {
+        return $this->companyFromTransaction;
+    }
+
+    /**
+     * @param string $companyFromTransaction
+     * @return $this
+     */
+    public function setCompanyFromTransaction($companyFromTransaction)
+    {
+        $this->companyFromTransaction = $companyFromTransaction;
+        return $this;
+    }
+
+    public function getCompanyTitleFixed()
+    {
+        return $this->getCompanyFromTransaction()?:$this->getCompany();
     }
 }

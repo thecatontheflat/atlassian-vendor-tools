@@ -86,11 +86,9 @@
                             <div class="aui-group">
                                 <div class="aui-item">
                                     <table class="aui">
-                                        {% set totalSales = 0 %}
                                         {% for transaction in license.transactions %}
-                                            {% set totalSales = totalSales + transaction.vendorAmount %}
                                             <tr>
-                                                <td><a href="{{ path('sale_detail', {'invoice': transaction.transactionId}) }}">{{ transaction.transactionId }}</a></td>
+                                                <td><a href="{{ path('transaction_detail', {'transactionId': transaction.transactionId}) }}">{{ transaction.transactionId }}</a></td>
                                                 <td>{{ transaction.saleDate|date('Y-m-d') }}</td>
                                                 <td>${{ transaction.vendorAmount }}</td>
                                                 <td>{{ transaction.license.addon.addonName }}</td>
@@ -99,7 +97,7 @@
                                         {% endfor %}
                                         <tr>
                                             <td><strong>Total:</strong></td>
-                                            <td><strong>${{ totalSales }}</strong></td>
+                                            <td><strong>${{ license.getTotalVendorAmount() }}</strong></td>
                                             <td></td>
                                             <td></td>
                                             <td></td>

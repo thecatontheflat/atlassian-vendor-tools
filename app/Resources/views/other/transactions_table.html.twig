@@ -1,0 +1,24 @@
+    <table class="aui">
+        <thead>
+        <tr>
+            <th><h6>id</h6></th>
+            <th><h6>organisation</h6></th>
+            <th><h6>Plugin</h6></th>
+            <th><h6>Vendor Amount</h6></th>
+            <th><h6>type</h6></th>
+            <th><h6>date</h6></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for transaction in transactions %}
+            <tr>
+                <td><a href="{{ path('transaction_detail', {'transactionId': transaction.transactionId}) }}">{{ transaction.transactionId }}</a></td>
+                <td>{{ transaction.license.company.company }}</td>
+                <td>{{ transaction.license.addon.addonName }}</td>
+                <td>{{ transaction.vendorAmount }}</td>
+                <td>{{ transaction.saleTypeStr }}</td>
+                <td>{{ transaction.saleDate|date('Y-m-d') }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>

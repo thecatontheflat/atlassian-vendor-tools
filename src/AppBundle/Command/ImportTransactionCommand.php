@@ -112,6 +112,13 @@ class ImportTransactionCommand extends ContainerAwareCommand
                     continue;
                 }
                 Setter::set($jsonTransaction,$transaction,"transactionId");
+                if(isset($jsonTransaction["customerDetails"]["company"])) {
+//                  Pretty weird, but Atlassian provide full company name in transactions list and brief company name for licenses list.
+//                  Probably, this should be refactored later.
+//                  Could be used as $company->getCompanyTitleFixed()
+                    $license->getCompany()->setCompanyFromTransaction($jsonTransaction["customerDetails"]["company"]);
+                    $this->em->flush($license->getCompany());
+                }
 
                 if(!$addon = $addonRepository->findOneBy(["addonKey"=>$jsonTransaction["addonKey"]])) {
                     continue;

@@ -333,4 +333,12 @@ class License
             return null;
         }
     }
+    public function getTotalVendorAmount()
+    {
+        $total = 0;
+        foreach ($this->getTransactions() as $transaction) {
+            $total += $transaction->getVendorAmount();
+        }
+        return $total;
+    }
 }

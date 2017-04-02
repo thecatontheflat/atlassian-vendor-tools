@@ -40,8 +40,6 @@ class Addon
      */
     private $licenses;
 
-
-
     /**
      * Get id
      *
@@ -131,7 +129,7 @@ class Addon
     /**
      * Get licenses
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return License[]
      */
     public function getLicenses()
     {
@@ -145,4 +143,14 @@ class Addon
         return $this->id == null;
     }
 
+    public function getTotalVendorAmount()
+    {
+        $total = 0;
+        foreach ($this->getLicenses() as $license) {
+            foreach ($license->getTransactions() as $transaction) {
+                $total += $transaction->getVendorAmount();
+            }
+        }
+        return $total;
+    }
 }

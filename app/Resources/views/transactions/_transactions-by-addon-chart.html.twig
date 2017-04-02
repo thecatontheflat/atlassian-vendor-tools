@@ -1,7 +1,7 @@
 <script type="text/javascript">
     var saleData = [];
-    {% for sale in salesByAddon %}
-        saleData.push(["{{ sale.pluginName }}", {{ sale.total }}]);
+    {% for addon in addons %}
+        saleData.push(["{{ addon.addonName }}", {{ addon.getTotalVendorAmount() }}]);
     {% endfor %}
 
     $('#sales-by-addon').highcharts({
