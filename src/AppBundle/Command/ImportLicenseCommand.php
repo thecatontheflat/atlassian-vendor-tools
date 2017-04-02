@@ -59,9 +59,15 @@ class ImportLicenseCommand extends ContainerAwareCommand
 
             // TODO: company is seems to be unique identifier for cloud plugins. Not sure about server one?
             $company = $companyRepository->findOrCreate($licenseJson->licenseId);
-            Setter::set($licenseJson->contactDetails,$company,"company,country,region");
-            Setter::set($licenseJson->contactDetails->technicalContact,$company,"email,name,state,phone,address1,address2,city,state,postcode,country","technicalContact");
-            Setter::set($licenseJson->contactDetails->billingContact,$company,"email,name,phone","billingContact");
+            if(property_exists($licenseJson,"contactDetails")) {
+                Setter::set($licenseJson->contactDetails, $company, "company,country,region");
+                if(property_exists($licenseJson->contactDetails,"technicalContact")) {
+                    Setter::set($licenseJson->contactDetails->technicalContact, $company, "email,name,state,phone,address1,address2,city,state,postcode,country", "technicalContact");
+                }
+                if(property_exists($licenseJson->contactDetails,"billingContact")) {
+                    Setter::set($licenseJson->contactDetails->billingContact, $company, "email,name,phone", "billingContact");
+                }
+            }
             if($company->isNew()) {
                 $em->persist($company);
                 $em->flush($company);
