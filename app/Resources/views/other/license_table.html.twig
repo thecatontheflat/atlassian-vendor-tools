@@ -5,7 +5,7 @@
         <thead>
         <tr>
         {% if licenses.template|default(false) %}
-            <th><h6>{{ knp_pagination_sortable(licenses, 'id', 'l.id') }}</h6></th>
+            <th><h6>{{ knp_pagination_sortable(licenses, 'id', 'l.addonLicenseId') }}</h6></th>
             <th><h6>{{ knp_pagination_sortable(licenses, 'organisation', 'l.organisationName') }}</h6></th>
             <th><h6>{{ knp_pagination_sortable(licenses, 'addon', 'l.addonName') }}</h6></th>
             <th><h6>{{ knp_pagination_sortable(licenses, 'type', 'l.licenseType') }}</h6></th>
@@ -24,7 +24,7 @@
         <tbody>
         {% for license in licenses %}
             <tr>
-                <td>{{ macro.licenseUrl(license.licenseId) }}</td>
+                <td>{{ macro.companyUrl(license.company.senId) }}</td>
                 <td>
                     {{ license.company.company }}
                     {% if license.renewalAction == 'AUTO_QUOTE' %}
@@ -34,9 +34,9 @@
                 <td>{{ license.addon.addonName }}</td>
                 <td>
                     {{ license.licenseType }}
-                    {% set key = license.licenseId ~ license.addon.addonKey %}
-                    {% if expiringSoonSales[key]|default(false) %}
-                        <span class="aui-lozenge aui-lozenge-success aui-lozenge-subtle">${{ expiringSoonSales[key].vendorAmount }}</span>
+                    {% set recentSales = expiringSoonSales[license.id]|default(false) %}
+                    {% if recentSales %}
+                        <span class="aui-lozenge aui-lozenge-success aui-lozenge-subtle">${{ recentSales.vendorAmount }}</span>
                     {% endif %}
                 </td>
                 <td>{{ license.maintenanceStartDate|date('Y-m-d') }}</td>

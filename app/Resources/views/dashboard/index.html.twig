@@ -31,7 +31,7 @@
             <table class="aui">
                 {% for statsRow in topLicenses %}
                     <tr>
-                        <td>{{ macro.licenseUrl(statsRow[0].licenseId) }}</td>
+                        <td>{{ macro.companyUrl(statsRow[0].company.senId) }}</td>
                         <td>{{ statsRow[0].company.company }}</td>
                         <td><strong>${{ statsRow.total }}</strong></td>
                     </tr>

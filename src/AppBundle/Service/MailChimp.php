@@ -51,6 +51,7 @@ class MailChimp
 
     private function add($listId, License $license)
     {
+        // TODO: check, how will mailchimp handle already subscribed emails
         $body = [
             'email_address' => $license->getCompany()->getTechnicalContactEmail(),
             'status' => 'subscribed',

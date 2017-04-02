@@ -12,14 +12,15 @@ class CompanyRepository extends EntityRepository
      *
      * @return Company
      */
-    public function findOrCreate($company)
+    public function findOrCreate($senId)
     {
         $company = $this->findOneBy([
-            'company' => $company,
+            'senId' => $senId,
         ]);
 
         if (!$company) {
             $company = new Company();
+            $company->setSenId($senId);
         }
 
         return $company;

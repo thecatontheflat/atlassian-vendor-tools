@@ -22,6 +22,13 @@ class Company
     private $id;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(type="string", length=255)
+     */
+    private $senId;
+
+    /**
      * @var string
      *
      * @ORM\Column(type="string", length=255, unique=true)
@@ -38,7 +45,7 @@ class Company
     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $region;
 
@@ -494,5 +501,23 @@ class Company
     public function isNew()
     {
         return $this->id == null;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSenId()
+    {
+        return $this->senId;
+    }
+
+    /**
+     * @param int $senId
+     * @return $this
+     */
+    public function setSenId($senId)
+    {
+        $this->senId = $senId;
+        return $this;
     }
 }

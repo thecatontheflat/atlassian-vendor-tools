@@ -25,13 +25,6 @@ class License
     /**
      * @var integer
      *
-     * @ORM\Column(type="string", length=255)
-     */
-    private $licenseId;
-
-    /**
-     * @var integer
-     *
      * @ORM\Column(type="string", length=255, unique=true)
      */
     private $addonLicenseId;
@@ -49,13 +42,6 @@ class License
      * @ORM\ManyToOne(targetEntity="Addon", inversedBy="licenses", cascade={"persist"})
      */
     private $addon;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $edition; // TODO: cant find it in https://developer.atlassian.com/market/api/2/reference/resource/vendors/%7BvendorId%7D/reporting/licenses
 
     /**
      * @var string
@@ -130,29 +116,6 @@ class License
     public function getAddonLicenseId()
     {
         return $this->addonLicenseId;
-    }
-
-    /**
-     * Set edition
-     *
-     * @param string $edition
-     * @return License
-     */
-    public function setEdition($edition)
-    {
-        $this->edition = $edition;
-
-        return $this;
-    }
-
-    /**
-     * Get edition
-     *
-     * @return string 
-     */
-    public function getEdition()
-    {
-        return $this->edition;
     }
 
     /**
