@@ -15,27 +15,8 @@ class CompanyController extends Controller
      */
     public function indexAction(Request $request)
     {
-        throw new \Exception("Refactor");
-        $repository = $this->getDoctrine()->getRepository('AppBundle:License');
-        $addonChoices = $repository->getAddonChoices();
+        throw new \Exception("TODO: implement");
 
-        $filterForm = $this->createForm(new LicenseFilterType($addonChoices));
-        $filterForm->submit($request);
-        $filters = $filterForm->getData();
-
-        $query = $repository->getFilteredQuery($filters);
-
-        $paginator  = $this->get('knp_paginator');
-        $licenses = $paginator->paginate(
-            $query,
-            $request->query->getInt('page', 1),
-            $filters['limit'] ?: 50
-        );
-
-        return $this->render(':license:list.html.twig', [
-            'licenses' => $licenses,
-            'filterForm' => $filterForm->createView()
-        ]);
     }
 
     /**

@@ -50,20 +50,6 @@ class TransactionRepository extends EntityRepository
         $groupedTransactions[$transaction->getSaleDate()->format('Y-m')] = $monthlyTransactionsTotals;
     }
 
-    public function findIfSaleIsNew($invoice, $licenseId, $pluginKey)
-    {
-        return count($this->createQueryBuilder('s')
-                ->select(['s.invoice', 's.licenseId', 's.pluginKey'])
-                ->where('s.invoice = ?1')
-                ->andWhere('s.licenseId = ?2')
-                ->andWhere('s.pluginKey = ?3')
-                ->setParameter('1', $invoice)
-                ->setParameter('2', $licenseId)
-                ->setParameter('3', $pluginKey)
-                ->getQuery()
-                ->getResult()) == 0;
-    }
-
     public function findEstimatedMonthlyIncome()
     {
         $beginning = new \DateTime();
@@ -89,17 +75,6 @@ class TransactionRepository extends EntityRepository
         }
 
         return $total;
-    }
-
-    public function findSalesByAddon()
-    {
-        $results = $this->createQueryBuilder('s')
-            ->select(['s.pluginName', 'SUM(s.vendorAmount) as total'])
-            ->groupBy('s.pluginName')
-            ->getQuery()
-            ->getResult();
-
-        return $results;
     }
 
     public function getFilteredQuery($filters)

@@ -68,22 +68,6 @@ class LicenseRepository extends EntityRepository
         return $builder->getQuery();
     }
 
-    public function getAddonChoices()
-    {
-        $result = $this->createQueryBuilder('l')
-            ->select(['l.addonKey', 'l.addonName'])
-            ->distinct()
-            ->getQuery()
-            ->getResult();
-
-        $choices = [];
-        foreach ($result as $choice) {
-            $choices[$choice['addonKey']] = $choice['addonName'];
-        }
-
-        return $choices;
-    }
-
     /**
      * @return License[]
      */
