@@ -31,7 +31,7 @@ class Company
     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $company;
 
@@ -48,7 +48,7 @@ class Company
     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $country;
 

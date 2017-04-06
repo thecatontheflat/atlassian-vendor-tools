@@ -52,11 +52,29 @@ class TransactionRepository extends EntityRepository
 
     public function findEstimatedMonthlyIncome()
     {
-        $beginning = new \DateTime();
-        $end = new \DateTime('last day of this month');
+        return $this->findEstimatedIncome();
+    }
 
-        /** @var $expiringInThisMonthLicenses License[] */
-        $expiringInThisMonthLicenses = $this->getEntityManager()->getRepository('AppBundle:License')
+    public function findEstimatedIncome($beginning = null, $end = null)
+    {
+        if(is_null($beginning)) {
+            $beginning = new \DateTime();
+        }elseif(is_string($beginning)) {
+            $beginning = new \DateTime($beginning);
+        }elseif(!($beginning instanceof \DateTime)) {
+            throw new \Exception("beginning should be null, string or DateTime");
+        }
+
+        if(is_null($end)) {
+            $end = new \DateTime('last day of this month');
+        }elseif(is_string($end)) {
+            $end = new \DateTime($end);
+        }elseif(!($end instanceof \DateTime)) {
+            throw new \Exception("end should be null, string or DateTime");
+        }
+
+        /** @var $expiringInThisIntervalLicenses License[] */
+        $expiringInThisIntervalLicenses = $this->getEntityManager()->getRepository('AppBundle:License')
             ->createQueryBuilder('l')
             ->where('l.licenseType = ?1')
             ->andWhere('l.maintenanceEndDate >= :beginning')
@@ -68,7 +86,7 @@ class TransactionRepository extends EntityRepository
             ->getResult();
 
         $total = 0;
-        foreach ($expiringInThisMonthLicenses as $license) {
+        foreach ($expiringInThisIntervalLicenses as $license) {
             if($lastTransaction = $license->getLastTransaction()) {
                 $total += $lastTransaction->getVendorAmount();
             }

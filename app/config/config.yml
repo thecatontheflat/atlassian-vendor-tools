@@ -44,6 +44,10 @@ doctrine:
         password: "%database_password%"
         charset: UTF8
 
+#       https://github.com/doctrine/DoctrineBundle/issues/351
+#       app/console doctrine:database:create --env=test do not work without server_version
+#       and tests failed
+        server_version: "5.5"
     orm:
         auto_generate_proxy_classes: "%kernel.debug%"
         auto_mapping: true

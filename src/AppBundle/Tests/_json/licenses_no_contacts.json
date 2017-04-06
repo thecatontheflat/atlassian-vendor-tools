@@ -1,0 +1,61 @@
+{
+  "_links": {
+    "self": {
+      "href": "/rest/2/vendors/1111112/reporting/licenses"
+    },
+    "query": {
+      "href": "/rest/2/vendors/1111112/reporting/licenses{?addon*,startDate,endDate,text,tier*,dateType,licenseType*,partnerType*,hosting*,status*,lastUpdated,sortBy,order,offset,limit}",
+      "templated": true
+    },
+    "export": [
+      {
+        "href": "/rest/2/vendors/1111112/reporting/licenses/export?accept=csv",
+        "type": "text/csv"
+      },
+      {
+        "href": "/rest/2/vendors/1111112/reporting/licenses/export?accept=json",
+        "type": "application/json"
+      }
+    ],
+    "next": {
+      "href": "/rest/2/vendors/1111112/reporting/licenses?offset=10"
+    }
+  },
+  "licenses": [
+    {
+      "_comment" : "Existing in base.yml license with removed email, updated company name",
+      "addonLicenseId": "1111111",
+      "hostLicenseId": "1111111",
+      "licenseId": "SEN-0000001",
+      "addonKey": "net.fake.addon1",
+      "addonName": "Fake Addon #1",
+      "hosting": "Cloud",
+      "lastUpdated": "2017-04-05",
+      "licenseType": "EVALUATION",
+      "maintenanceStartDate": "2017-03-25",
+      "maintenanceEndDate": "2017-04-27",
+      "status": "active",
+      "tier": "Subscription",
+      "contactDetails": {
+        "company": "fake1-updated'%~!\"<>",
+        "country": "Australia-updated'%~!\"<>",
+        "region": "APAC-updated"
+      }
+    },
+    {
+      "_comment" : "Not existing in base.yml license with removed contacts",
+      "addonLicenseId": "1111116",
+      "hostLicenseId": "1111116",
+      "licenseId": "SEN-0000005",
+      "addonKey": "net.fake.addon3",
+      "addonName": "Fake Addon #3 '%~!\"<>",
+      "hosting": "Cloud",
+      "lastUpdated": "2017-04-05",
+      "licenseType": "EVALUATION",
+      "maintenanceStartDate": "2017-03-14",
+      "maintenanceEndDate": "2017-04-20",
+      "status": "active",
+      "tier": "Subscription"
+    }
+  ]
+}

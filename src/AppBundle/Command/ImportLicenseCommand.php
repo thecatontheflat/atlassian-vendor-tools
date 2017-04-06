@@ -104,7 +104,7 @@ class ImportLicenseCommand extends ContainerAwareCommand
         $filePath = $this->input->getArgument('file');
         $content = file_get_contents($filePath);
 
-        return json_decode($content);
+        return json_decode($content)->licenses;
     }
 
     /**

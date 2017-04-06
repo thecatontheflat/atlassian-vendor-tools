@@ -7,6 +7,7 @@ use AppBundle\Entity\Transaction;
 use AppBundle\Helper\Setter;
 use GuzzleHttp\Client;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -34,6 +35,7 @@ class ImportTransactionCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this->setName('app:import:transaction')
+             ->addArgument('file', InputArgument::OPTIONAL, 'Import from file. Overrides remote import')
              ->addOption("log-json")
              ->addOption(
                 'new-transaction-notification',
@@ -53,7 +55,11 @@ class ImportTransactionCommand extends ContainerAwareCommand
 
         try {
             do {
-                $json = $this->getTransactions($limit, $offset);
+                if($input->getArgument("file")) {
+                    $json = $this->getLocalFile($input->getArgument("file"));
+                } else {
+                    $json = $this->getTransactions($limit, $offset);
+                }
                 if($input->getOption("log-json")) {
                     $this->getContainer()->get('logger')->info(var_export($json));
                 }
@@ -73,6 +79,13 @@ class ImportTransactionCommand extends ContainerAwareCommand
         }
 
         $output->writeln(sprintf('Imported %s transactions', $offset));
+    }
+
+
+    private function getLocalFile($file)
+    {
+        $content = file_get_contents($file);
+        return json_decode($content,true);
     }
 
     private function getTransactions($limit, $offset)
@@ -133,6 +146,13 @@ class ImportTransactionCommand extends ContainerAwareCommand
                 }
 
                 Setter::set($jsonTransaction["purchaseDetails"],$transaction,"saleDate,tier,billingPeriod,purchasePrice,vendorAmount,saleType,maintenanceStartDate,maintenanceEndDate");
+
+                if($license->getMaintenanceEndDate() < $transaction->getMaintenanceEndDate()) {
+                    $license
+                        ->setMaintenanceStartDate($transaction->getMaintenanceStartDate())
+                        ->setMaintenanceEndDate($transaction->getMaintenanceEndDate())
+                    ;
+                }
 
                 if (!$this->allowedForImport($transaction)) continue;
 

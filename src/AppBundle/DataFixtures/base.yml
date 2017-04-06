@@ -1,0 +1,135 @@
+AppBundle\Entity\Addon:
+    Addon-1:
+        addonKey: net.fake.addon1
+        addonName: 'Fake Addon #1'
+        licenses: ['@License-1', '@License-2', '@License-3']
+    Addon-2:
+        addonKey: net.fake.addon2
+        addonName: 'Fake Addon #1'
+        licenses: [ '@License-4', '@License-5' ]
+AppBundle\Entity\Company:
+    Company-1:
+        senId: SEN-0000001
+        company: fake1
+        country: Ukraine
+        region: EMEA
+        technicalContactName: 'Andrew Zhilin'
+        technicalContactEmail: 'fake\@gmail.com'
+        billingContactName: 'Andrew Zhilin'
+        billingContactEmail: 'fake+billing\@gmail.com'
+        licenses: ['@License-1','@License-4']
+    Company-2:
+        senId: SEN-0000002
+        company: fake2
+        country: Hungary
+        region: EMEA
+        technicalContactName: 'Adjie Csematko'
+        technicalContactEmail: 'fake2\@gmail.com'
+        billingContactName: 'Adjie Csematko'
+        billingContactEmail: 'fake2\@gmail.com'
+        licenses: ['@License-2']
+    Company-3:
+        senId: SEN-0000003
+        company: fake3
+        companyFromTransaction: 'Fake Company 3'
+        country: 'United States of America'
+        region: EMEA
+        technicalContactName: 'Bloody Light Strike Neon'
+        technicalContactEmail: 'crazy.gamer.name\@gmail.com'
+        technicalContactAddress1: 'New York, Gamers st., 17'
+        technicalContactCity: New York
+        technicalContactState: NY
+        technicalContactPostcode: '11111'
+        billingContactName: 'Bloody Light Strike Neon'
+        billingContactEmail: 'crazy.gamer.name\@gmail.com'
+        licenses: ['@License-3']
+    Company-4:
+        senId: SEN-0000004
+        company: fake4
+        companyFromTransaction: 'US Fake company'
+        country: 'United States of America'
+        region: Americas
+        technicalContactName: 'Jack L.O.L Daniels'
+        technicalContactEmail: 'jack\@gmail.com'
+        technicalContactAddress1: '13111 NE Airport Way'
+        technicalContactCity: Portland
+        technicalContactState: OR
+        technicalContactPostcode: '97230'
+        billingContactName: 'Jack L.O.L Daniels'
+        billingContactEmail: 'jack\@gmail.com'
+        licenses: ['@License-4']
+AppBundle\Entity\License:
+    License-1:
+        addonLicenseId: '1111111'
+        company: '@Company-1'
+        addon: '@Addon-1'
+        licenseType: EVALUATION
+        maintenanceStartDate: '<(new \DateTime("2017-03-25"))>'
+        maintenanceEndDate: '<(new \DateTime("2017-04-27"))>'
+        tier: Subscription
+    License-2:
+        addonLicenseId: '1111112'
+        company: '@Company-2'
+        addon: '@Addon-1'
+        licenseType: EVALUATION
+        maintenanceStartDate: '<(new \DateTime("2016-11-09"))>'
+        maintenanceEndDate: '<(new \DateTime("2016-12-16"))>'
+        tier: Subscription
+    License-3:
+        addonLicenseId: '1111113'
+        company: '@Company-3'
+        addon: '@Addon-1'
+        licenseType: COMMERCIAL
+        maintenanceStartDate: '<(new \DateTime("2017-01-10"))>'
+        maintenanceEndDate: '<(new \DateTime("2017-02-10"))>'
+        tier: Subscription
+    License-4:
+        addonLicenseId: '1111114'
+        company: '@Company-4'
+        addon: '@Addon-1'
+        licenseType: COMMERCIAL
+        maintenanceStartDate: '<(new \DateTime("2016-11-06"))>'
+        maintenanceEndDate: '<(new \DateTime("2017-01-19"))>'
+        tier: Subscription
+    License-5:
+        addonLicenseId: '1111115'
+        company: '@Company-4'
+        addon: '@Addon-1'
+        licenseType: EVALUATION
+        maintenanceStartDate: '<(new \DateTime("2016-11-01"))>'
+        maintenanceEndDate: '<(new \DateTime("2016-12-21"))>'
+        tier: Subscription
+AppBundle\Entity\Transaction:
+    Transaction-1:
+        saleType: 1
+        license: '@License-3'
+        tier: '15 Users'
+        vendorAmount: '3.75'
+        transactionId: AT-00000001
+        saleDate: '<(new \DateTime("2016-12-11"))>'
+        billingPeriod: Monthly
+        maintenanceEndDate: '<(new \DateTime("2017-01-11"))>'
+        maintenanceStartDate: '<(new \DateTime("2016-12-11"))>'
+        purchasePrice: '5.00'
+    Transaction-2:
+        saleType: 1
+        license: '@License-4'
+        tier: '10 Users'
+        vendorAmount: '3.75'
+        transactionId: AT-00000002
+        saleDate: '<(new \DateTime("2016-12-20"))>'
+        billingPeriod: Monthly
+        maintenanceEndDate: '<(new \DateTime("2017-01-20"))>'
+        maintenanceStartDate: '<(new \DateTime("2016-12-20"))>'
+        purchasePrice: '5.00'
+    Transaction-3:
+        saleType: 1
+        license: '@License-3'
+        tier: '15 Users'
+        vendorAmount: '3.75'
+        transactionId: AT-00000003
+        saleDate: '<(new \DateTime("2017-01-11"))>'
+        billingPeriod: Monthly
+        maintenanceEndDate: '<(new \DateTime("2017-02-11"))>'
+        maintenanceStartDate: '<(new \DateTime("2017-01-11"))>'
+        purchasePrice: '5.00'
