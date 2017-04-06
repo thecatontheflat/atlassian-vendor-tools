@@ -39,7 +39,7 @@
                         {{ macro.message("Possible problems with cron!",__STATUS.getCrontabProblems() | join("<br>"),"error") }}
                     {% endif %}
                     {% if __STATUS.getCrontabSetupInstructions() | length %}
-                        {{ macro.message("Please setup on crontab for daily execution",__STATUS.getCrontabProblems() | join("<br>"),"warning") }}
+                        {{ macro.message("Please setup on crontab for daily execution",__STATUS.getCrontabSetupInstructions() | join("<br>"),"warning") }}
                     {% endif %}
                     {% if __STATUS.getStatusEntity().getLicenseImportException() or __STATUS.getStatusEntity().getTransactionImportException() %}
                         {{ macro.message("Got system error, please contact developer",__STATUS.getStatusEntity().getLicenseImportException()~" <BR>"~__STATUS.getStatusEntity().getTransactionImportException(),"error") }}
