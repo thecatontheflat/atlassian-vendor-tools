@@ -26,10 +26,6 @@ class ImportLicenseCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-//        var_dump($this->getContainer()->get("doctrine")->getRepository("AppBundle:Company")->findTopCustomers());
-//        die();
-
-
         $this->input = $input;
         $this->output = $output;
 
@@ -51,34 +47,33 @@ class ImportLicenseCommand extends ContainerAwareCommand
 
         foreach ($licenses as $licenseJson) {
             $addon = $addonRepository->findOrCreate($licenseJson->addonKey);
-            Setter::set($licenseJson,$addon,"addonKey,addonName");
-            if($addon->isNew()) {
+            Setter::set($licenseJson, $addon, "addonKey,addonName");
+            if ($addon->isNew()) {
                 $em->persist($addon);
                 $em->flush($addon);
             }
 
             // TODO: company is seems to be unique identifier for cloud plugins. Not sure about server one?
             $company = $companyRepository->findOrCreate($licenseJson->licenseId);
-            if(property_exists($licenseJson,"contactDetails")) {
+            if (property_exists($licenseJson, "contactDetails")) {
                 Setter::set($licenseJson->contactDetails, $company, "company,country,region");
-                if(property_exists($licenseJson->contactDetails,"technicalContact")) {
+                if (property_exists($licenseJson->contactDetails, "technicalContact")) {
                     Setter::set($licenseJson->contactDetails->technicalContact, $company, "email,name,state,phone,address1,address2,city,state,postcode,country", "technicalContact");
                 }
-                if(property_exists($licenseJson->contactDetails,"billingContact")) {
+                if (property_exists($licenseJson->contactDetails, "billingContact")) {
                     Setter::set($licenseJson->contactDetails->billingContact, $company, "email,name,phone", "billingContact");
                 }
             }
-            if($company->isNew()) {
+            if ($company->isNew()) {
                 $em->persist($company);
                 $em->flush($company);
             }
 
             $license = $licenseRepository->findOrCreate($licenseJson->addonLicenseId);
-            Setter::set($licenseJson,$license,"tier,addonLicenseId,licenseType,maintenanceStartDate,maintenanceEndDate,licenseId");
+            Setter::set($licenseJson, $license, "tier,addonLicenseId,licenseType,maintenanceStartDate,maintenanceEndDate,licenseId");
             $license
                 ->setAddon($addon)
-                ->setCompany($company)
-            ;
+                ->setCompany($company);
 
             if (!$this->allowedForImport($license)) continue;
 
@@ -95,8 +90,9 @@ class ImportLicenseCommand extends ContainerAwareCommand
         }
 
         $em->flush();
-
         $output->writeln(sprintf('Imported %s licenses', count($licenses)));
+
+        $this->getContainer()->get("app.status")->importLicenseDone();
     }
 
     private function getLocalFile()

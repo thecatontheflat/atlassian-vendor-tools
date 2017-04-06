@@ -16,3 +16,13 @@ services:
             - %mailchimp_addon_list_map%
             - %mailchimp_api_dc%
             - %mailchimp_enabled%
+    app.status:
+        class: AppBundle\Service\Status
+        arguments:
+            - @doctrine.orm.default_entity_manager
+    kernel.listener.command_dispatch:
+        class: AppBundle\EventListener\ConsoleExceptionListener
+        arguments:
+            - @app.status
+        tags:
+            - { name: kernel.event_listener, event: console.exception }

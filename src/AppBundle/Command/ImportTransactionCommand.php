@@ -79,6 +79,7 @@ class ImportTransactionCommand extends ContainerAwareCommand
         }
 
         $output->writeln(sprintf('Imported %s transactions', $offset));
+        $this->getContainer()->get("app.status")->importTransactionDone();
     }
 
 

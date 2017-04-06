@@ -26,6 +26,8 @@ twig:
     strict_variables: "%kernel.debug%"
     form_themes:
         - ':other:aui_form_theme.html.twig'
+    globals:
+        __STATUS: "@app.status"
 
 assetic:
     debug: "%kernel.debug%"
