@@ -25,7 +25,7 @@ class CronCommand extends ContainerAwareCommand
     {
         $statusService = $this->getContainer()->get("app.status");
         // we get either prod or dev or test path
-        $commitsHistory = file($this->getContainer()->getParameter("kernel.cache_dir")."/../commist.history");
+        $commitsHistory = file($this->getContainer()->getParameter("kernel.cache_dir")."/../commits.history");
         $client = new Client();
         // https://pages.github.com/
         $response = $client->get("https://thecatontheflat.github.io/atlassian-vendor-tools.json");
