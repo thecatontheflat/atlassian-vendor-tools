@@ -5,12 +5,12 @@
         <thead>
         <tr>
         {% if licenses.template|default(false) %}
-            <th><h6>{{ knp_pagination_sortable(licenses, 'id', 'l.id') }}</h6></th>
-            <th><h6>{{ knp_pagination_sortable(licenses, 'organisation', 'l.organisationName') }}</h6></th>
-            <th><h6>{{ knp_pagination_sortable(licenses, 'addon', 'l.addonName') }}</h6></th>
+            <th><h6>{{ knp_pagination_sortable(licenses, 'id', 'l.senId') }}</h6></th>
+            <th><h6>{{ knp_pagination_sortable(licenses, 'organisation', 'company.company') }}</h6></th>
+            <th><h6>{{ knp_pagination_sortable(licenses, 'addon', 'addon.addonName') }}</h6></th>
             <th><h6>{{ knp_pagination_sortable(licenses, 'type', 'l.licenseType') }}</h6></th>
-            <th><h6>{{ knp_pagination_sortable(licenses, 'start date', 'l.startDate') }}</h6></th>
-            <th><h6>{{ knp_pagination_sortable(licenses, 'end date', 'l.endDate') }}</h6></th>
+            <th><h6>{{ knp_pagination_sortable(licenses, 'start date', 'l.maintenanceStartDate') }}</h6></th>
+            <th><h6>{{ knp_pagination_sortable(licenses, 'end date', 'l.maintenanceEndDate') }}</h6></th>
         {% else %}
             <th><h6>id</h6></th>
             <th><h6>organisation</h6></th>
@@ -24,23 +24,23 @@
         <tbody>
         {% for license in licenses %}
             <tr>
-                <td>{{ macro.licenseUrl(license.licenseId) }}</td>
+                <td>{{ macro.companyUrl(license.company.senId) }}</td>
                 <td>
-                    {{ license.organisationName }}
+                    {{ license.company.company }}
                     {% if license.renewalAction == 'AUTO_QUOTE' %}
                         <span class="aui-lozenge aui-lozenge-current">quote</span>
                     {% endif %}
                 </td>
-                <td>{{ license.addonName }}</td>
+                <td>{{ license.addon.addonName }}</td>
                 <td>
                     {{ license.licenseType }}
-                    {% set key = license.licenseId ~ license.addonKey %}
-                    {% if expiringSoonSales[key]|default(false) %}
-                        <span class="aui-lozenge aui-lozenge-success aui-lozenge-subtle">${{ expiringSoonSales[key].vendorAmount }}</span>
+                    {% set lastTransaction = license.getLastTransaction() %}
+                    {% if lastTransaction %}
+                        <span class="aui-lozenge aui-lozenge-success aui-lozenge-subtle">${{ lastTransaction.vendorAmount }}</span>
                     {% endif %}
                 </td>
-                <td>{{ license.startDate|date('Y-m-d') }}</td>
-                <td>{{ license.endDate|date('Y-m-d') }}</td>
+                <td>{{ license.maintenanceStartDate|date('Y-m-d') }}</td>
+                <td>{{ license.maintenanceEndDate|date('Y-m-d') }}</td>
             </tr>
         {% endfor %}
         </tbody>

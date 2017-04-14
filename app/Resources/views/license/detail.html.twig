@@ -15,27 +15,27 @@
 
                     <tr>
                         <td><h6>ORGANISATION NAME</h6></td>
-                        <td>{{ license.organisationName }}</td>
+                        <td>{{ license.company.company }}</td>
                     </tr>
 
                     <tr>
                         <td><h6>ADDON</h6></td>
-                        <td>{{ license.addonName }} ({{ license.addonKey }})</td>
+                        <td>{{ license.addon.addonName }} ({{ license.addon.addonKey }})</td>
                     </tr>
 
                     <tr>
                         <td><h6>TECHNICAL CONTACT</h6></td>
                         <td>
-                            {{ license.techContactName }} <br/>
-                            {{ license.techContactEmail }}
+                            {{ license.company.technicalContactName }} <br/>
+                            {{ license.company.technicalContactEmail }}
                         </td>
                     </tr>
 
                     <tr>
                         <td><h6>BILLING CONTACT</h6></td>
                         <td>
-                            {{ license.billingContactName }} <br/>
-                            {{ license.billingContactEmail }}
+                            {{ license.company.billingContactName }} <br/>
+                            {{ license.company.billingContactEmail }}
                         </td>
                     </tr>
 
@@ -51,12 +51,12 @@
 
                     <tr>
                         <td><h6>START DATE</h6></td>
-                        <td>{{ license.startDate|date('Y-m-d') }}</td>
+                        <td>{{ license.maintenanceStartDate|date('Y-m-d') }}</td>
                     </tr>
 
                     <tr>
                         <td><h6>END DATE</h6></td>
-                        <td>{{ license.endDate|date('Y-m-d') }}</td>
+                        <td>{{ license.maintenanceEndDate|date('Y-m-d') }}</td>
                     </tr>
 
                     <tr>

@@ -1,3 +1,6 @@
+{% import ":other:macro.html.twig" as macro %}
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,7 +18,7 @@
             <div class="aui-header-inner">
                 <ul class="aui-nav">
                     <li><a href="{{ url('dashboard') }}">Dashboard</a></li>
-                    <li><a href="{{ url('sales') }}">Sales</a></li>
+                    <li><a href="{{ url('transactions') }}">Transactions</a></li>
                     <li><a href="{{ url('licenses') }}">Licenses</a></li>
                 </ul>
             </div>
@@ -32,7 +35,21 @@
         <div class="aui-page-panel">
             <div class="aui-page-panel-inner">
                 <section class="aui-page-panel-content">
+                    {% if __STATUS.getCrontabProblems() | length %}
+                        {{ macro.message("Possible problems with cron!",__STATUS.getCrontabProblems() | join("<br>"),"error") }}
+                    {% endif %}
+                    {% if __STATUS.getCrontabSetupInstructions() | length %}
+                        {{ macro.message("Please setup on crontab for daily execution",__STATUS.getCrontabSetupInstructions() | join("<br>"),"warning") }}
+                    {% endif %}
+                    {% if __STATUS.getStatusEntity().getLicenseImportException() or __STATUS.getStatusEntity().getTransactionImportException() %}
+                        {{ macro.message("Got system error, please contact developer",__STATUS.getStatusEntity().getLicenseImportException()~" <BR>"~__STATUS.getStatusEntity().getTransactionImportException(),"error") }}
+                    {% endif %}
+                    {% if __STATUS.getStatusEntity().availableUpdates %}
+                        {{ macro.message("Updates available, <a href='https://github.com/thecatontheflat/atlassian-vendor-tools/'>more info</a>",__STATUS.getStatusEntity().availableUpdates,"success") }}
+                    {% endif %}
+
                     {% block content %}
+
                     {% endblock %}
                 </section>
             </div>

@@ -26,6 +26,8 @@ twig:
     strict_variables: "%kernel.debug%"
     form_themes:
         - ':other:aui_form_theme.html.twig'
+    globals:
+        __STATUS: "@app.status"
 
 assetic:
     debug: "%kernel.debug%"
@@ -44,9 +46,14 @@ doctrine:
         password: "%database_password%"
         charset: UTF8
 
+#       https://github.com/doctrine/DoctrineBundle/issues/351
+#       app/console doctrine:database:create --env=test do not work without server_version
+#       and tests failed
+        server_version: "5.5"
     orm:
         auto_generate_proxy_classes: "%kernel.debug%"
         auto_mapping: true
+        naming_strategy: doctrine.orm.naming_strategy.underscore
 
 swiftmailer:
     transport: "%mailer_transport%"

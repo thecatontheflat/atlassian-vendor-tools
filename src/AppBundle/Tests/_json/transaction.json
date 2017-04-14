@@ -1,0 +1,104 @@
+{
+  "_links": {
+    "self": {
+      "href": "/rest/2/vendors/1111111/reporting/sales/transactions?limit=50"
+    },
+    "query": {
+      "href": "/rest/2/vendors/1111111/reporting/sales/transactions{?addon*,startDate,endDate,text,tier*,saleType*,partnerType*,hosting*,lastUpdated,sortBy,order,offset,limit}",
+      "templated": true
+    },
+    "export": [
+      {
+        "href": "/rest/2/vendors/1111111/reporting/sales/transactions/export?accept=csv",
+        "type": "text/csv"
+      },
+      {
+        "href": "/rest/2/vendors/1111111/reporting/sales/transactions/export?accept=json",
+        "type": "application/json"
+      }
+    ]
+  },
+  "transactions": [
+    {
+      "_comment": "existing transaction",
+      "transactionId": "AT-00000001",
+      "addonLicenseId": "1111113",
+      "_comment_hostLicenseId": "hostLicenseId is not processed now, so its renamed",
+      "licenseId": "SEN-0000003",
+      "addonKey": "net.fake.addon1",
+      "addonName": "Fake Addon #1",
+      "lastUpdated": "2017-01-05",
+      "purchaseDetails": {
+        "saleDate": "2016-12-11",
+        "tier": "15 Users",
+        "licenseType": "COMMERCIAL",
+        "hosting": "Cloud",
+        "billingPeriod": "Monthly",
+        "purchasePrice": 5.0,
+        "vendorAmount": 3.75,
+        "saleType": "New",
+        "maintenanceStartDate": "2016-12-11",
+        "maintenanceEndDate": "2017-01-11"
+      }
+    },
+    {
+      "_comment": "existing transaction with new addon",
+      "transactionId": "AT-00000001",
+      "addonLicenseId": "1111116",
+      "_comment_hostLicenseId": "hostLicenseId is not processed now, so its renamed",
+      "licenseId": "SEN-0000003",
+      "addonKey": "net.fake.addon2",
+      "addonName": "Fake Addon #2",
+      "lastUpdated": "2017-01-05",
+      "purchaseDetails": {
+        "saleDate": "2016-12-11",
+        "tier": "15 Users",
+        "licenseType": "COMMERCIAL",
+        "hosting": "Cloud",
+        "billingPeriod": "Monthly",
+        "purchasePrice": 5.0,
+        "vendorAmount": 3.75,
+        "saleType": "New",
+        "maintenanceStartDate": "2016-12-11",
+        "maintenanceEndDate": "2017-01-11"
+      }
+    },
+    {
+      "_comment": "new transaction",
+      "transactionId": "AT-00000004",
+      "addonLicenseId": "1111114",
+      "_comment_hostLicenseId": "hostLicenseId is not processed now, so its renamed",
+      "licenseId": "SEN-0000004",
+      "addonKey": "net.fake.addon1",
+      "addonName": "Fake Addon #1",
+      "lastUpdated": "2017-01-20",
+      "customerDetails": {
+        "company": "US Fake company",
+        "technicalContact": {
+          "email": "jack@gmail.com",
+          "name": "Jack L.O.L Daniels"
+        }
+      },
+      "purchaseDetails": {
+        "saleDate": "2017-01-20",
+        "tier": "10 Users",
+        "licenseType": "COMMERCIAL",
+        "hosting": "Cloud",
+        "billingPeriod": "Monthly",
+        "purchasePrice": 5.0,
+        "vendorAmount": 3.75,
+        "saleType": "Renewal",
+        "maintenanceStartDate": "2016-01-20",
+        "maintenanceEndDate": "2017-02-20"
+      }
+    }
+  ],
+  "test_data_todo:": [
+    "existing transaction with invalid addonLicenseId",
+    "existing transaction with invalid addonKey",
+    "transaction with overlapped maintenance dates",
+    "processing of tier change",
+    "maintenanceStartDate is not the same as maintenanceEndDate in previous transaction",
+    "wrong saleType - new after new"
+  ]
+}

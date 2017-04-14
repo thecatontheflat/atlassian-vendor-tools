@@ -18,3 +18,5 @@ swiftmailer:
 doctrine:
     dbal:
         dbname: %database_name%_test
+hautelook_alice:
+    fixtures_path: 'DataFixtures/'

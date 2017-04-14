@@ -1,16 +1,6 @@
 parameters:
 
 services:
-    app.twig_extension:
-        class: AppBundle\Twig\AppExtension
-        public: false
-        tags:
-            - { name: twig.extension }
-
-    app.scheduler:
-        class: AppBundle\Service\Scheduler
-        arguments: [@doctrine.orm.entity_manager]
-
     app.sale.mailer:
         class: AppBundle\Service\SaleMailer
         arguments:
@@ -26,3 +16,13 @@ services:
             - %mailchimp_addon_list_map%
             - %mailchimp_api_dc%
             - %mailchimp_enabled%
+    app.status:
+        class: AppBundle\Service\Status
+        arguments:
+            - @doctrine.orm.default_entity_manager
+    kernel.listener.command_dispatch:
+        class: AppBundle\EventListener\ConsoleExceptionListener
+        arguments:
+            - @app.status
+        tags:
+            - { name: kernel.event_listener, event: console.exception }

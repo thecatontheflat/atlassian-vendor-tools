@@ -1,3 +1,11 @@
-{% macro licenseUrl(licenseId) %}
-    <a href="{{ url('license_detail', {'licenseId': licenseId}) }}">{{ licenseId }}</a>
+{% macro companyUrl(senId) %}
+    <a href="{{ url('company_detail', {'senId': senId}) }}">{{ senId }}</a>
+{% endmacro %}
+{% macro message(title, body, type) %}
+    <div class="aui-message aui-message-{{ type }}">
+        <p class="title">
+            <strong>{{ title | raw }}</strong>
+        </p>
+        <p>{{ body | raw }}</p>
+    </div>
 {% endmacro %}

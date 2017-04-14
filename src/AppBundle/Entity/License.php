@@ -2,13 +2,14 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Helper\Setter;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * License
  *
- * @ORM\Table(name="license", uniqueConstraints={@ORM\UniqueConstraint(name="license", columns={"license_id", "addon_key"})})
- * @ORM\Entity(repositoryClass="AppBundle\Entity\LicenseRepository")
+ * @ORM\Table()
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\LicenseRepository")
  */
 class License
 {
@@ -24,155 +25,71 @@ class License
     /**
      * @var integer
      *
-     * @ORM\Column(name="license_id", type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      */
-    private $licenseId;
+    private $addonLicenseId;
+
+    /**
+     * @var Company
+     *
+     * @ORM\ManyToOne(targetEntity="Company", inversedBy="licenses", cascade={"persist"})
+     */
+    private $company;
+
+    /**
+     * @var Addon
+     *
+     * @ORM\ManyToOne(targetEntity="Addon", inversedBy="licenses", cascade={"persist"})
+     */
+    private $addon;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="organisation_name", type="string", length=255, nullable=true)
-     */
-    private $organisationName;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="addon_name", type="string", length=255)
-     */
-    private $addonName;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="addon_key", type="string", length=255)
-     */
-    private $addonKey;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="tech_contact_name", type="string", length=255, nullable=true)
-     */
-    private $techContactName;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="tech_contact_email", type="string", length=255, nullable=true)
-     */
-    private $techContactEmail;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="tech_contact_phone", type="string", length=255, nullable=true)
-     */
-    private $techContactPhone;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="tech_contact_address_1", type="string", length=255, nullable=true)
-     */
-    private $techContactAddress1;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="tech_contact_address_2", type="string", length=255, nullable=true)
-     */
-    private $techContactAddress2;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="tech_contact_city", type="string", length=255, nullable=true)
-     */
-    private $techContactCity;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="tech_contact_state", type="string", length=255, nullable=true)
-     */
-    private $techContactState;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="tech_contact_postcode", type="string", length=255, nullable=true)
-     */
-    private $techContactPostcode;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="tech_contact_country", type="string", length=255, nullable=true)
-     */
-    private $techContactCountry;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="billing_contact_name", type="string", length=255, nullable=true)
-     */
-    private $billingContactName;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="billing_contact_email", type="string", length=255, nullable=true)
-     */
-    private $billingContactEmail;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="billing_contact_phone", type="string", length=255, nullable=true)
-     */
-    private $billingContactPhone;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="edition", type="string", length=255, nullable=true)
-     */
-    private $edition;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="license_type", type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $licenseType;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="start_date", type="date", nullable=true)
+     * @ORM\Column(type="date", nullable=true)
      */
-    private $startDate;
+    private $maintenanceStartDate;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="end_date", type="date", nullable=true)
+     * @ORM\Column(type="date", nullable=true)
      */
-    private $endDate;
+    private $maintenanceEndDate;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="renewal_action", type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $renewalAction;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Transaction", mappedBy="license")
+     * @ORM\OrderBy({"saleDate"="DESC"})
+     */
+    private $transactions;
+
+    /**
+     * @var string
+     * License Size
+     *
+     * @ORM\Column(type="string", length=255)
+     */
+    private $tier;
 
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -180,394 +97,26 @@ class License
     }
 
     /**
-     * Set licenseId
+     * Set addonLicenseId
      *
-     * @param string $licenseId
+     * @param string $addonLicenseId
      * @return License
      */
-    public function setLicenseId($licenseId)
+    public function setAddonLicenseId($addonLicenseId)
     {
-        $this->licenseId = $licenseId;
+        $this->addonLicenseId = $addonLicenseId;
 
         return $this;
     }
 
     /**
-     * Get licenseId
-     *
-     * @return integer 
-     */
-    public function getLicenseId()
-    {
-        return $this->licenseId;
-    }
-
-    /**
-     * Set organisationName
-     *
-     * @param string $organisationName
-     * @return License
-     */
-    public function setOrganisationName($organisationName)
-    {
-        $this->organisationName = $organisationName;
-
-        return $this;
-    }
-
-    /**
-     * Get organisationName
+     * Get addonLicenseId
      *
      * @return string 
      */
-    public function getOrganisationName()
+    public function getAddonLicenseId()
     {
-        return $this->organisationName;
-    }
-
-    /**
-     * Set addonName
-     *
-     * @param string $addonName
-     * @return License
-     */
-    public function setAddonName($addonName)
-    {
-        $this->addonName = $addonName;
-
-        return $this;
-    }
-
-    /**
-     * Get addonName
-     *
-     * @return string 
-     */
-    public function getAddonName()
-    {
-        return $this->addonName;
-    }
-
-    /**
-     * Set addonKey
-     *
-     * @param string $addonKey
-     * @return License
-     */
-    public function setAddonKey($addonKey)
-    {
-        $this->addonKey = $addonKey;
-
-        return $this;
-    }
-
-    /**
-     * Get addonKey
-     *
-     * @return string 
-     */
-    public function getAddonKey()
-    {
-        return $this->addonKey;
-    }
-
-    /**
-     * Set techContactName
-     *
-     * @param string $techContactName
-     * @return License
-     */
-    public function setTechContactName($techContactName)
-    {
-        $this->techContactName = $techContactName;
-
-        return $this;
-    }
-
-    /**
-     * Get techContactName
-     *
-     * @return string 
-     */
-    public function getTechContactName()
-    {
-        return $this->techContactName;
-    }
-
-    /**
-     * Set techContactEmail
-     *
-     * @param string $techContactEmail
-     * @return License
-     */
-    public function setTechContactEmail($techContactEmail)
-    {
-        $this->techContactEmail = $techContactEmail;
-
-        return $this;
-    }
-
-    /**
-     * Get techContactEmail
-     *
-     * @return string 
-     */
-    public function getTechContactEmail()
-    {
-        return $this->techContactEmail;
-    }
-
-    /**
-     * Set techContactPhone
-     *
-     * @param string $techContactPhone
-     * @return License
-     */
-    public function setTechContactPhone($techContactPhone)
-    {
-        $this->techContactPhone = $techContactPhone;
-
-        return $this;
-    }
-
-    /**
-     * Get techContactPhone
-     *
-     * @return string 
-     */
-    public function getTechContactPhone()
-    {
-        return $this->techContactPhone;
-    }
-
-    /**
-     * Set techContactAddress1
-     *
-     * @param string $techContactAddress1
-     * @return License
-     */
-    public function setTechContactAddress1($techContactAddress1)
-    {
-        $this->techContactAddress1 = $techContactAddress1;
-
-        return $this;
-    }
-
-    /**
-     * Get techContactAddress1
-     *
-     * @return string 
-     */
-    public function getTechContactAddress1()
-    {
-        return $this->techContactAddress1;
-    }
-
-    /**
-     * Set techContactAddress2
-     *
-     * @param string $techContactAddress2
-     * @return License
-     */
-    public function setTechContactAddress2($techContactAddress2)
-    {
-        $this->techContactAddress2 = $techContactAddress2;
-
-        return $this;
-    }
-
-    /**
-     * Get techContactAddress2
-     *
-     * @return string 
-     */
-    public function getTechContactAddress2()
-    {
-        return $this->techContactAddress2;
-    }
-
-    /**
-     * Set techContactCity
-     *
-     * @param string $techContactCity
-     * @return License
-     */
-    public function setTechContactCity($techContactCity)
-    {
-        $this->techContactCity = $techContactCity;
-
-        return $this;
-    }
-
-    /**
-     * Get techContactCity
-     *
-     * @return string 
-     */
-    public function getTechContactCity()
-    {
-        return $this->techContactCity;
-    }
-
-    /**
-     * Set techContactState
-     *
-     * @param string $techContactState
-     * @return License
-     */
-    public function setTechContactState($techContactState)
-    {
-        $this->techContactState = $techContactState;
-
-        return $this;
-    }
-
-    /**
-     * Get techContactState
-     *
-     * @return string 
-     */
-    public function getTechContactState()
-    {
-        return $this->techContactState;
-    }
-
-    /**
-     * Set techContactPostcode
-     *
-     * @param string $techContactPostcode
-     * @return License
-     */
-    public function setTechContactPostcode($techContactPostcode)
-    {
-        $this->techContactPostcode = $techContactPostcode;
-
-        return $this;
-    }
-
-    /**
-     * Get techContactPostcode
-     *
-     * @return string 
-     */
-    public function getTechContactPostcode()
-    {
-        return $this->techContactPostcode;
-    }
-
-    /**
-     * Set techContactCountry
-     *
-     * @param string $techContactCountry
-     * @return License
-     */
-    public function setTechContactCountry($techContactCountry)
-    {
-        $this->techContactCountry = $techContactCountry;
-
-        return $this;
-    }
-
-    /**
-     * Get techContactCountry
-     *
-     * @return string 
-     */
-    public function getTechContactCountry()
-    {
-        return $this->techContactCountry;
-    }
-
-    /**
-     * Set billingContactName
-     *
-     * @param string $billingContactName
-     * @return License
-     */
-    public function setBillingContactName($billingContactName)
-    {
-        $this->billingContactName = $billingContactName;
-
-        return $this;
-    }
-
-    /**
-     * Get billingContactName
-     *
-     * @return string 
-     */
-    public function getBillingContactName()
-    {
-        return $this->billingContactName;
-    }
-
-    /**
-     * Set billingContactEmail
-     *
-     * @param string $billingContactEmail
-     * @return License
-     */
-    public function setBillingContactEmail($billingContactEmail)
-    {
-        $this->billingContactEmail = $billingContactEmail;
-
-        return $this;
-    }
-
-    /**
-     * Get billingContactEmail
-     *
-     * @return string 
-     */
-    public function getBillingContactEmail()
-    {
-        return $this->billingContactEmail;
-    }
-
-    /**
-     * Set billingContactPhone
-     *
-     * @param string $billingContactPhone
-     * @return License
-     */
-    public function setBillingContactPhone($billingContactPhone)
-    {
-        $this->billingContactPhone = $billingContactPhone;
-
-        return $this;
-    }
-
-    /**
-     * Get billingContactPhone
-     *
-     * @return string 
-     */
-    public function getBillingContactPhone()
-    {
-        return $this->billingContactPhone;
-    }
-
-    /**
-     * Set edition
-     *
-     * @param string $edition
-     * @return License
-     */
-    public function setEdition($edition)
-    {
-        $this->edition = $edition;
-
-        return $this;
-    }
-
-    /**
-     * Get edition
-     *
-     * @return string 
-     */
-    public function getEdition()
-    {
-        return $this->edition;
+        return $this->addonLicenseId;
     }
 
     /**
@@ -594,49 +143,45 @@ class License
     }
 
     /**
-     * Set startDate
-     *
-     * @param \DateTime $startDate
-     * @return License
+     * @return \DateTime
      */
-    public function setStartDate($startDate)
+    public function getMaintenanceStartDate()
     {
-        $this->startDate = $startDate;
+        return $this->maintenanceStartDate;
+    }
 
+    /**
+     * @param \DateTime $maintenanceStartDate
+     * @return $this
+     */
+    public function setMaintenanceStartDate($maintenanceStartDate)
+    {
+        if(is_string($maintenanceStartDate)) {
+            $maintenanceStartDate = new \DateTime($maintenanceStartDate);
+        }
+        $this->maintenanceStartDate = $maintenanceStartDate;
         return $this;
     }
 
     /**
-     * Get startDate
-     *
-     * @return \DateTime 
+     * @return \DateTime
      */
-    public function getStartDate()
+    public function getMaintenanceEndDate()
     {
-        return $this->startDate;
+        return $this->maintenanceEndDate;
     }
 
     /**
-     * Set endDate
-     *
-     * @param \DateTime $endDate
-     * @return License
+     * @param \DateTime $maintenanceEndDate
+     * @return $this
      */
-    public function setEndDate($endDate)
+    public function setMaintenanceEndDate($maintenanceEndDate)
     {
-        $this->endDate = $endDate;
-
+        if(is_string($maintenanceEndDate)) {
+            $maintenanceEndDate = new \DateTime($maintenanceEndDate);
+        }
+        $this->maintenanceEndDate = $maintenanceEndDate;
         return $this;
-    }
-
-    /**
-     * Get endDate
-     *
-     * @return \DateTime 
-     */
-    public function getEndDate()
-    {
-        return $this->endDate;
     }
 
     /**
@@ -662,33 +207,138 @@ class License
         return $this->renewalAction;
     }
 
-    public function setFromCSV($data)
+    /**
+     * Set tier
+     *
+     * @param string $tier
+     * @return License
+     */
+    public function setTier($tier)
     {
-        $this->setLicenseId($data[0])
-            ->setOrganisationName($data[1])
-            ->setAddonName($data[2])
-            ->setAddonKey($data[3])
-            ->setTechContactName($data[4])
-            ->setTechContactEmail($data[5])
-            ->setTechContactPhone($data[6])
-            ->setTechContactAddress1($data[7])
-            ->setTechContactAddress2($data[8])
-            ->setTechContactCity($data[9])
-            ->setTechContactState($data[10])
-            ->setTechContactPostcode($data[11])
-            ->setTechContactCountry($data[12])
-            ->setBillingContactName($data[13])
-            ->setBillingContactEmail($data[14])
-            ->setBillingContactPhone($data[15])
-            ->setEdition($data[16])
-            ->setLicenseType($data[17])
-            ->setStartDate(new \DateTime($data[18]))
-            ->setEndDate(new \DateTime($data[19]))
-            ->setRenewalAction($data[20]);
+        $this->tier = $tier;
+
+        return $this;
     }
 
+    /**
+     * Get tier
+     *
+     * @return string 
+     */
+    public function getTier()
+    {
+        return $this->tier;
+    }
+
+    /**
+     * Set company
+     *
+     * @param \AppBundle\Entity\Company $company
+     * @return License
+     */
+    public function setCompany(\AppBundle\Entity\Company $company = null)
+    {
+        $this->company = $company;
+
+        return $this;
+    }
+
+    /**
+     * Get company
+     *
+     * @return \AppBundle\Entity\Company 
+     */
+    public function getCompany()
+    {
+        return $this->company;
+    }
+
+    /**
+     * Set addon
+     *
+     * @param \AppBundle\Entity\Addon $addon
+     * @return License
+     */
+    public function setAddon(\AppBundle\Entity\Addon $addon = null)
+    {
+        $this->addon = $addon;
+
+        return $this;
+    }
+
+    /**
+     * Get addon
+     *
+     * @return \AppBundle\Entity\Addon 
+     */
+    public function getAddon()
+    {
+        return $this->addon;
+    }
+
+    /**
+     * Set transactions
+     *
+     * @param \AppBundle\Entity\Transaction $transactions
+     * @return License
+     */
+    public function setTransactions(\AppBundle\Entity\Transaction $transactions = null)
+    {
+        $this->transactions = $transactions;
+
+        return $this;
+    }
+
+    /**
+     * Get transactions
+     *
+     * @return \AppBundle\Entity\Transaction[]
+     */
+    public function getTransactions()
+    {
+        return $this->transactions;
+    }
+
+    /**
+     * @return bool
+     */
     public function isNew()
     {
         return $this->id == null;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLicenseId()
+    {
+        return $this->licenseId;
+    }
+
+    /**
+     * @param int $licenseId
+     * @return $this
+     */
+    public function setLicenseId($licenseId)
+    {
+        $this->licenseId = $licenseId;
+        return $this;
+    }
+
+    public function getLastTransaction()
+    {
+        if(count($this->getTransactions())) {
+            return $this->getTransactions()[0];
+        } else {
+            return null;
+        }
+    }
+    public function getTotalVendorAmount()
+    {
+        $total = 0;
+        foreach ($this->getTransactions() as $transaction) {
+            $total += $transaction->getVendorAmount();
+        }
+        return $total;
     }
 }

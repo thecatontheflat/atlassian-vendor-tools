@@ -3,6 +3,7 @@
 namespace AppBundle\Command;
 
 use AppBundle\Entity\License;
+use AppBundle\Helper\Setter;
 use GuzzleHttp\Client;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -31,25 +32,48 @@ class ImportLicenseCommand extends ContainerAwareCommand
         $container = $this->getContainer();
         $mailChimp = $container->get('app.service.mailchimp')->setOutput($output);
         $em = $container->get('doctrine')->getManager();
-        $repository = $container->get('doctrine')->getRepository('AppBundle:License');
+        $licenseRepository = $container->get('doctrine')->getRepository('AppBundle:License');
+        $addonRepository = $container->get('doctrine')->getRepository('AppBundle:Addon');
+        $companyRepository = $container->get('doctrine')->getRepository('AppBundle:Company');
 
         if ($input->getArgument('file')) {
-            $csv = $this->getLocalFile();
+            $licenses = $this->getLocalFile();
         } else {
-            $csv = $this->getRemoteFile();
+            $licenses = $this->getRemoteFile();
         }
 
-        unset($csv[0]);
         $readCnt = 0;
         $newCnt = 0;
 
-        foreach ($csv as $row) {
-            $row = trim($row);
-            if (empty($row)) continue;
+        foreach ($licenses as $licenseJson) {
+            $addon = $addonRepository->findOrCreate($licenseJson->addonKey);
+            Setter::set($licenseJson, $addon, "addonKey,addonName");
+            if ($addon->isNew()) {
+                $em->persist($addon);
+                $em->flush($addon);
+            }
 
-            $data = str_getcsv($row, ',');
-            $license = $repository->findOrCreate($data[0], $data[3]);
-            $license->setFromCSV($data);
+            // TODO: company is seems to be unique identifier for cloud plugins. Not sure about server one?
+            $company = $companyRepository->findOrCreate($licenseJson->licenseId);
+            if (property_exists($licenseJson, "contactDetails")) {
+                Setter::set($licenseJson->contactDetails, $company, "company,country,region");
+                if (property_exists($licenseJson->contactDetails, "technicalContact")) {
+                    Setter::set($licenseJson->contactDetails->technicalContact, $company, "email,name,state,phone,address1,address2,city,state,postcode,country", "technicalContact");
+                }
+                if (property_exists($licenseJson->contactDetails, "billingContact")) {
+                    Setter::set($licenseJson->contactDetails->billingContact, $company, "email,name,phone", "billingContact");
+                }
+            }
+            if ($company->isNew()) {
+                $em->persist($company);
+                $em->flush($company);
+            }
+
+            $license = $licenseRepository->findOrCreate($licenseJson->addonLicenseId);
+            Setter::set($licenseJson, $license, "tier,addonLicenseId,licenseType,maintenanceStartDate,maintenanceEndDate,licenseId");
+            $license
+                ->setAddon($addon)
+                ->setCompany($company);
 
             if (!$this->allowedForImport($license)) continue;
 
@@ -62,12 +86,14 @@ class ImportLicenseCommand extends ContainerAwareCommand
             $em->persist($license);
 
             if (($readCnt % 100) == 0)
-                $output->writeln(sprintf('Imported %s of %s licenses, %s new so far', $readCnt, count($csv), $newCnt));
+                $output->writeln(sprintf('Imported %s of %s licenses, %s new so far', $readCnt, count($licenses), $newCnt));
         }
 
         $em->flush();
+        $output->writeln(sprintf('Imported %s licenses', count($licenses)));
 
-        $output->writeln(sprintf('Imported %s licenses', count($csv)));
+        $this->getContainer()->get("app.status")->importLicenseDone();
+        $output->writeln("Command completed successfully");
     }
 
     private function getLocalFile()
@@ -75,7 +101,7 @@ class ImportLicenseCommand extends ContainerAwareCommand
         $filePath = $this->input->getArgument('file');
         $content = file_get_contents($filePath);
 
-        return str_getcsv($content, "\n");
+        return json_decode($content)->licenses;
     }
 
     /**
@@ -84,27 +110,36 @@ class ImportLicenseCommand extends ContainerAwareCommand
     private function getRemoteFile()
     {
         $container = $this->getContainer();
-        $urlTemplate = 'https://marketplace.atlassian.com/rest/1.0/vendors/%s/license/report';
+        $urlTemplate = '/rest/2/vendors/%s/reporting/licenses';
 
         $vendorId = $container->getParameter('vendor_id');
         $login = $container->getParameter('vendor_email');
         $password = $container->getParameter('vendor_password');
 
         $url = sprintf($urlTemplate, $vendorId);
+        $results = [];
+        $page = null;
 
         try {
-            $client = new Client();
-            $response = $client->get($url, ['auth' => [$login, $password]]);
-            $contents = $response->getBody()->getContents();
+            do {
+                if($page) {
+                    $url = $page->_links->next->href;
+                }
+                $client = new Client();
+                $response = $client->get("https://marketplace.atlassian.com".$url, ['auth' => [$login, $password]]);
+                $contents = $response->getBody()->getContents();
 
-            return str_getcsv($contents, "\n");
-
+                $page = json_decode($contents);
+                $results = array_merge($results,$page->licenses);
+            } while(property_exists($page,"_links") && property_exists($page->_links,"next"));
         } catch (\Exception $e) {
             $this->output->writeln($e->getMessage());
 
             return [];
         }
+        return $results;
     }
+
 
     /**
      * The use-case of filtered add-ons is when a vendor wants to share information only relevant to a certain add-on
@@ -117,7 +152,7 @@ class ImportLicenseCommand extends ContainerAwareCommand
     {
         if ($this->getContainer()->getParameter('filter_addons_enabled')) {
             $allowedKeys = $this->getContainer()->getParameter('filter_addons');
-            if (in_array($license->getAddonKey(), $allowedKeys)) {
+            if (in_array($license->getAddon()->getAddonKey(), $allowedKeys)) {
                 return true;
             }
 

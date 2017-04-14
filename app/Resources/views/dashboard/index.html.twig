@@ -13,7 +13,7 @@
     <h2>Expiring Soon</h2>
     <div class="aui-group">
         <div class="aui-item" id="expiring-soon">
-            {% include ':other:license_table.html.twig' with {'licenses': expiringSoon, 'expiringSoonSales': expiringSoonSales} %}
+            {% include ':other:license_table.html.twig' with {'licenses': expiringSoon} %}
         </div>
     </div>
 
@@ -29,11 +29,11 @@
     <div class="aui-group">
         <div class="aui-item" id="top-customers">
             <table class="aui">
-                {% for customer in topCustomers %}
+                {% for statsRow in topLicenses %}
                     <tr>
-                        <td>{{ macro.licenseUrl(customer.licenseId) }}</td>
-                        <td>{{ customer.organisationName }}</td>
-                        <td><strong>${{ customer.total }}</strong></td>
+                        <td>{{ macro.companyUrl(statsRow[0].company.senId) }}</td>
+                        <td>{{ statsRow[0].company.company }}</td>
+                        <td><strong>${{ statsRow.total }}</strong></td>
                     </tr>
                 {% endfor %}
             </table>

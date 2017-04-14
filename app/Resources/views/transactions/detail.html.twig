@@ -1,0 +1,83 @@
+{% extends '::base.html.twig' %}
+
+{% import ':other:macro.html.twig' as macro %}
+
+{% block content %}
+    <h2>Transaction Details</h2>
+    {% for transaction in transactions %}
+           <div class="aui-group">
+            <div class="aui-item">
+                <h3>{{ transaction.license.addon.addonName }}</h3>
+                <table class="aui">
+                    <tbody>
+                    <tr>
+                        <td><h6>INVOICE</h6></td>
+                        <td>{{ transaction.transactionId }}</td>
+                    </tr>
+
+                    <tr>
+                        <td><h6>TRANSACTION TYPE</h6></td>
+                        <td>{{ transaction.saleTypeStr }}</td>
+                    </tr>
+
+                    <tr>
+                        <td><h6>COMPANY</h6></td>
+                        <td>{{ macro.companyUrl(transaction.license.company.senId) }}</td>
+                    </tr>
+
+                    <tr>
+                        <td><h6>LICENCE SIZE</h6></td>
+                        <td> {{ transaction.tier }} </td>
+                    </tr>
+
+                    <tr>
+                        <td><h6>COUNTRY</h6></td>
+                        <td>{{ transaction.license.company.country }} </td>
+                    </tr>
+
+                    <tr>
+                        <td><h6>VENDOR AMOUNT</h6></td>
+                        <td>{{ transaction.vendorAmount }}</td>
+                    </tr>
+
+                    <tr>
+                        <td><h6>ADDON KEY</h6></td>
+                        <td>{{ transaction.license.addon.addonKey }}</td>
+                    </tr>
+
+                    <tr>
+                        <td><h6>DATE</h6></td>
+                        <td>{{ transaction.saleDate|date('Y-m-d') }}</td>
+                    </tr>
+
+                    <tr>
+                        <td><h6>PLUGIN NAME</h6></td>
+                        <td>{{ transaction.license.addon.addonName }}</td>
+                    </tr>
+
+                    <tr>
+                        <td><h6>MAINTENANCE END DATE</h6></td>
+                        <td>{{ transaction.maintenanceEndDate|date('Y-m-d') }}</td>
+                    </tr>
+
+                    <tr>
+                        <td><h6>MAINTENANCE START DATE</h6></td>
+                        <td>{{ transaction.maintenanceStartDate|date('Y-m-d') }}</td>
+                    </tr>
+
+                    <tr>
+                        <td><h6>ORGANISATION NAME</h6></td>
+                        <td>{{ transaction.license.company.getCompanyTitleFixed() }}</td>
+                    </tr>
+
+                    <tr>
+                        <td><h6>PURCHASE PRICE</h6></td>
+                        <td>{{ transaction.purchasePrice }}</td>
+                    </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

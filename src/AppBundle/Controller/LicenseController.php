@@ -16,7 +16,11 @@ class LicenseController extends Controller
     public function indexAction(Request $request)
     {
         $repository = $this->getDoctrine()->getRepository('AppBundle:License');
-        $addonChoices = $repository->getAddonChoices();
+        $addonChoices = [];
+        $addons = $this->getDoctrine()->getRepository('AppBundle:Addon')->findAll();
+        foreach ($addons as $addon) {
+            $addonChoices[$addon->getAddonKey()] = $addon->getAddonName();
+        }
 
         $filterForm = $this->createForm(new LicenseFilterType($addonChoices));
         $filterForm->submit($request);
@@ -45,12 +49,8 @@ class LicenseController extends Controller
         $licenses = $this->getDoctrine()->getRepository('AppBundle:License')
             ->findBy(['licenseId' => $licenseId]);
 
-        $sales = $this->getDoctrine()->getRepository('AppBundle:Sale')
-            ->findBy(['licenseId' => $licenseId], ['date' => 'DESC']);
-
         return $this->render(':license:detail.html.twig', [
-            'licenses' => $licenses,
-            'sales' => $sales
+            'licenses' => $licenses
         ]);
     }
 }
