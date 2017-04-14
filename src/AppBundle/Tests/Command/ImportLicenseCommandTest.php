@@ -19,8 +19,8 @@ class ImportLicenseCommandTest extends BaseTest
         $application->add(new ImportLicenseCommand());
         $licenseRepo = $this->getEntityManager()->getRepository("AppBundle:License");
         $companyRepo = $this->getEntityManager()->getRepository("AppBundle:Company");
-        $this->assertEmpty($licenseRepo->findOneBy(["addonLicenseId"=>1111116]));
-        $this->assertEmpty($companyRepo->findOneBy(["senId"=>"SEN-0000005"]));
+        $this->assertEmpty($licenseRepo->findOneBy(["addonLicenseId"=>2111111]));
+        $this->assertEmpty($companyRepo->findOneBy(["senId"=>"SEN-2000000"]));
 
         $this->assertNotEmpty($fixturesLicense = $licenseRepo->findOneBy(["addonLicenseId"=>1111111]));
         $this->assertNotEmpty($fixturesLicenseCompany = $fixturesLicense->getCompany());
@@ -38,6 +38,8 @@ class ImportLicenseCommandTest extends BaseTest
         ]);
         $this->getEntityManager()->clear();
 
+        $this->assertContains("Command completed successfully",$commandTester->getDisplay());
+
         // check fixtures license without contact info update
         $this->assertNotEmpty($existingLicense = $licenseRepo->findOneBy(["addonLicenseId"=>1111111]));
         $this->assertNotEmpty($existingLicenseCompany = $fixturesLicense->getCompany());
@@ -46,7 +48,7 @@ class ImportLicenseCommandTest extends BaseTest
         $this->assertEquals("APAC-updated",$existingLicenseCompany->getRegion());
 
         // check new license without contact info
-        $this->assertNotEmpty($license = $licenseRepo->findOneBy(["addonLicenseId"=>1111116]));
+        $this->assertNotEmpty($license = $licenseRepo->findOneBy(["addonLicenseId"=>2111111]));
         $this->assertEquals(0,count($license->getTransactions()));
 
         $this->assertNotEmpty($company = $license->getCompany());

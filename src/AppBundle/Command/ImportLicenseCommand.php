@@ -93,6 +93,7 @@ class ImportLicenseCommand extends ContainerAwareCommand
         $output->writeln(sprintf('Imported %s licenses', count($licenses)));
 
         $this->getContainer()->get("app.status")->importLicenseDone();
+        $output->writeln("Command completed successfully");
     }
 
     private function getLocalFile()

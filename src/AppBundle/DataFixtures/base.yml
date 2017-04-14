@@ -99,6 +99,14 @@ AppBundle\Entity\License:
         maintenanceStartDate: '<(new \DateTime("2016-11-01"))>'
         maintenanceEndDate: '<(new \DateTime("2016-12-21"))>'
         tier: Subscription
+    License-6:
+        addonLicenseId: '1111116'
+        company: '@Company-3'
+        addon: '@Addon-2'
+        licenseType: EVALUATION
+        maintenanceStartDate: '<(new \DateTime("2016-11-01"))>'
+        maintenanceEndDate: '<(new \DateTime("2016-12-21"))>'
+        tier: Subscription
 AppBundle\Entity\Transaction:
     Transaction-1:
         saleType: 1

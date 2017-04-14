@@ -42,6 +42,28 @@
       }
     },
     {
+      "_comment": "existing transaction with new addon",
+      "transactionId": "AT-00000001",
+      "addonLicenseId": "1111116",
+      "_comment_hostLicenseId": "hostLicenseId is not processed now, so its renamed",
+      "licenseId": "SEN-0000003",
+      "addonKey": "net.fake.addon2",
+      "addonName": "Fake Addon #2",
+      "lastUpdated": "2017-01-05",
+      "purchaseDetails": {
+        "saleDate": "2016-12-11",
+        "tier": "15 Users",
+        "licenseType": "COMMERCIAL",
+        "hosting": "Cloud",
+        "billingPeriod": "Monthly",
+        "purchasePrice": 5.0,
+        "vendorAmount": 3.75,
+        "saleType": "New",
+        "maintenanceStartDate": "2016-12-11",
+        "maintenanceEndDate": "2017-01-11"
+      }
+    },
+    {
       "_comment": "new transaction",
       "transactionId": "AT-00000004",
       "addonLicenseId": "1111114",

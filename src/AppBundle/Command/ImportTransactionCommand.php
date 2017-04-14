@@ -80,6 +80,7 @@ class ImportTransactionCommand extends ContainerAwareCommand
 
         $output->writeln(sprintf('Imported %s transactions', $offset));
         $this->getContainer()->get("app.status")->importTransactionDone();
+        $output->writeln("Command completed successfully");
     }
 
 
@@ -111,26 +112,27 @@ class ImportTransactionCommand extends ContainerAwareCommand
         $newCnt = 0;
 
         foreach ($jsonTransactions as $jsonTransaction) {
-            if ($transaction = $transactionRepository->findOneBy(["transactionId"=>$jsonTransaction['transactionId']])) {
+            if($license = $licenseRepository->findOneBy(["addonLicenseId"=>$jsonTransaction["addonLicenseId"]])) {
+                $this->locatedExistingLicense = true;
+                // TODO: check if license info is changed
+            } else {
+                if($this->locatedExistingLicense) {
+                    // Something weird happens. We already located transaction with existing licence. So either transactions is incorrectly ordered, OR we have bug
+                    // TODO: set flag
+                    throw new \Exception("Lost license for transaction #".$jsonTransaction['transactionId']);
+                }
+                continue;
+            }
+            if ($transaction = $transactionRepository->findOneBy(["license"=>$license, "transactionId"=>$jsonTransaction['transactionId']])) {
                 // TODO: check if transaction is changed.
             } else {
                 $newCnt++;
                 $transaction = new Transaction();
                 $transaction->setTransactionId($jsonTransaction['transactionId']);
+                $transaction->setLicense($license);
                 $this->em->persist($transaction);
                 $this->em->flush($transaction);
-                if($license = $licenseRepository->findOneBy(["addonLicenseId"=>$jsonTransaction["addonLicenseId"]])) {
-                    $this->locatedExistingLicense = true;
-                    $transaction->setLicense($license);
-                    // TODO: check if license info is changed
-                } else {
-                    if($this->locatedExistingLicense) {
-                        // Something weird happens. We already located transaction with existing licence. So either transactions is incorrectly ordered, OR we have bug
-                        // TODO: set flag
-                        throw new \Exception("Lost license for transaction #".$transaction->getTransactionId());
-                    }
-                    continue;
-                }
+
                 Setter::set($jsonTransaction,$transaction,"transactionId");
                 if(isset($jsonTransaction["customerDetails"]["company"])) {
 //                  Pretty weird, but Atlassian provide full company name in transactions list and brief company name for licenses list.

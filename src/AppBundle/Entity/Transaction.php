@@ -7,7 +7,9 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Transaction
  *
- * @ORM\Table()
+ * @ORM\Table(uniqueConstraints={
+ *   @ORM\UniqueConstraint(name="licence_transaction", columns={"transaction_id","license_id"})
+ * })
  * @ORM\Entity(repositoryClass="AppBundle\Repository\TransactionRepository")
  */
 class Transaction
@@ -56,7 +58,7 @@ class Transaction
     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=255, unique=true)
+     * @ORM\Column(type="string", length=255)
      */
     private $transactionId;
 

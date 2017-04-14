@@ -44,8 +44,8 @@
     },
     {
       "_comment" : "Not existing in base.yml license with removed contacts",
-      "addonLicenseId": "1111116",
-      "hostLicenseId": "1111116",
+      "addonLicenseId": "2111111",
+      "hostLicenseId": "2111111",
       "licenseId": "SEN-0000005",
       "addonKey": "net.fake.addon3",
       "addonName": "Fake Addon #3 '%~!\"<>",

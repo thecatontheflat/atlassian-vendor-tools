@@ -4,6 +4,7 @@
 
 {% block content %}
     <h2>Transaction Details</h2>
+    {% for transaction in transactions %}
            <div class="aui-group">
             <div class="aui-item">
                 <h3>{{ transaction.license.addon.addonName }}</h3>
@@ -69,18 +70,6 @@
                         <td>{{ transaction.license.company.getCompanyTitleFixed() }}</td>
                     </tr>
 
-                    {# TODO: not sure how to handle this #}
-                    {#<tr>#}
-                        {#<td><h6>DISCOUNT</h6></td>#}
-                        {#<td>#}
-                            {#{% if sale.discounted == null %}#}
-                            {#No discount available#}
-                            {#{% else %}#}
-                            {#{{ sale.discounted }}#}
-                            {#{% endif %}#}
-                        {#</td>#}
-                    {#</tr>#}
-
                     <tr>
                         <td><h6>PURCHASE PRICE</h6></td>
                         <td>{{ transaction.purchasePrice }}</td>
@@ -90,5 +79,5 @@
                 </table>
             </div>
         </div>
-
+    {% endfor %}
 {% endblock %}

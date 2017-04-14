@@ -28,12 +28,11 @@ class TransactionController extends Controller
 
     /**
      * @Route("/transaction/{transactionId}", name="transaction_detail")
-     * @ParamConverter("transaction",class="AppBundle:Transaction")
      */
-    public function detailAction(Request $request, $transaction)
+    public function detailAction(Request $request, $transactionId)
     {
         return $this->render(':transactions:detail.html.twig', [
-            'transaction' => $transaction,
+            'transactions' => $this->getDoctrine()->getRepository("AppBundle:Transaction")->findBy(["transactionId"=>$transactionId]),
         ]);
     }
 }

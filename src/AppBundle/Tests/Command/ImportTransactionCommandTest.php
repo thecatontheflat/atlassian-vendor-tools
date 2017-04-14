@@ -22,7 +22,7 @@ class ImportTransactionCommandTest extends BaseTest
         $addonRepo = $this->getEntityManager()->getRepository("AppBundle:Addon");
         $licenseRepo = $this->getEntityManager()->getRepository("AppBundle:License");
 
-        $this->assertEmpty($transactionRepo->findOneBy(["transactionId"=>"AT-00000004"]));
+        $this->assertGreaterThan(1,$transactionRepo->findBy(["transactionId"=>"AT-00000004"]));
         $this->assertEquals(3.75,$transactionRepo->findEstimatedIncome("2017-01-10","2017-01-30"));
 
         $this->assertNotEmpty($company1 = $companyRepo->findOneBy(["senId"=>"SEN-0000003"]));
@@ -43,9 +43,14 @@ class ImportTransactionCommandTest extends BaseTest
             'command' => $command->getName(),
             'file' => 'src/AppBundle/Tests/_json/transaction.json'
         ]);
+
+        $this->assertContains("Command completed successfully",$commandTester->getDisplay());
         $this->getEntityManager()->clear();
 
-        $this->assertNotEmpty($newTransaction = $transactionRepo->findOneBy(["transactionId"=>"AT-00000004"]));
+        // check for few transactions with the same AT-00000001
+        $this->assertEquals(2,count($transactionRepo->findBy(["transactionId"=>"AT-00000001"])));
+
+//        $this->assertNotEmpty($newTransaction = $transactionRepo->findOneBy(["transactionId"=>"AT-00000004"]));
 
         $this->assertNotEmpty($company1 = $companyRepo->findOneBy(["senId"=>"SEN-0000003"]));
         $this->assertNotEmpty($company1License = $licenseRepo->findOneBy(["addonLicenseId"=>"1111113"]));
