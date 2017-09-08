@@ -1,0 +1,52 @@
+{% import ":other:macro.html.twig" as macro %}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=EDGE">
+    <title>Atlassian Vendor Tools</title>
+    <link rel="stylesheet" href="{{ asset('assets/aui/css/aui.min.css') }}" media="all">
+    <link rel="stylesheet" href="{{ asset('assets/aui/css/aui-experimental.min.css') }}" media="all">
+    <link rel="stylesheet" href="{{ asset('assets/css/mpcrm.css') }}" media="all">
+    <link rel="shortcut icon" href="/bundles/app/favicon.ico" type="image/x-icon"/>
+    <link rel="icon" href="/bundles/app/favicon.ico" type="image/x-icon">
+</head>
+<body class="aui-page-fixed">
+<div id="page">
+    <header id="header" role="banner">
+        <nav class="aui-header" role="navigation" style="min-height: 40px">
+        </nav>
+    </header>
+    <section id="content" role="main">
+        <header class="aui-page-header">
+            <div class="aui-page-header-inner">
+                <div class="aui-page-header-main">
+                    <h1>{% block pageHeader %}Atlassian Vendor Tools{% endblock %}</h1>
+                </div>
+            </div>
+        </header>
+        <div class="aui-page-panel" style="min-height: 400px">
+            <div class="aui-page-panel-inner">
+                <section class="aui-page-panel-content">
+                    {% block content %}
+                        <div>
+                            {% block fos_user_content %}{% endblock fos_user_content %}
+                        </div>
+                    {% endblock %}
+                </section>
+            </div>
+        </div>
+    </section>
+    <footer id="footer" role="contentinfo">
+    </footer>
+</div>
+<script src="{{ asset('assets/jquery/dist/jquery.min.js') }}"></script>
+<script src="{{ asset('assets/aui/js/aui.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/highcharts.js') }}"></script>
+{#<script src="{{ asset('assets/aui/js/aui-experimental.min.js') }}"></script>#}
+
+{% block js %}{% endblock %}
+</body>
+</html>
