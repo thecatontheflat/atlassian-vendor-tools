@@ -66,11 +66,3 @@ knp_paginator:
     page_range: 10
     template:
         pagination: :other:_pagination.html.twig
-
-fos_user:
-    db_driver: orm # other valid values are 'mongodb' and 'couchdb'
-    firewall_name: main
-    user_class: AppBundle\Entity\User
-    from_email:
-        address: "%mailer_user%"
-        sender_name: "%mailer_user%"
