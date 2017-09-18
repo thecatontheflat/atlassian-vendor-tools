@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 class CompanyController extends Controller
 {
     /**
-     * @Route("/companies", name="companies")
+     * @Route("/secured/companies", name="companies")
      */
     public function indexAction(Request $request)
     {
@@ -20,7 +20,7 @@ class CompanyController extends Controller
     }
 
     /**
-     * @Route("/company/{senId}", name="company_detail")
+     * @Route("/secured/company/{senId}", name="company_detail")
      * @ParamConverter("company",class="AppBundle:Company")
      */
     public function detailAction(Request $request, $company)
