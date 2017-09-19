@@ -4,13 +4,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=EDGE">
     <title>Atlassian Vendor Tools</title>
     <link rel="stylesheet" href="{{ asset('assets/aui/css/aui.min.css') }}" media="all">
     <link rel="stylesheet" href="{{ asset('assets/aui/css/aui-experimental.min.css') }}" media="all">
     <link rel="stylesheet" href="{{ asset('assets/css/mpcrm.css') }}" media="all">
-    <link rel="shortcut icon" href="/bundles/app/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="/bundles/app/favicon.ico" type="image/x-icon"/>
     <link rel="icon" href="/bundles/app/favicon.ico" type="image/x-icon">
 </head>
 <body class="aui-page-fixed">
@@ -22,6 +22,8 @@
                     <li><a href="{{ url('dashboard') }}">Dashboard</a></li>
                     <li><a href="{{ url('transactions') }}">Transactions</a></li>
                     <li><a href="{{ url('licenses') }}">Licenses</a></li>
+                    <li><a href="{{ path('logout') }}"><span class="aui-icon aui-icon-small aui-iconfont-locked"></span> Lock
+                            dashboard</a></li>
                 </ul>
             </div>
         </nav>
