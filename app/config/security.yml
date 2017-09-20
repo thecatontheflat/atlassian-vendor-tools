@@ -12,7 +12,7 @@ security:
             memory:
                 users:
                     admin:
-                        password: vfnhbwf15616
+                        password: %security_admin_pass%
                         roles: 'ROLE_ADMIN'
 
     firewalls:
