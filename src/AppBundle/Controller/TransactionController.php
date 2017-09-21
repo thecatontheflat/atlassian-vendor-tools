@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 class TransactionController extends Controller
 {
     /**
-     * @Route("/secured/transactions", name="transactions")
+     * @Route("/protected/transactions", name="transactions")
      */
     public function indexAction(Request $request)
     {
@@ -27,7 +27,7 @@ class TransactionController extends Controller
     }
 
     /**
-     * @Route("/secured/transaction/{transactionId}", name="transaction_detail")
+     * @Route("/protected/transaction/{transactionId}", name="transaction_detail")
      */
     public function detailAction(Request $request, $transactionId)
     {

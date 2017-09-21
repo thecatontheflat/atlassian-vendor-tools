@@ -22,7 +22,7 @@ class DashboardController extends Controller
         }
     }
     /**
-     * @Route("/secured/dashboard", name="dashboard")
+     * @Route("/protected/dashboard", name="dashboard")
      */
     public function dashboardAction()
     {
