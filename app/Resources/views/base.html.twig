@@ -19,11 +19,18 @@
         <nav class="aui-header" role="navigation">
             <div class="aui-header-inner">
                 <ul class="aui-nav">
-                    <li><a href="{{ url('dashboard') }}">Dashboard</a></li>
-                    <li><a href="{{ url('transactions') }}">Transactions</a></li>
-                    <li><a href="{{ url('licenses') }}">Licenses</a></li>
-                    <li><a href="{{ path('logout') }}"><span class="aui-icon aui-icon-small aui-iconfont-locked"></span> Lock
-                            dashboard</a></li>
+                    <li>
+                        <a href="{{ url('dashboard') }}">Dashboard</a>
+                    </li>
+                    <li>
+                        <a href="{{ url('transactions') }}">Transactions</a>
+                    </li>
+                    <li>
+                        <a href="{{ url('licenses') }}">Licenses</a>
+                    </li>
+                    <li>
+                        <a href="{{ path('logout') }}"><span class="aui-icon aui-icon-small aui-iconfont-locked"></span> Lock dashboard</a>
+                    </li>
                 </ul>
             </div>
         </nav>
