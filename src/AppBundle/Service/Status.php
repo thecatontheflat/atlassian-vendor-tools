@@ -68,15 +68,15 @@ class Status
         $problems = [];
         $lastLicenseExecution = $this->getStatusEntity()->getLicenseImportLastExecution();
         if($lastLicenseExecution && ((time() - $lastLicenseExecution->getTimestamp()) > 86400*3)) {
-            $problems[] = "./app/console app:import:license was executed more, that 3 days ago (on ".$lastLicenseExecution->format("Y-m-d H:i:s").")";
+            $problems[] = "./app/console app:import:license was executed more than 3 days ago (on ".$lastLicenseExecution->format("Y-m-d H:i:s").")";
         }
         $lastTransactionExecution = $this->getStatusEntity()->getTransactionImportLastExecution();
         if($lastTransactionExecution && ((time() - $lastTransactionExecution->getTimestamp()) > 86400*3)) {
-            $problems[] = "./app/console app:import:transaction was executed more, that 3 days ago (on ".$lastTransactionExecution->format("Y-m-d H:i:s").")";
+            $problems[] = "./app/console app:import:transaction was executed more than 3 days ago (on ".$lastTransactionExecution->format("Y-m-d H:i:s").")";
         }
         $lastCronExecution = $this->getStatusEntity()->getCronCommandLastExecution();
         if($lastCronExecution && ((time() - $lastCronExecution->getTimestamp()) > 86400*3)) {
-            $problems[] = "./app/console app:cron was executed more, that 3 days ago (on ".$lastCronExecution->format("Y-m-d H:i:s").")";
+            $problems[] = "./app/console app:cron was executed more than 3 days ago (on ".$lastCronExecution->format("Y-m-d H:i:s").")";
         }
         return $problems;
     }
