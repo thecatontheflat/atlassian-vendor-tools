@@ -5,9 +5,7 @@ Atlassian Vendor Tools
 
 # Support & Sponsored Development
 
-For support questions, please raise an issue.
-
-For sponsored development, please contact me vit.zurian@lizardbrain.rocks
+For support questions please raise an issue in this repository.
 
 # Overview
 
