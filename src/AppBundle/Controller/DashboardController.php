@@ -8,10 +8,23 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class DashboardController extends Controller
 {
+
     /**
-     * @Route("/", name="dashboard")
+     * @Route("/", name="index")
      */
-    public function indexAction()
+    public function indexAction(){
+        $user = $this->getUser();
+        if($user) {
+            return $this->redirectToRoute('dashboard');
+        }
+        else {
+            return $this->redirectToRoute('login');
+        }
+    }
+    /**
+     * @Route("/protected/dashboard", name="dashboard")
+     */
+    public function dashboardAction()
     {
         $expiringSoon = $this->getDoctrine()->getRepository('AppBundle:License')
             ->findExpiringSoon();

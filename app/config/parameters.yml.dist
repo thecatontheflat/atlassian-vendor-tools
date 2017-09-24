@@ -28,3 +28,5 @@ parameters:
 
     filter_addons_enabled: false
     filter_addons: [some.addon.key, another.addon.key]
+
+    security_admin_pass: ~

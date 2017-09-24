@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 class LicenseController extends Controller
 {
     /**
-     * @Route("/licenses", name="licenses")
+     * @Route("/protected/licenses", name="licenses")
      */
     public function indexAction(Request $request)
     {
@@ -42,7 +42,7 @@ class LicenseController extends Controller
     }
 
     /**
-     * @Route("/license/{licenseId}", name="license_detail")
+     * @Route("/protected/license/{licenseId}", name="license_detail")
      */
     public function detailAction(Request $request, $licenseId)
     {

@@ -10,3 +10,9 @@
 .aui-progress-tracker {
     width: 100%;
 }
+.aui-header {
+    min-height: 40px;
+}
+.aui-page-panel {
+    min-height: 400px;
+}
