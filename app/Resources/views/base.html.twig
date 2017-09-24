@@ -16,7 +16,8 @@
 <body class="aui-page-fixed">
 <div id="page">
     <header id="header" role="banner">
-        <nav class="aui-header" role="navigation">
+        <nav class="aui-header" role="navigation" style="min-height: 40px">
+            {% block mainNav %}
             <div class="aui-header-inner">
                 <ul class="aui-nav">
                     <li>
@@ -33,6 +34,7 @@
                     </li>
                 </ul>
             </div>
+            {% endblock %}
         </nav>
     </header>
     <section id="content" role="main">
@@ -43,9 +45,10 @@
                 </div>
             </div>
         </header>
-        <div class="aui-page-panel">
+        <div class="aui-page-panel" style="min-height: 400px">
             <div class="aui-page-panel-inner">
                 <section class="aui-page-panel-content">
+                    {% block auiPanelContent %}
                     {% if __STATUS.getCrontabProblems() | length %}
                         {{ macro.message("Possible problems with cron!",__STATUS.getCrontabProblems() | join("<br>"),"error") }}
                     {% endif %}
@@ -58,10 +61,9 @@
                     {% if __STATUS.getStatusEntity().availableUpdates %}
                         {{ macro.message("Updates available, <a href='https://github.com/thecatontheflat/atlassian-vendor-tools/'>more info</a>",__STATUS.getStatusEntity().availableUpdates,"success") }}
                     {% endif %}
-
-                    {% block content %}
-
                     {% endblock %}
+
+                    {% block content %}{% endblock %}
                 </section>
             </div>
         </div>
