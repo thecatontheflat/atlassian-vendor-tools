@@ -5,7 +5,9 @@ Atlassian Vendor Tools
 
 # Support & Sponsored Development
 
-For support questions please raise an issue in this repository.
+For support questions, please raise an issue.
+
+For sponsored development, please contact me vit.zurian@lizardbrain.rocks
 
 # Overview
 
@@ -23,3 +25,12 @@ For support questions please raise an issue in this repository.
 
 ### License details view:
 ![](https://raw.githubusercontent.com/thecatontheflat/atlassian-marketplace-tools/master/docs/7.png)
+
+### Security module configuration:
+To secure a CRM dashboard security system has been provided.
+
+Username to access the dashboard is **admin**.
+
+Default password to access the dashboard is set to be **12345**.
+
+Default password can be easily changed during installation or at any time afterwards, by changing **security_admin_pass** property value in **parameters.yml** file.
